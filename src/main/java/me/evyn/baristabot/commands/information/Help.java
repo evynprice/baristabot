@@ -43,7 +43,7 @@ public class Help implements Command {
                     .addField("Version", "1.0", true)
                     .addField("Commands", this.prefix + "commands", false)
                     .setTimestamp(Instant.now())
-                    .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk");
+                    .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
 
             MessageBuilder message = new MessageBuilder();
             message.setEmbed(eb.build());
