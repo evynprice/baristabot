@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.evyn.baristabot.commands.testing.Ping;
+import me.evyn.baristabot.commands.information.Ping;
 
 /**
  * This Class takes in all of the information that was gathered in the MessageListener event, and then runs
@@ -23,10 +23,8 @@ public class CommandHandler {
     // fun commands
     private final Command say;
 
-    // testing commands
-    private final Command ping;
-
     // information commands
+    private final Command ping;
     private final Command help;
     private final Command commands;
 
@@ -42,11 +40,10 @@ public class CommandHandler {
         this.say = new Say(this.prefix);
         cmds.put(this.say.getName(), this.say);
 
-        // Initialize and add testing commands
+        // Initialize and add information commands
         this.ping = new Ping();
         cmds.put(this.ping.getName(), this.ping);
 
-        // Initialize and add information commands
         this.help = new Help(this.prefix, this.cmds);
         cmds.put(this.help.getName(), this.help);
 

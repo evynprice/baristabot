@@ -27,7 +27,6 @@ public class Commands implements Command {
     // These hold organized lists of all of the commands
     private List<Command> funCommands = new ArrayList<>();
     private List<Command> infoCommands = new ArrayList<>();
-    private List<Command> testingCommands = new ArrayList<>();
 
 
     public Commands(String prefix, Map<String, Command> cmds) {
@@ -47,9 +46,6 @@ public class Commands implements Command {
                     }
                     else if (cmd.getType().equals(CommandType.INFORMATION)) {
                         this.infoCommands.add(cmd);
-                    }
-                    else if (cmd.getType().equals(CommandType.TESTING)) {
-                        this.testingCommands.add(cmd);
                     }
                 });
 
@@ -71,13 +67,6 @@ public class Commands implements Command {
                 });
         infoString.delete(infoString.length() - 2, infoString.length() - 1);
 
-        StringBuilder testingString = new StringBuilder();
-        this.testingCommands.stream()
-                .forEach(cmd -> {
-                        testingString.append(cmd.getName()).append(", ");
-                });
-        testingString.delete(testingString.length() - 2, testingString.length() - 1);
-
 
         // Create the embed with the commands as fields
         EmbedBuilder eb = new EmbedBuilder();
@@ -86,7 +75,6 @@ public class Commands implements Command {
                 .setDescription(String.format("Use `%shelp <command>` for information on a specific command", this.prefix))
                 .addField("Fun",funString.toString(),false)
                 .addField("Information",infoString.toString(), false)
-                .addField("Testing",testingString.toString(), false)
                 .setTimestamp(Instant.now())
                 .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
 

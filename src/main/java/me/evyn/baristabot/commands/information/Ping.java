@@ -1,4 +1,4 @@
-package me.evyn.baristabot.commands.testing;
+package me.evyn.baristabot.commands.information;
 
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
