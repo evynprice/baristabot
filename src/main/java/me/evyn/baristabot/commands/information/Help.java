@@ -1,6 +1,7 @@
 package me.evyn.baristabot.commands.information;
 
 import me.evyn.baristabot.commands.Command;
+import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,6 +19,7 @@ public class Help implements Command {
     private final String name = "help";
     private final String description = "Provides bot information and information on a specific command";
     private final String usage = "help [command]";
+    private final CommandType type = CommandType.INFORMATION;
 
     private final String prefix;
     private final Map<String, Command> cmds;
@@ -99,5 +101,10 @@ public class Help implements Command {
     @Override
     public String getUsage() {
         return this.usage;
+    }
+
+    @Override
+    public CommandType getType() {
+        return this.type;
     }
 }

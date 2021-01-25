@@ -1,6 +1,7 @@
 package me.evyn.baristabot.commands.fun;
 
 import me.evyn.baristabot.commands.Command;
+import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class Say implements Command {
     private final String name = "say";
     private final String description = "Says the following text as the bot and deletes the original message";
     private final String usage = "say <content>";
+    private final CommandType type = CommandType.FUN;
 
     private String prefix;
 
@@ -63,5 +65,10 @@ public class Say implements Command {
     @Override
     public String getUsage() {
         return this.usage;
+    }
+
+    @Override
+    public CommandType getType() {
+        return this.type;
     }
 }

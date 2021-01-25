@@ -37,7 +37,7 @@ public class CommandHandler {
         this.ping = new Ping();
         this.say = new Say(this.prefix);
         this.help = new Help(this.prefix, this.cmds);
-        this.commands = new Commands(this.cmds);
+        this.commands = new Commands(this.prefix, this.cmds);
 
         // Add commands to map. There is probably a more efficient way to do this
         cmds.put(this.ping.getName(), this.ping);

@@ -1,6 +1,7 @@
 package me.evyn.baristabot.commands.information;
 
 import me.evyn.baristabot.commands.Command;
+import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -17,10 +18,13 @@ public class Commands implements Command {
     private final String name = "commands";
     private final String description = "Returns a list of valid bot commands";
     private final String usage = "commands";
+    private final CommandType type = CommandType.INFORMATION;
 
+    private final String prefix;
     private final Map<String, Command> cmds;
 
-    public Commands(Map<String, Command> cmds) {
+    public Commands(String prefix, Map<String, Command> cmds) {
+        this.prefix = prefix;
         this.cmds = cmds;
     }
 
@@ -40,7 +44,8 @@ public class Commands implements Command {
         // Create the embed with the commands in the description
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(0x386895)
-                .setTitle("Bot commands")
+                .setTitle("BaristaBot commands")
+                .setDescription(String.format("Use `%shelp <command>` for information on a specific command", this.prefix))
                 .setDescription(sb.toString())
                 .setTimestamp(Instant.now())
                 .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
@@ -66,5 +71,10 @@ public class Commands implements Command {
     @Override
     public String getUsage() {
         return this.usage;
+    }
+
+    @Override
+    public CommandType getType() {
+        return this.type;
     }
 }
