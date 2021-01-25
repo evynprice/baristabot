@@ -13,7 +13,7 @@ public class Say implements Command {
 
     private final String name = "say";
     private final String description = "Says the following text as the bot and deletes the original message";
-    private final String usage = "say <content>";
+    private final String usage = "say [content]";
     private final CommandType type = CommandType.FUN;
 
     private String prefix;
