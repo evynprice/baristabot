@@ -25,7 +25,6 @@ hs_err_pid*
 # other project files
 config.json
 .gradle
-.idea
 build
 gradlew.bat
 gradlew
