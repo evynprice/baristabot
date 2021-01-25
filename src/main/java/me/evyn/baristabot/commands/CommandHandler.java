@@ -20,8 +20,13 @@ public class CommandHandler {
     private final String prefix;
     private Map<String, Command> cmds = new HashMap<>();
 
-    private final Command ping;
+    // fun commands
     private final Command say;
+
+    // testing commands
+    private final Command ping;
+
+    // information commands
     private final Command help;
     private final Command commands;
 
@@ -33,16 +38,19 @@ public class CommandHandler {
     public CommandHandler(String prefix) {
         this.prefix = prefix;
 
-        // Initializes commands
-        this.ping = new Ping();
+        // Initialize and add fun commands
         this.say = new Say(this.prefix);
-        this.help = new Help(this.prefix, this.cmds);
-        this.commands = new Commands(this.prefix, this.cmds);
-
-        // Add commands to map. There is probably a more efficient way to do this
-        cmds.put(this.ping.getName(), this.ping);
         cmds.put(this.say.getName(), this.say);
+
+        // Initialize and add testing commands
+        this.ping = new Ping();
+        cmds.put(this.ping.getName(), this.ping);
+
+        // Initialize and add information commands
+        this.help = new Help(this.prefix, this.cmds);
         cmds.put(this.help.getName(), this.help);
+
+        this.commands = new Commands(this.prefix, this.cmds);
         cmds.put(this.commands.getName(), this.commands);
 
         System.out.printf("Successfully loaded %d commands", this.cmds.size());
