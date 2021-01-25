@@ -39,8 +39,9 @@ public class Help implements Command {
                     .setTitle("Barista Bot")
                     .setDescription("Just a simple Discord bot written in JDA")
                     .setThumbnail("https://i.imgur.com/WtJZ3Wk.png")
-                    .addField("Version", "1.0", true)
                     .addField("Maintained by", "TheTechnicalFox#0056",true)
+                    .addField("Version", "1.0", true)
+                    .addField("Commands", this.prefix + "commands", false)
                     .setTimestamp(Instant.now())
                     .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk");
 
