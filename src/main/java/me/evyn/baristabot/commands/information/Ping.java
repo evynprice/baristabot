@@ -14,7 +14,7 @@ public class Ping implements Command {
     private final String name = "ping";
     private final String description = "Replies with `Pong!` in the channel that the command was sent";
     private final String usage = "ping";
-    private final CommandType type = CommandType.TESTING;
+    private final CommandType type = CommandType.INFORMATION;
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
