@@ -17,8 +17,9 @@ import java.util.Map;
 public class Help implements Command {
 
     private final String name = "help";
-    private final String description = "Provides bot information and information on a specific command";
-    private final String usage = "help [command]";
+    private final String description = "Provides bot information" +
+            "\nOptional argument <command> for information on a specific command";
+    private final String usage = "help <command>";
     private final CommandType type = CommandType.INFORMATION;
 
     private final String prefix;
@@ -76,7 +77,7 @@ public class Help implements Command {
 
         // Command has been found, now send help information on command
         eb.setColor(0x386895)
-                .setTitle(cmd.getName() + " command")
+                .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getDescription())
                 .addField("Usage", this.prefix + cmd.getUsage(), true)
                 .setTimestamp(Instant.now())
