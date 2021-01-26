@@ -2,6 +2,7 @@ package me.evyn.baristabot.commands.information;
 
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
+import me.evyn.baristabot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -57,8 +58,13 @@ public class Help implements Command {
 
         // if there are more than 1 arguments, send error message and return
         if (args.size() > 1) {
+            EasyEmbed embed = new EasyEmbed();
+
             event.getChannel()
-                    .sendMessage(String.format("Invalid arguments. Format should be %shelp <command-name", this.prefix))
+                    .sendMessage(embed
+                            .newErrorEmbedMessage(String.format("Format should be %shelp <command-name>", this.prefix))
+                            .build())
+                    //.sendMessage(String.format("Invalid arguments. Format should be %shelp <command-name", this.prefix))
                     .queue();
             return;
         }
