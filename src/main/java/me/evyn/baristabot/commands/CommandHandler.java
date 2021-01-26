@@ -3,6 +3,7 @@ package me.evyn.baristabot.commands;
 import me.evyn.baristabot.commands.fun.Say;
 import me.evyn.baristabot.commands.information.Commands;
 import me.evyn.baristabot.commands.information.Help;
+import me.evyn.baristabot.commands.information.Statistics;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class CommandHandler {
     private final Command say;
 
     // information commands
+    private final Command statistics;
     private final Command ping;
     private final Command help;
     private final Command commands;
@@ -41,6 +43,9 @@ public class CommandHandler {
         cmds.put(this.say.getName(), this.say);
 
         // Initialize and add information commands
+        this.statistics = new Statistics();
+        cmds.put(this.statistics.getName(), this.statistics);
+
         this.ping = new Ping();
         cmds.put(this.ping.getName(), this.ping);
 
