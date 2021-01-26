@@ -7,14 +7,15 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 
-public class Restart implements Command {
+public class Shutdown implements Command {
 
     /**
-     * This command works by shutting down the bot instance. This should only be ran 
+     * This command simply stops the bot instance. Useful as a simple way of restarting the bot when combined with
+     * restart unless-stopped
      */
-    private String name = "restart";
-    private String description = "Restarts bot instance (privileged users only)";
-    private String usage = "restart";
+    private String name = "shutdown";
+    private String description = "Shuts down bot instance (privileged users only)";
+    private String usage = "shutdown";
     private CommandType type = CommandType.PRIVILEGED;
 
     @Override
