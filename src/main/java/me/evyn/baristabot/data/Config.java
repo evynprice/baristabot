@@ -16,6 +16,7 @@ public class Config {
 
     private String token;
     private String prefix;
+    private String privilegedID;
 
 
     /**
@@ -31,8 +32,11 @@ public class Config {
             // fetch token from jsonObject and add it to instance variable token
             this.token = (String) jsonObject.get("Token");
 
-            //fetch prefix from jsonObject and add it to instance variable prefix
+            // fetch prefix from jsonObject and add it to instance variable prefix
             this.prefix = (String) jsonObject.get("Prefix");
+
+            // fetch privilegedID from jsonObject and add it to instance variable privilegedID
+            this.privilegedID = (String) jsonObject.get("PrivilegedID");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,5 +57,12 @@ public class Config {
      */
     public String getPrefix() {
         return this.prefix;
+    }
+
+    /**
+     * @return String This returns the privilegedID
+     */
+    public String getPrivilegedID() {
+        return this.privilegedID;
     }
 }

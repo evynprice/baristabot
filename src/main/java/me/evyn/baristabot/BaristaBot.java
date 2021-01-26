@@ -36,7 +36,7 @@ public class BaristaBot {
     public static void main(String[] args) throws Exception {
 
         Config config = new Config();
-        CommandHandler ch = new CommandHandler(config.getPrefix());
+        CommandHandler ch = new CommandHandler(config.getPrefix(), config.getPrivilegedID());
 
         JDA api = JDABuilder
                 .createDefault(config.getToken())

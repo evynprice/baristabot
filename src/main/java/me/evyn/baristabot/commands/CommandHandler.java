@@ -4,6 +4,7 @@ import me.evyn.baristabot.commands.fun.Say;
 import me.evyn.baristabot.commands.information.Commands;
 import me.evyn.baristabot.commands.information.Help;
 import me.evyn.baristabot.commands.information.Statistics;
+import me.evyn.baristabot.commands.privileged.Shutdown;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import me.evyn.baristabot.commands.information.Ping;
 public class CommandHandler {
 
     private final String prefix;
+    private final String privilegedID;
     private Map<String, Command> cmds = new HashMap<>();
 
     // fun commands
@@ -30,13 +32,17 @@ public class CommandHandler {
     private final Command help;
     private final Command commands;
 
+    // privileged commands
+    private final Command shutdown;
+
     /**
      * This is ran only once when the Main Class starts. This is done so that all of the command objects are not
      * re-initialized every time that a new command is ran
      * @param prefix Bot prefix
      */
-    public CommandHandler(String prefix) {
+    public CommandHandler(String prefix, String privilegedID) {
         this.prefix = prefix;
+        this.privilegedID = privilegedID;
 
         // Initialize and add fun commands
         this.say = new Say(this.prefix);
@@ -54,6 +60,10 @@ public class CommandHandler {
 
         this.commands = new Commands(this.prefix, this.cmds);
         cmds.put(this.commands.getName(), this.commands);
+
+        // Initialize and add privileged commands
+        this.shutdown = new Shutdown();
+        cmds.put(this.shutdown.getName(), this.shutdown);
 
         System.out.printf("Successfully loaded %d commands", this.cmds.size());
     }
@@ -73,6 +83,15 @@ public class CommandHandler {
                     .sendMessage("That command does not exist")
                     .queue();
             return;
+        }
+
+        if (command.getType() == CommandType.PRIVILEGED) {
+            if (!event.getAuthor().getId().equals(this.privilegedID)) {
+                event.getChannel()
+                        .sendMessage("You do not have the required permission to run this command")
+                        .queue();
+                return;
+            }
         }
 
         command.run(event, args);
