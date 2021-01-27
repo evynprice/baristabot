@@ -4,12 +4,6 @@
 # Log file
 *.log
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.jar
 *.war
@@ -28,4 +22,5 @@ config.json
 build
 gradlew.bat
 gradlew
+.idea
 **/.DS_Store
