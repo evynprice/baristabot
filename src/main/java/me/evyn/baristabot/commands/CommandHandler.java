@@ -1,15 +1,12 @@
 package me.evyn.baristabot.commands;
 
+import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.fun.Say;
-import me.evyn.baristabot.commands.information.Commands;
-import me.evyn.baristabot.commands.information.Help;
-import me.evyn.baristabot.commands.information.Statistics;
+import me.evyn.baristabot.commands.information.*;
 import me.evyn.baristabot.commands.privileged.Shutdown;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
-
-import me.evyn.baristabot.commands.information.Ping;
 
 /**
  * This Class takes in all of the information that was gathered in the MessageListener event, and then runs
@@ -29,6 +26,7 @@ public class CommandHandler {
     private final Command ping;
     private final CommandWithCmds help;
     private final CommandWithCmds commands;
+    private final CommandWithCmds aliases;
 
     // privileged commands
     private final Command shutdown;
@@ -54,11 +52,13 @@ public class CommandHandler {
         this.help = new Help(this.prefix);
         this.commands = new Commands(this.prefix);
         this.shutdown = new Shutdown();
+        this.aliases = new Aliases(this.prefix);
 
-        cmds = Arrays.asList(say, statistics, ping, help, commands, shutdown);
+        cmds = Arrays.asList(say, statistics, ping, help, commands, aliases, shutdown);
 
         help.addCommands(cmds);
         commands.addCommands(cmds);
+        aliases.addCommands(cmds);
 
         System.out.printf("Successfully loaded %d commands", this.cmds.size());
     }

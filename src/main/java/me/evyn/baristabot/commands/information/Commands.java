@@ -1,6 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.commands.CommandWithCmds;
+import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
