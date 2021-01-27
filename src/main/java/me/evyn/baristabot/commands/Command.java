@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface Command {
     public void run(MessageReceivedEvent event, List<String> args);
-
     public String getName();
+    public List<String> getAliases();
     public String getDescription();
     public String getUsage();
     public CommandType getType();

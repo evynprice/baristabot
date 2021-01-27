@@ -1,5 +1,6 @@
 package me.evyn.baristabot.commands;
 
+import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.fun.Say;
 import me.evyn.baristabot.commands.information.Commands;
 import me.evyn.baristabot.commands.information.Help;
@@ -7,9 +8,7 @@ import me.evyn.baristabot.commands.information.Statistics;
 import me.evyn.baristabot.commands.privileged.Shutdown;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import me.evyn.baristabot.commands.information.Ping;
 
@@ -21,7 +20,7 @@ public class CommandHandler {
 
     private final String prefix;
     private final String privilegedID;
-    private Map<String, Command> cmds = new HashMap<>();
+    private List<Command> cmds;
 
     // fun commands
     private final Command say;
@@ -29,8 +28,8 @@ public class CommandHandler {
     // information commands
     private final Command statistics;
     private final Command ping;
-    private final Command help;
-    private final Command commands;
+    private final CommandWithCmds help;
+    private final CommandWithCmds commands;
 
     // privileged commands
     private final Command shutdown;
@@ -41,29 +40,23 @@ public class CommandHandler {
      * @param prefix Bot prefix
      */
     public CommandHandler(String prefix, String privilegedID) {
+        //TODO add command aliases
+
         this.prefix = prefix;
         this.privilegedID = privilegedID;
 
-        // Initialize and add fun commands
+        // Initialize commands
         this.say = new Say(this.prefix);
-        cmds.put(this.say.getName(), this.say);
-
-        // Initialize and add information commands
         this.statistics = new Statistics();
-        cmds.put(this.statistics.getName(), this.statistics);
-
         this.ping = new Ping();
-        cmds.put(this.ping.getName(), this.ping);
-
-        this.help = new Help(this.prefix, this.cmds);
-        cmds.put(this.help.getName(), this.help);
-
-        this.commands = new Commands(this.prefix, this.cmds);
-        cmds.put(this.commands.getName(), this.commands);
-
-        // Initialize and add privileged commands
+        this.help = new Help(this.prefix);
+        this.commands = new Commands(this.prefix);
         this.shutdown = new Shutdown();
-        cmds.put(this.shutdown.getName(), this.shutdown);
+
+        cmds = Arrays.asList(say, statistics, ping, help, commands, shutdown);
+
+        help.addCommands(cmds);
+        commands.addCommands(cmds);
 
         System.out.printf("Successfully loaded %d commands", this.cmds.size());
     }
@@ -76,8 +69,12 @@ public class CommandHandler {
      * @param args
      */
     public void run(MessageReceivedEvent event, String cmd, List<String> args) {
-        // Look for command in map
-        Command command = this.cmds.getOrDefault(cmd, null);
+        // Look for command in list
+        Optional<Command> matching = this.cmds.stream()
+                .filter(command -> command.getName().equals(cmd) || command.getAliases().contains(cmd))
+                .findAny();
+        Command command = matching.orElse(null);
+
         if (command == null) {
             event.getChannel()
                     .sendMessage("That command does not exist")

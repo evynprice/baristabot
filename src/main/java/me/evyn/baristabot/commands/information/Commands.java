@@ -1,5 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
+import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -8,29 +9,43 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This Class sends a list of valid commands when ran
  */
-public class Commands implements Command {
+public class Commands implements CommandWithCmds {
 
-    private final String name = "commands";
-    private final String description = "Returns a list of valid bot commands";
-    private final String usage = "commands";
-    private final CommandType type = CommandType.INFORMATION;
+    private final String name;
+    private final List<String> aliases;
+    private final String description;
+    private final String usage;
+    private final CommandType type;
 
     private final String prefix;
-    private final Map<String, Command> cmds;
+    private List<Command> cmds;
 
     // These hold organized lists of all of the commands
-    private List<Command> funCommands = new ArrayList<>();
-    private List<Command> infoCommands = new ArrayList<>();
+    private List<Command> funCommands;
+    private List<Command> infoCommands;
 
 
-    public Commands(String prefix, Map<String, Command> cmds) {
+    public Commands(String prefix) {
         this.prefix = prefix;
+
+        this.name = "commands";
+        this.aliases = Arrays.asList("cmds");
+        this.description = "Returns a list of valid bot commands";
+        this.usage = "commands";
+        this.type = CommandType.INFORMATION;
+
+        this.funCommands = new ArrayList<>();
+        this.infoCommands = new ArrayList<>();
+    }
+
+    public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
     }
 
@@ -39,7 +54,7 @@ public class Commands implements Command {
 
         // This would preferably be ran in the constructor, but is here so that this command is also added to the list
         // Takes a stream of the command map, and adds to the instance lists for the appropriate command type
-        this.cmds.values().stream()
+        this.cmds.stream()
                 .forEach(cmd -> {
                     if (cmd.getType().equals(CommandType.FUN)) {
                         this.funCommands.add(cmd);
@@ -90,6 +105,11 @@ public class Commands implements Command {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     @Override

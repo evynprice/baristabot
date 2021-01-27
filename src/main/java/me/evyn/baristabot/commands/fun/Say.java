@@ -4,6 +4,7 @@ import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,15 +12,21 @@ import java.util.List;
  */
 public class Say implements Command {
 
-    private final String name = "say";
-    private final String description = "Says the following text as the bot and deletes the original message";
-    private final String usage = "say [content]";
-    private final CommandType type = CommandType.FUN;
-
     private String prefix;
+    private final String name;
+    private final List<String> aliases;
+    private final String description;
+    private final String usage;
+    private final CommandType type;
 
     public Say(String prefix) {
         this.prefix = prefix;
+
+        this.name = "say";
+        this.aliases = Arrays.asList("speak");
+        this.description = "Says the following text as the bot and deletes the original message";
+        this.usage = "say [content";
+        this.type = CommandType.FUN;
     }
 
     @Override
@@ -54,6 +61,11 @@ public class Say implements Command {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     @Override

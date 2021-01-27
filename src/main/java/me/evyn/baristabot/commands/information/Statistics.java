@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,10 +17,19 @@ import java.util.List;
  */
 public class Statistics implements Command {
 
-    private final String name = "statistics";
-    private final String description = "Provides bot statistics and information";
-    private final String usage = "statistics";
-    private final CommandType type = CommandType.INFORMATION;
+    private final String name;
+    private final List<String> aliases;
+    private final String description;
+    private final String usage;
+    private final CommandType type;
+
+    public Statistics() {
+        this.name = "statistics";
+        this.aliases = Arrays.asList("stats", "info");
+        this.description = "Provides bot statistics and information";
+        this.usage = "statistics";
+        this.type = CommandType.INFORMATION;
+    }
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
@@ -65,6 +75,11 @@ public class Statistics implements Command {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     @Override

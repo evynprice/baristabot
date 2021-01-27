@@ -4,6 +4,7 @@ import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,10 +12,19 @@ import java.util.List;
  */
 public class Ping implements Command {
 
-    private final String name = "ping";
-    private final String description = "Replies with `Pong!` in the channel that the command was sent";
-    private final String usage = "ping";
-    private final CommandType type = CommandType.INFORMATION;
+    private final String name;
+    private final List<String> aliases;
+    private final String description;
+    private final String usage;
+    private final CommandType type;
+
+    public Ping() {
+        this.name = "ping";
+        this.aliases = Arrays.asList("");
+        this.description = "Replies with `Pong` in the channel that the command was sent";
+        this.usage = "ping";
+        this.type = CommandType.INFORMATION;
+    }
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
@@ -26,6 +36,11 @@ public class Ping implements Command {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     @Override

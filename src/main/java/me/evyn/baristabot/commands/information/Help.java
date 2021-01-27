@@ -1,5 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
+import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import me.evyn.baristabot.util.EasyEmbed;
@@ -8,26 +9,39 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The Help command provides information on the bot if no arguments are present, or provides information on a
  * specific command if included in the arguments list.
  */
-public class Help implements Command {
+public class Help implements CommandWithCmds {
 
-    private final String name = "help";
-    private final String description = "Provides bot information" +
-            "\nOptional argument <command> for information on a specific command";
-    private final String usage = "help <command>";
-    private final CommandType type = CommandType.INFORMATION;
+    private final String name;
+    private final List<String> aliases;
+    private final String description;
+    private final String usage;
+    private final CommandType type;
 
     private final String prefix;
-    private final Map<String, Command> cmds;
+    private List<Command> cmds;
 
-    public Help(String prefix, Map<String, Command> cmds) {
+    public Help(String prefix) {
         this.prefix = prefix;
+
+        this.name = "help";
+        this.aliases = Arrays.asList("command, cmd");
+        this.description = "Provides bot information" +
+                "\nOptional argument <command> for information on specific command";
+        this.usage = "help <command>";
+        this.type = CommandType.INFORMATION;
+    }
+
+    @Override
+    public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
     }
 
@@ -71,7 +85,12 @@ public class Help implements Command {
 
         // Valid arguments are present, now attempt to find command in list
         String commandName = args.get(0);
-        Command cmd = this.cmds.get(commandName);
+        Optional<Command> matching = this.cmds.stream()
+                .filter(command -> command.getName().equals(commandName) || command.getAliases().contains(commandName))
+                .findAny();
+
+        Command cmd = matching.orElse(null);
+                ;
 
         // If command is not in list, send error message and return
         if (cmd == null) {
@@ -85,6 +104,7 @@ public class Help implements Command {
         eb.setColor(0x386895)
                 .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getDescription())
+                .addField("Aliases", cmd.getAliases().toString(), true)
                 .addField("Usage", this.prefix + cmd.getUsage(), true)
                 .setTimestamp(Instant.now())
                 .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
@@ -99,6 +119,11 @@ public class Help implements Command {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     @Override
