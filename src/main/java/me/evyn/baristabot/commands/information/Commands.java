@@ -1,6 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -11,20 +11,23 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This Class sends a list of valid commands when ran
  */
 public class Commands implements CommandWithCmds {
 
+    // boilerplate
     private final String name;
     private final List<String> aliases;
     private final String description;
     private final String usage;
     private final CommandType type;
 
+    // required parameters
     private final String prefix;
+
+    // addCommands method parameters
     private List<Command> cmds;
 
     // These hold organized lists of all of the commands
@@ -33,18 +36,19 @@ public class Commands implements CommandWithCmds {
 
 
     public Commands(String prefix) {
-        this.prefix = prefix;
-
         this.name = "commands";
         this.aliases = Arrays.asList("cmds");
         this.description = "Returns a list of valid bot commands";
         this.usage = "commands";
         this.type = CommandType.INFORMATION;
 
+        this.prefix = prefix;
+
         this.funCommands = new ArrayList<>();
         this.infoCommands = new ArrayList<>();
     }
 
+    @Override
     public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
     }
@@ -64,7 +68,7 @@ public class Commands implements CommandWithCmds {
                     }
                 });
 
-        // (Developer) needs to be refactored.
+        // TODO needs to be refactored.
         // Creates a string object for each of the command type instance variables, and then adds the name of each
         // command to the object. Then removes the last comma and space
 

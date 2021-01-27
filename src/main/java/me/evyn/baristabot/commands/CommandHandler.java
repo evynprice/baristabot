@@ -1,6 +1,5 @@
 package me.evyn.baristabot.commands;
 
-import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.fun.Say;
 import me.evyn.baristabot.commands.information.Commands;
 import me.evyn.baristabot.commands.information.Help;
@@ -18,9 +17,9 @@ import me.evyn.baristabot.commands.information.Ping;
  */
 public class CommandHandler {
 
+    // Constructor parameters
     private final String prefix;
     private final String privilegedID;
-    private List<Command> cmds;
 
     // fun commands
     private final Command say;
@@ -33,6 +32,9 @@ public class CommandHandler {
 
     // privileged commands
     private final Command shutdown;
+
+    // Commands list
+    private List<Command> cmds;
 
     /**
      * This is ran only once when the Main Class starts. This is done so that all of the command objects are not

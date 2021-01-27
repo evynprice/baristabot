@@ -12,21 +12,25 @@ import java.util.List;
  */
 public class Say implements Command {
 
-    private String prefix;
+    // boilerplate
     private final String name;
     private final List<String> aliases;
     private final String description;
     private final String usage;
     private final CommandType type;
 
-    public Say(String prefix) {
-        this.prefix = prefix;
+    // required parameters
+    private String prefix;
 
+
+    public Say(String prefix) {
         this.name = "say";
         this.aliases = Arrays.asList("speak");
         this.description = "Says the following text as the bot and deletes the original message";
         this.usage = "say [content";
         this.type = CommandType.FUN;
+
+        this.prefix = prefix;
     }
 
     @Override
@@ -72,7 +76,6 @@ public class Say implements Command {
     public String getDescription() {
         return this.description;
     }
-
 
     @Override
     public String getUsage() {

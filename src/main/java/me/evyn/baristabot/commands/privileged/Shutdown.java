@@ -8,12 +8,13 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This command simply stops the bot instance. Useful as a simple way of restarting the bot when combined with
+ * restart unless-stopped
+ */
 public class Shutdown implements Command {
 
-    /**
-     * This command simply stops the bot instance. Useful as a simple way of restarting the bot when combined with
-     * restart unless-stopped
-     */
+    //boilerplate
     private String name;
     private List<String> aliases;
     private String description;

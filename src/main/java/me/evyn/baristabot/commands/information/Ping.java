@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Ping implements Command {
 
+    // boilerplate
     private final String name;
     private final List<String> aliases;
     private final String description;

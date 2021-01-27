@@ -1,6 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import me.evyn.baristabot.util.EasyEmbed;
@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,24 +19,28 @@ import java.util.Optional;
  */
 public class Help implements CommandWithCmds {
 
+    // boilerplate
     private final String name;
     private final List<String> aliases;
     private final String description;
     private final String usage;
     private final CommandType type;
 
+    // required parameters
     private final String prefix;
+
+    // addCommands method parameter
     private List<Command> cmds;
 
     public Help(String prefix) {
-        this.prefix = prefix;
-
         this.name = "help";
         this.aliases = Arrays.asList("command, cmd");
         this.description = "Provides bot information" +
                 "\nOptional argument <command> for information on specific command";
         this.usage = "help <command>";
         this.type = CommandType.INFORMATION;
+
+        this.prefix = prefix;
     }
 
     @Override
@@ -86,11 +89,11 @@ public class Help implements CommandWithCmds {
         // Valid arguments are present, now attempt to find command in list
         String commandName = args.get(0);
         Optional<Command> matching = this.cmds.stream()
+                // filter by command name and command aliases
                 .filter(command -> command.getName().equals(commandName) || command.getAliases().contains(commandName))
                 .findAny();
 
         Command cmd = matching.orElse(null);
-                ;
 
         // If command is not in list, send error message and return
         if (cmd == null) {

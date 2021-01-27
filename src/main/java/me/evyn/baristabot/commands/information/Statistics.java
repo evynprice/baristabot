@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class Statistics implements Command {
 
+    // boilerplate
     private final String name;
     private final List<String> aliases;
     private final String description;
