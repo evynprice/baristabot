@@ -11,9 +11,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class ReadyListener extends ListenerAdapter {
 
     private final String prefix;
+    private ReactionListener reactionListener;
 
-    public ReadyListener(String prefix) {
+    public ReadyListener(String prefix, ReactionListener reactionListener) {
         this.prefix = prefix;
+        this.reactionListener = reactionListener;
     }
 
     /**
@@ -24,5 +26,7 @@ public class ReadyListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         System.out.printf("Bot is ready in %s guilds",event.getGuildTotalCount());
         event.getJDA().getPresence().setActivity(Activity.watching("you | " + this.prefix + "help"));
+
+        reactionListener.init(event.getJDA().getGuildById("662895013352701952"));
     }
 }

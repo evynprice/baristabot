@@ -27,6 +27,7 @@ package me.evyn.baristabot;
 import me.evyn.baristabot.commands.CommandHandler;
 import me.evyn.baristabot.data.Config;
 import me.evyn.baristabot.listeners.MessageListener;
+import me.evyn.baristabot.listeners.ReactionListener;
 import me.evyn.baristabot.listeners.ReadyListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -37,11 +38,12 @@ public class BaristaBot {
         // TODO look into adding database support
         Config config = new Config();
         CommandHandler ch = new CommandHandler(config.getPrefix(), config.getPrivilegedID());
+        ReactionListener reactionListener = new ReactionListener();
 
-        JDA api = JDABuilder
-                .createDefault(config.getToken())
-                .addEventListeners(new ReadyListener(config.getPrefix()))
+        JDA api = JDABuilder.createDefault(config.getToken())
+                .addEventListeners(new ReadyListener(config.getPrefix(), reactionListener))
                 .addEventListeners(new MessageListener(config.getPrefix(), ch))
+                .addEventListeners(reactionListener)
                 .build();
     }
 }
