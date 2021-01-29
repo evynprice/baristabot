@@ -45,6 +45,12 @@ public class Config {
         }
     }
 
+    public Config(String token, String prefix, String privilegedID) {
+        this.token = token;
+        this.prefix = prefix;
+        this.privilegedID = privilegedID;
+    }
+
     /**
      * @return String This returns the bot token
      */

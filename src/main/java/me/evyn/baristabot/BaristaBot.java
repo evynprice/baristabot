@@ -35,8 +35,15 @@ import net.dv8tion.jda.api.JDABuilder;
 public class BaristaBot {
 
     public static void main(String[] args) throws Exception {
+        Config config;
+
+        if (System.getenv("DOCKER").equals("true")) {
+            config = new Config(System.getenv("TOKEN"), System.getenv("PREFIX"), System.getenv("PRIVILEGED"));
+        } else {
+            config = new Config();
+        }
+
         // TODO look into adding database support
-        Config config = new Config();
         CommandHandler ch = new CommandHandler(config.getPrefix(), config.getPrivilegedID());
         ReactionListener reactionListener = new ReactionListener();
 
