@@ -37,7 +37,7 @@ public class BaristaBot {
     public static void main(String[] args) throws Exception {
         Config config;
 
-        if (System.getenv("DOCKER").equals("true")) {
+        if (System.getenv("DOCKER") != null) {
             config = new Config(System.getenv("TOKEN"), System.getenv("PREFIX"), System.getenv("PRIVILEGED"));
         } else {
             config = new Config();
