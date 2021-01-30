@@ -7,9 +7,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Say Command that sends the arguments following the command in a new message and deletes the original message
- */
 public class Say implements Command {
 
     // boilerplate
@@ -44,7 +41,7 @@ public class Say implements Command {
 
         StringBuilder sb = new StringBuilder();
 
-        // replace mentions to avoid *problems* and add arguments to StringBuilder
+        // replace mentions with blank string and add arguments to StringBuilder
         args.stream()
                 .forEach(arg -> {
                     arg = arg.replace("@", "");

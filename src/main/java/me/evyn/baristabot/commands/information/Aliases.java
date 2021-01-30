@@ -1,11 +1,12 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import me.evyn.baristabot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
@@ -25,6 +26,7 @@ public class Aliases implements CommandWithCmds {
     // Constructor parameters
     private final String prefix;
 
+    // List of commands passed from MessageListener
     private List<Command> cmds;
 
     public Aliases(String prefix) {
@@ -37,6 +39,11 @@ public class Aliases implements CommandWithCmds {
         this.prefix = prefix;
     }
 
+    /**
+     * This is used to pass the MessageListener commands list to the Aliases object. This has to be done after all of
+     * the commands are initialized so that it includes the full list.
+     * @param cmds
+     */
     @Override
     public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
@@ -44,9 +51,12 @@ public class Aliases implements CommandWithCmds {
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
+        User bot = event.getJDA().getSelfUser();
+
+        // if no args are present, send error message and return
         if (args.isEmpty()) {
             EasyEmbed embed = new EasyEmbed();
-            MessageBuilder message = embed.newErrorEmbedMessage("No arguments were given. " +
+            MessageBuilder message = embed.newErrorEmbedMessage(bot, "No arguments were given. " +
                     "Run `" + this.prefix + "help aliases` for more information");
             event.getChannel()
                     .sendMessage(message.build())
@@ -60,7 +70,7 @@ public class Aliases implements CommandWithCmds {
 
             event.getChannel()
                     .sendMessage(embed
-                            .newErrorEmbedMessage(String.format("Too many arguments. Run `%shelp aliases` for more information", this.prefix))
+                            .newErrorEmbedMessage(bot, String.format("Too many arguments. Run `%shelp aliases` for more information", this.prefix))
                             .build())
                     .queue();
             return;
@@ -82,20 +92,23 @@ public class Aliases implements CommandWithCmds {
                     .queue();
             return;
         }
+
+        // Command has been found, create new embed
         EmbedBuilder eb = new EmbedBuilder();
-        // Command has been found, now send help information on command
+
         eb.setColor(0x386895)
                 .setTitle("Command: " + cmd.getName())
-                .setDescription(cmd.getAliases().toString())
+                .setDescription(cmd.getAliases()
+                        .toString())
                 .setTimestamp(Instant.now())
-                .setFooter(event.getJDA().getSelfUser().getName(), event.getJDA().getSelfUser().getAvatarUrl());
+                .setFooter(bot.getName(), bot.getAvatarUrl());
 
+        // send created embed message
         MessageBuilder message = new MessageBuilder();
         message.setEmbed(eb.build());
         event.getChannel()
                 .sendMessage(message.build())
                 .queue();
-
     }
 
     @Override

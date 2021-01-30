@@ -10,7 +10,6 @@ import java.io.IOException;
 /**
  * The Config class looks for a "config.json" file in the project directory and adds the fields to instance
  * variables. These can be accessed through several getter methods
- * @author Evyn
  */
 public class Config {
 

@@ -7,9 +7,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Simple ping command, responds with "Pong!"
- */
 public class Ping implements Command {
 
     // boilerplate

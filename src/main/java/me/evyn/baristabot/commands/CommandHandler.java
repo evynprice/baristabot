@@ -1,6 +1,6 @@
 package me.evyn.baristabot.commands;
 
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.fun.Say;
 import me.evyn.baristabot.commands.information.*;
 import me.evyn.baristabot.commands.privileged.Shutdown;
@@ -40,7 +40,6 @@ public class CommandHandler {
      * @param prefix Bot prefix
      */
     public CommandHandler(String prefix, String privilegedID) {
-        //TODO add command aliases
 
         this.prefix = prefix;
         this.privilegedID = privilegedID;

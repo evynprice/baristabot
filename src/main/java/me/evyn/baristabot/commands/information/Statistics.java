@@ -35,7 +35,7 @@ public class Statistics implements Command {
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
-        JDA bot = event.getJDA();
+        JDA api = event.getJDA();
         User botUser = event.getJDA().getSelfUser();
 
         // get memory in bytes and convert to MB
@@ -46,9 +46,9 @@ public class Statistics implements Command {
         String memory = String.format("%dMB / %dMB", usedMemory, totalMemory);
 
         // get guild information
-        int servers = bot.getGuilds().size();
-        int channels = bot.getTextChannels().size();
-        int users = bot.getUsers().size();
+        int servers = api.getGuilds().size();
+        int channels = api.getTextChannels().size();
+        int users = api.getUsers().size();
 
         // get versions
         String botVersion = BaristaInfo.BOT_VERSION;

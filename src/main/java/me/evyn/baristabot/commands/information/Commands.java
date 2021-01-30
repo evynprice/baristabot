@@ -1,6 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * This Class sends a list of valid commands when ran
- */
 public class Commands implements CommandWithCmds {
 
     // boilerplate
@@ -31,9 +28,13 @@ public class Commands implements CommandWithCmds {
     // addCommands method parameters
     private List<Command> cmds;
 
-    // These hold organized lists of all of the commands
-    private List<Command> funCommands;
-    private List<Command> infoCommands;
+    // These hold all of the command names sorted by type
+    private List<String> funCommands;
+    private List<String> infoCommands;
+
+    // Formatted strings of command names
+    private String fun;
+    private String info;
 
 
     public Commands(String prefix) {
@@ -52,51 +53,34 @@ public class Commands implements CommandWithCmds {
     @Override
     public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
+
+        // Extra logic is here to sort commands by their type and add their names to the appropriate ArrayLists
+        this.cmds.stream()
+                .forEach(cmd -> {
+                    if (cmd.getType().equals(CommandType.FUN)) {
+                        this.funCommands.add(cmd.getName());
+                    }
+                    else if (cmd.getType().equals(CommandType.INFORMATION)) {
+                        this.infoCommands.add(cmd.getName());
+                    }
+                });
+
+        // Extra logic to format commands as string
+        this.fun = this.commandFormatter(this.funCommands);
+        this.info = this.commandFormatter(this.infoCommands);
     }
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
-
-        // This would preferably be ran in the constructor, but is here so that this command is also added to the list
-        // Takes a stream of the command map, and adds to the instance lists for the appropriate command type
-        this.cmds.stream()
-                .forEach(cmd -> {
-                    if (cmd.getType().equals(CommandType.FUN)) {
-                        this.funCommands.add(cmd);
-                    }
-                    else if (cmd.getType().equals(CommandType.INFORMATION)) {
-                        this.infoCommands.add(cmd);
-                    }
-                });
-
-        // TODO needs to be refactored.
-        // Creates a string object for each of the command type instance variables, and then adds the name of each
-        // command to the object. Then removes the last comma and space
-
-        StringBuilder funString = new StringBuilder();
-        this.funCommands.stream()
-                .forEach(cmd -> {
-                    funString.append(cmd.getName()).append(", ");
-                });
-        funString.delete(funString.length() - 2, funString.length() - 1);
-
-        StringBuilder infoString = new StringBuilder();
-        this.infoCommands.stream()
-                .forEach(cmd -> {
-                    infoString.append(cmd.getName()).append(", ");
-                });
-        infoString.delete(infoString.length() - 2, infoString.length() - 1);
-
-
-        // Create the embed with the commands as fields
         User bot = event.getJDA().getSelfUser();
 
+        // Create the embed with the commands as fields
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(0x386895)
                 .setTitle(bot.getName() + " commands")
                 .setDescription(String.format("Use `%shelp <command>` for information on a specific command", this.prefix))
-                .addField("Fun",funString.toString(),false)
-                .addField("Information",infoString.toString(), false)
+                .addField("Fun", this.fun,false)
+                .addField("Information", this.info, false)
                 .setTimestamp(Instant.now())
                 .setFooter(bot.getName(), bot.getAvatarUrl());
 
@@ -107,7 +91,6 @@ public class Commands implements CommandWithCmds {
                 .sendMessage(message.build())
                 .queue();
     }
-
 
     @Override
     public String getName() {
@@ -132,5 +115,21 @@ public class Commands implements CommandWithCmds {
     @Override
     public CommandType getType() {
         return this.type;
+    }
+
+    /**
+     * Takes in list of command names and returns formatted version
+     * @param commandType
+     * @return formatted String
+     */
+    private String commandFormatter(List<String> commandType) {
+        StringBuilder sb = new StringBuilder();
+        commandType.stream()
+                .forEach(cmd -> {
+                    sb.append(cmd).append(", ");
+                });
+
+        sb.delete(sb.length() - 2, sb.length() - 1);
+        return sb.toString();
     }
 }

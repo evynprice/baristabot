@@ -1,7 +1,6 @@
 package me.evyn.baristabot.commands.information;
 
-import me.evyn.baristabot.BaristaInfo;
-import me.evyn.baristabot.CommandWithCmds;
+import me.evyn.baristabot.commands.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import me.evyn.baristabot.util.EasyEmbed;
@@ -15,10 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The Help command provides information on the bot if no arguments are present, or provides information on a
- * specific command if included in the arguments list.
- */
 public class Help implements CommandWithCmds {
 
     // boilerplate
@@ -37,8 +32,8 @@ public class Help implements CommandWithCmds {
     public Help(String prefix) {
         this.name = "help";
         this.aliases = Arrays.asList("command", "cmd", "info");
-        this.description = "Provides bot information" +
-                "\nOptional argument <command> for information on specific command";
+        this.description = "Provides bot information" + "\n" +
+                "Optional argument <command> for information on specific command";
         this.usage = "help <command>";
         this.type = CommandType.INFORMATION;
 
@@ -61,7 +56,7 @@ public class Help implements CommandWithCmds {
             eb.setColor(0x386895)
                     .setTitle(bot.getName())
                     .setDescription("Just a simple Discord bot written in JDA")
-                    .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
+                    .setThumbnail(bot.getAvatarUrl())
                     .addField("Maintained by", "TheTechnicalFox#0056",true)
                     .addField("Version", "1.0", true)
                     .addField("Commands", this.prefix + "commands", false)
@@ -83,9 +78,8 @@ public class Help implements CommandWithCmds {
 
             event.getChannel()
                     .sendMessage(embed
-                            .newErrorEmbedMessage(String.format("Format should be %shelp <command-name>", this.prefix))
+                            .newErrorEmbedMessage(bot, String.format("Format should be %shelp <command-name>", this.prefix))
                             .build())
-                    //.sendMessage(String.format("Invalid arguments. Format should be %shelp <command-name", this.prefix))
                     .queue();
             return;
         }
