@@ -6,6 +6,7 @@ import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
@@ -35,6 +36,7 @@ public class Statistics implements Command {
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
         JDA bot = event.getJDA();
+        User botUser = event.getJDA().getSelfUser();
 
         // get memory in bytes and convert to MB
         long totalMemory = Runtime.getRuntime().totalMemory() / (1024 * 1024);
@@ -55,7 +57,7 @@ public class Statistics implements Command {
         // format information as embed
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(0x386895)
-                .setTitle("BaristaBot statistics")
+                .setTitle(botUser.getName() + " statistics")
                 .addField("Memory", memory, true)
                 .addField("Servers", String.valueOf(servers), true)
                 .addField("Channels", String.valueOf(channels), true)
@@ -63,7 +65,7 @@ public class Statistics implements Command {
                 .addField("Version", botVersion, true)
                 .addField("JDA", jdaVersion, true)
                 .setTimestamp(Instant.now())
-                .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
+                .setFooter(botUser.getName(), botUser.getAvatarUrl());
 
         // send embed message
         MessageBuilder message = new MessageBuilder();

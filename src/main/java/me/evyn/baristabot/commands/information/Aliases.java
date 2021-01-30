@@ -88,7 +88,7 @@ public class Aliases implements CommandWithCmds {
                 .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getAliases().toString())
                 .setTimestamp(Instant.now())
-                .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
+                .setFooter(event.getJDA().getSelfUser().getName(), event.getJDA().getSelfUser().getAvatarUrl());
 
         MessageBuilder message = new MessageBuilder();
         message.setEmbed(eb.build());

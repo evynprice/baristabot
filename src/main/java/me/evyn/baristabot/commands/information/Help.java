@@ -1,11 +1,13 @@
 package me.evyn.baristabot.commands.information;
 
+import me.evyn.baristabot.BaristaInfo;
 import me.evyn.baristabot.CommandWithCmds;
 import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import me.evyn.baristabot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
@@ -50,19 +52,21 @@ public class Help implements CommandWithCmds {
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
+        User bot = event.getJDA().getSelfUser();
+
         EmbedBuilder eb = new EmbedBuilder();
 
         // if there are no arguments, provide bot information and return
         if (args.isEmpty()) {
             eb.setColor(0x386895)
-                    .setTitle("Barista Bot")
+                    .setTitle(bot.getName())
                     .setDescription("Just a simple Discord bot written in JDA")
-                    .setThumbnail("https://i.imgur.com/WtJZ3Wk.png")
+                    .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
                     .addField("Maintained by", "TheTechnicalFox#0056",true)
                     .addField("Version", "1.0", true)
                     .addField("Commands", this.prefix + "commands", false)
                     .setTimestamp(Instant.now())
-                    .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
+                    .setFooter(bot.getName(), bot.getAvatarUrl());
 
             MessageBuilder message = new MessageBuilder();
             message.setEmbed(eb.build());
@@ -110,7 +114,7 @@ public class Help implements CommandWithCmds {
                 .addField("Aliases", cmd.getAliases().toString(), true)
                 .addField("Usage", this.prefix + cmd.getUsage(), true)
                 .setTimestamp(Instant.now())
-                .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
+                .setFooter(bot.getName(), bot.getAvatarUrl());
 
         MessageBuilder message = new MessageBuilder();
         message.setEmbed(eb.build());

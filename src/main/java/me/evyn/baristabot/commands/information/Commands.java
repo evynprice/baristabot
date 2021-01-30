@@ -5,6 +5,7 @@ import me.evyn.baristabot.commands.Command;
 import me.evyn.baristabot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
@@ -88,14 +89,16 @@ public class Commands implements CommandWithCmds {
 
 
         // Create the embed with the commands as fields
+        User bot = event.getJDA().getSelfUser();
+
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(0x386895)
-                .setTitle("BaristaBot commands")
+                .setTitle(bot.getName() + " commands")
                 .setDescription(String.format("Use `%shelp <command>` for information on a specific command", this.prefix))
                 .addField("Fun",funString.toString(),false)
                 .addField("Information",infoString.toString(), false)
                 .setTimestamp(Instant.now())
-                .setFooter("Barista Bot", "https://i.imgur.com/WtJZ3Wk.png");
+                .setFooter(bot.getName(), bot.getAvatarUrl());
 
         // Create a Message object with the built embed, send message
         MessageBuilder message = new MessageBuilder();
