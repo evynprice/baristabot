@@ -47,7 +47,9 @@ public class ReactionListener extends ListenerAdapter {
 
     public void init(Guild myGuild) {
         this.myGuild = myGuild;
-
+        if (myGuild == null) {
+            return;
+        }
         this.minecraftRole = this.myGuild.getRoleById("727556140900286574");
         this.amongRole = this.myGuild.getRoleById("753024472805671002");
         this.programmingRole = this.myGuild.getRoleById("728062189402980413");
@@ -79,6 +81,11 @@ public class ReactionListener extends ListenerAdapter {
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
+
+        if (this.myGuild == null) {
+            return;
+        }
+
         Guild reactionGuild = event.getGuild();
 
         if (reactionGuild.equals(myGuild)) {
