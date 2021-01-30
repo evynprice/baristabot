@@ -26,7 +26,7 @@ public class Statistics implements Command {
 
     public Statistics() {
         this.name = "statistics";
-        this.aliases = Arrays.asList("stats", "info");
+        this.aliases = Arrays.asList("stats");
         this.description = "Provides bot statistics and information";
         this.usage = "statistics";
         this.type = CommandType.INFORMATION;

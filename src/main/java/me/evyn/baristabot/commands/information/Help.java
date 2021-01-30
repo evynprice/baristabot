@@ -34,7 +34,7 @@ public class Help implements CommandWithCmds {
 
     public Help(String prefix) {
         this.name = "help";
-        this.aliases = Arrays.asList("command, cmd");
+        this.aliases = Arrays.asList("command", "cmd", "info");
         this.description = "Provides bot information" +
                 "\nOptional argument <command> for information on specific command";
         this.usage = "help <command>";
