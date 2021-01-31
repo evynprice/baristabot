@@ -15,13 +15,6 @@ import java.util.List;
 
 public class Commands implements CommandWithCmds {
 
-    // boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
     // required parameters
     private final String prefix;
 
@@ -38,14 +31,7 @@ public class Commands implements CommandWithCmds {
 
 
     public Commands(String prefix) {
-        this.name = "commands";
-        this.aliases = Arrays.asList("cmds");
-        this.description = "Returns a list of valid bot commands";
-        this.usage = "commands";
-        this.type = CommandType.INFORMATION;
-
         this.prefix = prefix;
-
         this.funCommands = new ArrayList<>();
         this.infoCommands = new ArrayList<>();
     }
@@ -92,31 +78,6 @@ public class Commands implements CommandWithCmds {
                 .queue();
     }
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return this.aliases;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public String getUsage() {
-        return this.usage;
-    }
-
-    @Override
-    public CommandType getType() {
-        return this.type;
-    }
-
     /**
      * Takes in list of command names and returns formatted version
      * @param commandType
@@ -131,5 +92,30 @@ public class Commands implements CommandWithCmds {
 
         sb.delete(sb.length() - 2, sb.length() - 1);
         return sb.toString();
+    }
+
+    @Override
+    public String getName() {
+        return "commands";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList("cmds");
+    }
+
+    @Override
+    public String getDescription() {
+        return "Returns a list of valid bot commands";
+    }
+
+    @Override
+    public String getUsage() {
+        return "commands";
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.INFORMATION;
     }
 }

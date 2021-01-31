@@ -16,26 +16,10 @@ import java.util.Optional;
 
 public class Aliases implements CommandWithCmds {
 
-    // Boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
-    // Constructor parameters
     private final String prefix;
-
-    // List of commands passed from MessageListener
     private List<Command> cmds;
 
     public Aliases(String prefix) {
-        this.name = "aliases";
-        this.aliases = Arrays.asList("");
-        this.description = "Provides the aliases for the command given";
-        this.usage = "aliases [command]";
-        this.type = CommandType.INFORMATION;
-
         this.prefix = prefix;
     }
 
@@ -111,28 +95,29 @@ public class Aliases implements CommandWithCmds {
                 .queue();
     }
 
+
     @Override
     public String getName() {
-        return this.name;
+        return "aliases";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Provides the aliases for the command given:";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "aliases [command]";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.INFORMATION;
     }
 }

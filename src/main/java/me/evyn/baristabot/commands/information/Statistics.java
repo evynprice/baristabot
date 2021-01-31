@@ -18,21 +18,6 @@ import java.util.List;
  */
 public class Statistics implements Command {
 
-    // boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
-    public Statistics() {
-        this.name = "statistics";
-        this.aliases = Arrays.asList("stats");
-        this.description = "Provides bot statistics and information";
-        this.usage = "statistics";
-        this.type = CommandType.INFORMATION;
-    }
-
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
         JDA api = event.getJDA();
@@ -77,26 +62,26 @@ public class Statistics implements Command {
 
     @Override
     public String getName() {
-        return this.name;
+        return "statistics";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("stats");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Provides bot statistics and information";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "statistics";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.INFORMATION;
     }
 }

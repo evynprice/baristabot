@@ -9,21 +9,6 @@ import java.util.List;
 
 public class Ping implements Command {
 
-    // boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
-    public Ping() {
-        this.name = "ping";
-        this.aliases = Arrays.asList("");
-        this.description = "Replies with `Pong` in the channel that the command was sent";
-        this.usage = "ping";
-        this.type = CommandType.INFORMATION;
-    }
-
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
         event.getChannel()
@@ -33,26 +18,26 @@ public class Ping implements Command {
 
     @Override
     public String getName() {
-        return this.name;
+        return "ping";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Replies with `Pong` in the channel that the command was sent";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "ping";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.INFORMATION;
     }
 }

@@ -9,24 +9,9 @@ import java.util.List;
 
 public class Say implements Command {
 
-    // boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
-    // required parameters
     private String prefix;
 
-
     public Say(String prefix) {
-        this.name = "say";
-        this.aliases = Arrays.asList("speak");
-        this.description = "Says the following text as the bot and deletes the original message";
-        this.usage = "say [content";
-        this.type = CommandType.FUN;
-
         this.prefix = prefix;
     }
 
@@ -61,26 +46,26 @@ public class Say implements Command {
 
     @Override
     public String getName() {
-        return this.name;
+        return "say";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("speak");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Says the following text as the bot and deletes the original message";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "say [content]";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.FUN;
     }
 }

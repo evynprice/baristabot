@@ -10,21 +10,6 @@ import java.util.List;
 
 public class Shutdown implements Command {
 
-    //boilerplate
-    private String name;
-    private List<String> aliases;
-    private String description;
-    private String usage;
-    private CommandType type;
-
-    public Shutdown() {
-        this.name = "shutdown";
-        this.aliases = Arrays.asList("stop");
-        this.description = "Shuts down the bot instance (privileged users only)";
-        this.usage = "shutdown";
-        this.type = CommandType.PRIVILEGED;
-    }
-
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
        JDA api = event.getJDA();
@@ -33,26 +18,26 @@ public class Shutdown implements Command {
 
     @Override
     public String getName() {
-        return this.name;
+        return "shutdown";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("stop");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Shuts down the bot instance (privileged users only)";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "shutdown";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.PRIVILEGED;
     }
 }

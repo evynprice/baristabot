@@ -16,27 +16,10 @@ import java.util.Optional;
 
 public class Help implements CommandWithCmds {
 
-    // boilerplate
-    private final String name;
-    private final List<String> aliases;
-    private final String description;
-    private final String usage;
-    private final CommandType type;
-
-    // required parameters
     private final String prefix;
-
-    // addCommands method parameter
     private List<Command> cmds;
 
     public Help(String prefix) {
-        this.name = "help";
-        this.aliases = Arrays.asList("command", "cmd", "info");
-        this.description = "Provides bot information" + "\n" +
-                "Optional argument <command> for information on specific command";
-        this.usage = "help <command>";
-        this.type = CommandType.INFORMATION;
-
         this.prefix = prefix;
     }
 
@@ -119,26 +102,26 @@ public class Help implements CommandWithCmds {
 
     @Override
     public String getName() {
-        return this.name;
+        return "help";
     }
 
     @Override
     public List<String> getAliases() {
-        return this.aliases;
+        return Arrays.asList("command", "cmd", "info");
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return "Provides bot information " + "\n" + "Optional argument <command> for information on specific command";
     }
 
     @Override
     public String getUsage() {
-        return this.usage;
+        return "help <command>";
     }
 
     @Override
     public CommandType getType() {
-        return this.type;
+        return CommandType.INFORMATION
     }
 }
