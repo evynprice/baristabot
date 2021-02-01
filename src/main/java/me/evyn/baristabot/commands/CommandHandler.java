@@ -27,6 +27,7 @@ public class CommandHandler {
     private final CommandWithCmds help;
     private final CommandWithCmds commands;
     private final CommandWithCmds aliases;
+    private final Command userinfo;
 
     // privileged commands
     private final Command shutdown;
@@ -52,8 +53,9 @@ public class CommandHandler {
         this.commands = new Commands(this.prefix);
         this.shutdown = new Shutdown();
         this.aliases = new Aliases(this.prefix);
+        this.userinfo = new UserInfo();
 
-        cmds = Arrays.asList(say, statistics, ping, help, commands, aliases, shutdown);
+        cmds = Arrays.asList(say, statistics, ping, help, commands, aliases, shutdown, userinfo);
 
         help.addCommands(cmds);
         commands.addCommands(cmds);
