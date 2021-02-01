@@ -122,6 +122,6 @@ public class Help implements CommandWithCmds {
 
     @Override
     public CommandType getType() {
-        return CommandType.INFORMATION
+        return CommandType.INFORMATION;
     }
 }
