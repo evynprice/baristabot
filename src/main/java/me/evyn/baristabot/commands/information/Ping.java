@@ -11,6 +11,8 @@ public class Ping implements Command {
 
     @Override
     public void run(MessageReceivedEvent event, List<String> args) {
+
+        event.getJDA().getGatewayPing();
         event.getChannel()
                 .sendMessage("Pong!")
                 .queue();
