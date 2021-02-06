@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2021 Evyn Price
@@ -22,34 +22,27 @@
  * SOFTWARE.
  */
 
-package me.evyn.baristabot;
+package me.evyn.bot.main;
 
-import me.evyn.baristabot.commands.CommandHandler;
-import me.evyn.baristabot.data.Config;
-import me.evyn.baristabot.listeners.MessageListener;
-import me.evyn.baristabot.listeners.ReactionListener;
-import me.evyn.baristabot.listeners.ReadyListener;
+import me.evyn.bot.commands.CommandHandler;
+import me.evyn.bot.listeners.ReactionListener;
+import me.evyn.bot.listeners.ReadyListener;
+import me.evyn.bot.resources.Config;
+import me.evyn.bot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
-public class BaristaBot {
+public class Bot {
 
     public static void main(String[] args) throws Exception {
-        Config config;
+        Config config = new Config();
 
-        if (System.getenv("DOCKER") != null) {
-            config = new Config(System.getenv("TOKEN"), System.getenv("PREFIX"), System.getenv("PRIVILEGED"));
-        } else {
-            config = new Config();
-        }
+        CommandHandler ch = new CommandHandler(config);
 
-        // TODO look into adding database support
-        CommandHandler ch = new CommandHandler(config.getPrefix(), config.getPrivilegedID());
         ReactionListener reactionListener = new ReactionListener();
-
         JDA api = JDABuilder.createDefault(config.getToken())
-                .addEventListeners(new ReadyListener(config.getPrefix(), reactionListener))
-                .addEventListeners(new MessageListener(config.getPrefix(), ch))
+                .addEventListeners(new MessageListener(config, ch))
+                .addEventListeners(new ReadyListener(config, reactionListener))
                 .addEventListeners(reactionListener)
                 .build();
     }

@@ -1,4 +1,4 @@
-package me.evyn.baristabot.util;
+package me.evyn.bot.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;

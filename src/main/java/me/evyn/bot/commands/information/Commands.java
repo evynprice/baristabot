@@ -1,8 +1,32 @@
-package me.evyn.baristabot.commands.information;
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Evyn Price
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-import me.evyn.baristabot.commands.CommandWithCmds;
-import me.evyn.baristabot.commands.Command;
-import me.evyn.baristabot.commands.CommandType;
+package me.evyn.bot.commands.information;
+
+import me.evyn.bot.commands.CommandWithCmds;
+import me.evyn.bot.commands.Command;
+import me.evyn.bot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -15,27 +39,21 @@ import java.util.List;
 
 public class Commands implements CommandWithCmds {
 
-    // required parameters
-    private final String prefix;
-
-    // addCommands method parameters
     private List<Command> cmds;
 
     // These hold all of the command names sorted by type
-    private List<String> funCommands;
-    private List<String> infoCommands;
+    private List<String> funCommands = new ArrayList<>();
+    private List<String> infoCommands = new ArrayList();
 
     // Formatted strings of command names
     private String fun;
     private String info;
 
-
-    public Commands(String prefix) {
-        this.prefix = prefix;
-        this.funCommands = new ArrayList<>();
-        this.infoCommands = new ArrayList<>();
-    }
-
+    /**
+     * This is used to pass the MessageListener commands list to the Aliases object. This has to be done after all of
+     * the commands are initialized so that it includes the full list.
+     * @param cmds bot commands
+     */
     @Override
     public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
@@ -56,15 +74,22 @@ public class Commands implements CommandWithCmds {
         this.info = this.commandFormatter(this.infoCommands);
     }
 
+    /**
+     * Sends a list of available bot commands
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
-    public void run(MessageReceivedEvent event, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+
         User bot = event.getJDA().getSelfUser();
 
         // Create the embed with the commands as fields
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(0x386895)
                 .setTitle(bot.getName() + " commands")
-                .setDescription(String.format("Use `%shelp <command>` for information on a specific command", this.prefix))
+                .setDescription(String.format("Use `%shelp <command>` for information on a specific command", prefix))
                 .addField("Fun", this.fun,false)
                 .addField("Information", this.info, false)
                 .setTimestamp(Instant.now())
@@ -80,8 +105,8 @@ public class Commands implements CommandWithCmds {
 
     /**
      * Takes in list of command names and returns formatted version
-     * @param commandType
-     * @return formatted String
+     * @param commandType commands
+     * @return String formatted
      */
     private String commandFormatter(List<String> commandType) {
         StringBuilder sb = new StringBuilder();

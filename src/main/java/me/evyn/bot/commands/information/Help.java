@@ -1,9 +1,33 @@
-package me.evyn.baristabot.commands.information;
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Evyn Price
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-import me.evyn.baristabot.commands.CommandWithCmds;
-import me.evyn.baristabot.commands.Command;
-import me.evyn.baristabot.commands.CommandType;
-import me.evyn.baristabot.util.EasyEmbed;
+package me.evyn.bot.commands.information;
+
+import me.evyn.bot.commands.CommandWithCmds;
+import me.evyn.bot.commands.Command;
+import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -16,20 +40,26 @@ import java.util.Optional;
 
 public class Help implements CommandWithCmds {
 
-    private final String prefix;
     private List<Command> cmds;
 
-    public Help(String prefix) {
-        this.prefix = prefix;
-    }
-
+    /**
+     * This is used to pass the MessageListener commands list to the Aliases object. This has to be done after all of
+     * the commands are initialized so that it includes the full list.
+     * @param cmds bot commands
+     */
     @Override
     public void addCommands(List<Command> cmds) {
         this.cmds = cmds;
     }
 
+    /**
+     * Sends information about the bot or bot command
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
-    public void run(MessageReceivedEvent event, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
         User bot = event.getJDA().getSelfUser();
 
         EmbedBuilder eb = new EmbedBuilder();
@@ -42,7 +72,7 @@ public class Help implements CommandWithCmds {
                     .setThumbnail(bot.getAvatarUrl())
                     .addField("Maintained by", "TheTechnicalFox#0056",true)
                     .addField("Version", "1.0", true)
-                    .addField("Commands", this.prefix + "commands", false)
+                    .addField("Commands", prefix + "commands", false)
                     .setTimestamp(Instant.now())
                     .setFooter(bot.getName(), bot.getAvatarUrl());
 
@@ -61,7 +91,7 @@ public class Help implements CommandWithCmds {
 
             event.getChannel()
                     .sendMessage(embed
-                            .newErrorEmbedMessage(bot, String.format("Format should be %shelp <command-name>", this.prefix))
+                            .newErrorEmbedMessage(bot, String.format("Format should be %shelp <command-name>", prefix))
                             .build())
                     .queue();
             return;
@@ -89,7 +119,7 @@ public class Help implements CommandWithCmds {
                 .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getDescription())
                 .addField("Aliases", cmd.getAliases().toString(), true)
-                .addField("Usage", this.prefix + cmd.getUsage(), true)
+                .addField("Usage", prefix + cmd.getUsage(), true)
                 .setTimestamp(Instant.now())
                 .setFooter(bot.getName(), bot.getAvatarUrl());
 
