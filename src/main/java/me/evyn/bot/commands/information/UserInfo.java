@@ -26,6 +26,7 @@ package me.evyn.bot.commands.information;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -47,6 +48,8 @@ public class UserInfo implements Command {
      */
     @Override
     public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+        User bot = event.getJDA().getSelfUser();
+
         Member member;
         User user;
 
@@ -93,9 +96,10 @@ public class UserInfo implements Command {
         }
 
         // create embed
-        EmbedBuilder eb = new EmbedBuilder();
+        EasyEmbed easyEmbed = new EasyEmbed();
+        EmbedBuilder eb = easyEmbed.newCommandEmbedMessage(bot);
+
         eb.setTitle(user.getAsTag())
-                .setColor(0x386895)
                 .setThumbnail(user.getAvatarUrl())
                 .addField("ID", user.getId(), true)
                 .addField("Bot", String.valueOf(user.isBot()), true)
