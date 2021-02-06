@@ -27,13 +27,12 @@ package me.evyn.bot.commands.information;
 import me.evyn.bot.util.BotInfo;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,23 +67,20 @@ public class Statistics implements Command {
         String jdaVersion = BotInfo.JDA_VERSION;
 
         // format information as embed
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(0x386895)
-                .setTitle(botUser.getName() + " statistics")
+        EasyEmbed easyEmbed = new EasyEmbed();
+        EmbedBuilder eb = easyEmbed.newInfoEmbedMessage(botUser);
+
+        eb.setTitle(botUser.getName() + " statistics")
                 .addField("Memory", memory, true)
                 .addField("Servers", String.valueOf(servers), true)
                 .addField("Channels", String.valueOf(channels), true)
                 .addField("Users", String.valueOf(users), true)
                 .addField("Version", botVersion, true)
-                .addField("JDA", jdaVersion, true)
-                .setTimestamp(Instant.now())
-                .setFooter(botUser.getName(), botUser.getAvatarUrl());
+                .addField("JDA", jdaVersion, true);
 
         // send embed message
-        MessageBuilder message = new MessageBuilder();
-        message.setEmbed(eb.build());
         event.getChannel()
-                .sendMessage(message.build())
+                .sendMessage(eb.build())
                 .queue();
     }
 
