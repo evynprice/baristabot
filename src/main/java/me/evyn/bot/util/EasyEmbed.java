@@ -6,12 +6,16 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.time.Instant;
 
-/**
- * This Class includes methods to easily create common embed objects
- */
 public class EasyEmbed {
 
-    public MessageBuilder newErrorEmbedMessage(User bot, String description) {
+    /**
+     * Generates a new EmbedBuilder object with an error message template. Description of error is provided by the
+     * String argument
+     * @param bot Discord bot user
+     * @param description String Description of error message
+     * @return EmbedBuilder error embed
+     */
+    public EmbedBuilder newErrorEmbedMessage(User bot, String description) {
 
         EmbedBuilder eb = new EmbedBuilder();
 
@@ -25,10 +29,37 @@ public class EasyEmbed {
         } else {
             eb.setDescription(description);
         }
+        return eb;
+    }
 
-        MessageBuilder message = new MessageBuilder();
-        message.setEmbed(eb.build());
+    /**
+     * Generates a new EmbedBuilder object with info message template.
+     * @param bot Discord bot user
+     * @return EmbedBuilder info embed
+     */
+    public EmbedBuilder newInfoEmbedMessage(User bot) {
+        EmbedBuilder eb = new EmbedBuilder();
 
-        return message;
+        eb.setColor(0x386895)
+                .setTitle(bot.getName())
+                .setTimestamp(Instant.now())
+                .setFooter(bot.getName(), bot.getAvatarUrl());
+
+        return eb;
+    }
+
+    /**
+     * Generates a new EmbedBuilder object with command message template
+     * @param bot Discord bot user
+     * @return EmbedBuilder command embed
+     */
+    public EmbedBuilder newCommandEmbedMessage(User bot) {
+        EmbedBuilder eb = new EmbedBuilder();
+
+        eb.setColor(0xd35933)
+                .setTimestamp(Instant.now())
+                .setFooter(bot.getName(), bot.getAvatarUrl());
+
+        return eb;
     }
 }
