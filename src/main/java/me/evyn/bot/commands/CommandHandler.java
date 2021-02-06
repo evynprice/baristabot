@@ -127,7 +127,7 @@ public class CommandHandler {
 
                 System.out.println("Error running an elevated command: No elevated ID is defined in the config");
                 event.getChannel()
-                        .sendMessage("An error has occured when running this command." +
+                        .sendMessage("An error has occurred while running this command." +
                                 "Please check the bot logs for more information")
                         .queue();
 
