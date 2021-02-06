@@ -64,8 +64,8 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
-        // If message contains bot mention, direct user to send using prefix and return
-        if (content.contains(event.getJDA().getSelfUser().getId())) {
+        // If message starts with bot mention, direct user to send using prefix and return
+        if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
             event.getChannel()
                     .sendMessage(String.format("My prefix is currently `%s`" + "%n" + "" +
                             "Try running `%shelp` for more information",this.globalPrefix, this.globalPrefix))
