@@ -29,11 +29,9 @@ import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -64,26 +62,25 @@ public class Aliases implements CommandWithCmds {
         // get bot user
         User bot = event.getJDA().getSelfUser();
 
+        EmbedBuilder eb = new EmbedBuilder();
+        EasyEmbed easyEmbed = new EasyEmbed();
+
         // if no args are present, send error message and return
         if (args.isEmpty()) {
-            EasyEmbed embed = new EasyEmbed();
-            MessageBuilder message = embed.newErrorEmbedMessage(bot, "No arguments were given. " +
+            eb = easyEmbed.newErrorEmbedMessage(bot, "No arguments were given. " +
                     "Run `" + prefix + "help aliases` for more information");
             event.getChannel()
-                    .sendMessage(message.build())
+                    .sendMessage(eb.build())
                     .queue();
             return;
         }
 
         // if there are more than 1 arguments, send error message and return
         if (args.size() > 1) {
-            EasyEmbed embed = new EasyEmbed();
-
+            eb = easyEmbed.newErrorEmbedMessage(bot, String.format("Too many arguments." +
+                    " Run `%shelp aliases` for more information", prefix));
             event.getChannel()
-                    .sendMessage(embed
-                            .newErrorEmbedMessage(bot, String.format("Too many arguments." +
-                                    " Run `%shelp aliases` for more information", prefix))
-                            .build())
+                    .sendMessage(eb.build())
                     .queue();
             return;
         }
@@ -105,21 +102,14 @@ public class Aliases implements CommandWithCmds {
             return;
         }
 
-        // Command has been found, create new embed
-        EmbedBuilder eb = new EmbedBuilder();
-
-        eb.setColor(0x386895)
-                .setTitle("Command: " + cmd.getName())
-                .setDescription(cmd.getAliases()
-                        .toString())
-                .setTimestamp(Instant.now())
-                .setFooter(bot.getName(), bot.getAvatarUrl());
+        // create embed
+        eb = easyEmbed.newCommandEmbedMessage(bot);
+        eb.setTitle("Command Aliases: " + cmd.getName())
+                .setDescription(cmd.getAliases().toString());
 
         // send created embed message
-        MessageBuilder message = new MessageBuilder();
-        message.setEmbed(eb.build());
         event.getChannel()
-                .sendMessage(message.build())
+                .sendMessage(eb.build())
                 .queue();
     }
 

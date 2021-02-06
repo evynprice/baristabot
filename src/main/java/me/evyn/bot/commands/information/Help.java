@@ -27,13 +27,12 @@ package me.evyn.bot.commands.information;
 import me.evyn.bot.commands.CommandWithCmds;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.BotInfo;
 import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,24 +61,21 @@ public class Help implements CommandWithCmds {
     public void run(MessageReceivedEvent event, String prefix, List<String> args) {
         User bot = event.getJDA().getSelfUser();
 
-        EmbedBuilder eb = new EmbedBuilder();
-
+        EasyEmbed easyEmbed = new EasyEmbed();
+        EmbedBuilder eb = null;
         // if there are no arguments, provide bot information and return
         if (args.isEmpty()) {
-            eb.setColor(0x386895)
-                    .setTitle(bot.getName())
-                    .setDescription("Just a simple Discord bot written in JDA")
-                    .setThumbnail(bot.getAvatarUrl())
-                    .addField("Maintained by", "TheTechnicalFox#0056",true)
-                    .addField("Version", "1.0", true)
-                    .addField("Commands", prefix + "commands", false)
-                    .setTimestamp(Instant.now())
-                    .setFooter(bot.getName(), bot.getAvatarUrl());
+            eb = easyEmbed.newInfoEmbedMessage(bot);
 
-            MessageBuilder message = new MessageBuilder();
-            message.setEmbed(eb.build());
+            eb.setDescription("Just a simple Discord bot written in JDA. Contribute on GitHub using the link above!")
+                    .setTitle(bot.getName(), "https://github.com/thetechnicalfox/baristabot")
+                    .setThumbnail(bot.getAvatarUrl())
+                    .addField("Maintained by", "TheTechnicalFox#0056 ",true)
+                    .addField("Version", BotInfo.BOT_VERSION, true)
+                    .addField("Commands", prefix + "commands", false);
+
             event.getChannel()
-                    .sendMessage(message.build())
+                    .sendMessage(eb.build())
                     .queue();
 
             return;
@@ -87,12 +83,10 @@ public class Help implements CommandWithCmds {
 
         // if there are more than 1 arguments, send error message and return
         if (args.size() > 1) {
-            EasyEmbed embed = new EasyEmbed();
+            eb = easyEmbed.newErrorEmbedMessage(bot, String.format("Format should be `%shelp [command-name]`", prefix));
 
             event.getChannel()
-                    .sendMessage(embed
-                            .newErrorEmbedMessage(bot, String.format("Format should be %shelp <command-name>", prefix))
-                            .build())
+                    .sendMessage(eb.build())
                     .queue();
             return;
         }
@@ -115,18 +109,14 @@ public class Help implements CommandWithCmds {
         }
 
         // Command has been found, now send help information on command
-        eb.setColor(0x386895)
+        eb = easyEmbed.newCommandEmbedMessage(bot)
                 .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getDescription())
                 .addField("Aliases", cmd.getAliases().toString(), true)
-                .addField("Usage", prefix + cmd.getUsage(), true)
-                .setTimestamp(Instant.now())
-                .setFooter(bot.getName(), bot.getAvatarUrl());
+                .addField("Usage", prefix + cmd.getUsage(), true);
 
-        MessageBuilder message = new MessageBuilder();
-        message.setEmbed(eb.build());
         event.getChannel()
-                .sendMessage(message.build())
+                .sendMessage(eb.build())
                 .queue();
     }
 

@@ -27,12 +27,11 @@ package me.evyn.bot.commands.information;
 import me.evyn.bot.commands.CommandWithCmds;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.EasyEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +42,7 @@ public class Commands implements CommandWithCmds {
 
     // These hold all of the command names sorted by type
     private List<String> funCommands = new ArrayList<>();
-    private List<String> infoCommands = new ArrayList();
+    private List<String> infoCommands = new ArrayList<>();
 
     // Formatted strings of command names
     private String fun;
@@ -86,20 +85,17 @@ public class Commands implements CommandWithCmds {
         User bot = event.getJDA().getSelfUser();
 
         // Create the embed with the commands as fields
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(0x386895)
-                .setTitle(bot.getName() + " commands")
+        EasyEmbed easyEmbed = new EasyEmbed();
+        EmbedBuilder eb = easyEmbed.newCommandEmbedMessage(bot);
+
+        eb.setTitle(bot.getName() + " commands")
                 .setDescription(String.format("Use `%shelp <command>` for information on a specific command", prefix))
                 .addField("Fun", this.fun,false)
-                .addField("Information", this.info, false)
-                .setTimestamp(Instant.now())
-                .setFooter(bot.getName(), bot.getAvatarUrl());
+                .addField("Information", this.info, false);
 
-        // Create a Message object with the built embed, send message
-        MessageBuilder message = new MessageBuilder();
-        message.setEmbed(eb.build());
+        // send embed
         event.getChannel()
-                .sendMessage(message.build())
+                .sendMessage(eb.build())
                 .queue();
     }
 
