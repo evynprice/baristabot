@@ -17,7 +17,7 @@
 hs_err_pid*
 
 # other project files
-config.json
+.env.local
 .gradle
 build
 gradlew.bat
