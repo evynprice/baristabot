@@ -24,7 +24,7 @@
 
 package me.evyn.bot.commands.information;
 
-import me.evyn.bot.util.BaristaInfo;
+import me.evyn.bot.util.BotInfo;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -64,8 +64,8 @@ public class Statistics implements Command {
         int users = api.getUsers().size();
 
         // get versions
-        String botVersion = BaristaInfo.BOT_VERSION;
-        String jdaVersion = BaristaInfo.JDA_VERSION;
+        String botVersion = BotInfo.BOT_VERSION;
+        String jdaVersion = BotInfo.JDA_VERSION;
 
         // format information as embed
         EmbedBuilder eb = new EmbedBuilder();
