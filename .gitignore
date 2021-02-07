@@ -17,6 +17,7 @@
 hs_err_pid*
 
 # other project files
+database.db
 .env.local
 .gradle
 build
