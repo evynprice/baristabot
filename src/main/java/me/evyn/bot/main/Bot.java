@@ -29,20 +29,19 @@ import me.evyn.bot.listeners.ReactionListener;
 import me.evyn.bot.listeners.ReadyListener;
 import me.evyn.bot.resources.Config;
 import me.evyn.bot.listeners.MessageListener;
+import me.evyn.bot.resources.DataSource;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 public class Bot {
 
     public static void main(String[] args) throws Exception {
-        Config config = new Config();
 
-        CommandHandler ch = new CommandHandler(config);
-
+        DataSource.getConnection();
         ReactionListener reactionListener = new ReactionListener();
-        JDA api = JDABuilder.createDefault(config.getToken())
-                .addEventListeners(new MessageListener(config, ch))
-                .addEventListeners(new ReadyListener(config, reactionListener))
+        JDA api = JDABuilder.createDefault(Config.token)
+                .addEventListeners(new MessageListener())
+                .addEventListeners(new ReadyListener(reactionListener))
                 .addEventListeners(reactionListener)
                 .build();
     }
