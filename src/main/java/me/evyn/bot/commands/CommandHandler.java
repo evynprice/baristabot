@@ -91,7 +91,7 @@ public class CommandHandler {
      * @param cmd String Command name
      * @param args List<String> command arguments
      */
-    public void run(MessageReceivedEvent event, String prefix, String cmd, List<String> args) {
+    public static void run(MessageReceivedEvent event, String prefix, String cmd, List<String> args) {
 
         // Look for command in list
         Optional<Command> matching = cmds.stream()
