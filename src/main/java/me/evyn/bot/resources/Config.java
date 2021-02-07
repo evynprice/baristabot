@@ -39,9 +39,11 @@ public class Config {
         // attempt to read variables in .env.local
         File env = new File(".env.local");
 
+        // temp variables
         String botToken = null;
         String botPrefix = null;
         String botElevated = null;
+
         if (env.exists()) {
             try {
                 FileReader fileReader = new FileReader(env);
@@ -88,6 +90,7 @@ public class Config {
             System.exit(0);
         }
 
+        // set static variables
         token = botToken;
         prefix = botPrefix;
         elevated = botElevated;

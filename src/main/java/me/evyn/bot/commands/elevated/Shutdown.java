@@ -68,6 +68,6 @@ public class Shutdown implements Command {
 
     @Override
     public CommandType getType() {
-        return CommandType.PRIVILEGED;
+        return CommandType.ELEVATED;
     }
 }
