@@ -67,8 +67,7 @@ public class Statistics implements Command {
         String jdaVersion = BotInfo.JDA_VERSION;
 
         // format information as embed
-        EasyEmbed easyEmbed = new EasyEmbed();
-        EmbedBuilder eb = easyEmbed.newInfoEmbedMessage(botUser);
+        EmbedBuilder eb = EasyEmbed.newInfoEmbedMessage(botUser);
 
         eb.setTitle(botUser.getName() + " statistics")
                 .addField("Memory", memory, true)

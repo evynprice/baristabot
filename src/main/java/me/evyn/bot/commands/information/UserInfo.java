@@ -96,8 +96,7 @@ public class UserInfo implements Command {
         }
 
         // create embed
-        EasyEmbed easyEmbed = new EasyEmbed();
-        EmbedBuilder eb = easyEmbed.newCommandEmbedMessage(bot);
+        EmbedBuilder eb = EasyEmbed.newCommandEmbedMessage(bot);
 
         eb.setTitle(user.getAsTag())
                 .setThumbnail(user.getAvatarUrl())
