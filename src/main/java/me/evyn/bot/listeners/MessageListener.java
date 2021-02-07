@@ -25,15 +25,11 @@
 package me.evyn.bot.listeners;
 
 import me.evyn.bot.commands.CommandHandler;
-import me.evyn.bot.resources.Config;
-import me.evyn.bot.resources.DataSource;
+import me.evyn.bot.util.DataSourceCollector;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +49,8 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
-        String prefix = this.getPrefix(event.getGuild().getIdLong());
+        // get specific guild prefix from DB and return
+        String prefix = DataSourceCollector.getPrefix(event.getGuild().getIdLong());
 
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
@@ -85,33 +82,5 @@ public class MessageListener extends ListenerAdapter {
 
         // Take all of the information that was gathered and pass it to the CommandHandler
         CommandHandler.run(event, prefix, cmd, args);
-    }
-
-    private String getPrefix(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
-                .prepareStatement("SELECT prefix FROM guild_settings WHERE guild_id = ?")) {
-
-            preparedStatement.setString(1, String.valueOf(guildId));
-
-            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getString("prefix");
-                }
-            }
-
-            try (final PreparedStatement insertStatement = DataSource
-                    .getConnection()
-                    .prepareStatement("INSERT INTO guild_settings(guild_id) VALUES(?)")) {
-
-                insertStatement.setString(1, String.valueOf(guildId));
-
-                insertStatement.execute();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return Config.prefix;
     }
 }
