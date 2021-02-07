@@ -31,20 +31,17 @@ import java.io.IOException;
 
 public class Config {
 
-    // These will be set with the constructor class and can be used with accessor methods
-    private String token;
-    private String prefix;
-    private String elevated;
+    public static final String token;
+    public static final String prefix;
+    public static final String elevated;
 
-    /**
-     * Constructor for class Config. Attempts to read variables in .env.local first, otherwise reads system env
-     * variables.
-     */
-    public Config() {
-
+    static {
         // attempt to read variables in .env.local
         File env = new File(".env.local");
 
+        String botToken = null;
+        String botPrefix = null;
+        String botElevated = null;
         if (env.exists()) {
             try {
                 FileReader fileReader = new FileReader(env);
@@ -54,16 +51,15 @@ public class Config {
 
                 // parse configuration variables and add them to instance vars
                 while ((line = bufferedReader.readLine()) != null) {
-
                     if (line.startsWith("BOT_TOKEN")) {
                         line = line.replace("BOT_TOKEN=", "");
-                        this.token = line;
+                        botToken = line;
                     } else if (line.startsWith("BOT_PREFIX")) {
                         line = line.replace("BOT_PREFIX=", "");
-                        this.prefix = line;
+                        botPrefix = line;
                     } else if (line.startsWith("BOT_ELEVATED")) {
                         line = line.replace("BOT_ELEVATED=", "");
-                        this.elevated = line;
+                        botElevated = line;
                     }
                 }
 
@@ -75,46 +71,25 @@ public class Config {
 
         } else {
             // If .env.local is not present, set config variables to system environment variables
-            this.token = System.getenv("TOKEN");
-            this.prefix = System.getenv("PREFIX");
-            this.elevated = System.getenv("PRIVILEGED");
+            botToken = System.getenv("TOKEN");
+            botPrefix = System.getenv("PREFIX");
+            botElevated = System.getenv("PRIVILEGED");
         }
 
         // Check if token exists and if it matches the proper pattern. Exit if error occurs
-        if (this.token == null || !this.token.matches(".{59}")) {
+        if (botToken == null || !botToken.matches(".{59}")) {
             System.out.println("Bot token was not in the proper format. Please check env variables or .env.local");
             System.exit(0);
         }
 
         // check if prefix exists, exit if error occurs
-        if (this.prefix == null) {
+        if (botPrefix == null) {
             System.out.println("Bot prefix is invalid. Please check env variables or .env.local");
             System.exit(0);
         }
-    }
 
-    /**
-     * Gets the bot configuration token
-     * @return String bot token
-     */
-    public String getToken() {
-        return this.token;
-    }
-
-
-    /**
-     * Get the bot configuration prefix
-     * @return String bot prefix
-     */
-    public String getPrefix() {
-        return this.prefix;
-    }
-
-    /**
-     * Get the bot configuration elevated user ID
-     * @return String elevated user ID
-     */
-    public String getElevated() {
-        return this.elevated;
+        token = botToken;
+        prefix = botPrefix;
+        elevated = botElevated;
     }
 }
