@@ -27,7 +27,10 @@ package me.evyn.bot.commands;
 import me.evyn.bot.commands.elevated.Shutdown;
 import me.evyn.bot.commands.fun.*;
 import me.evyn.bot.commands.information.*;
+import me.evyn.bot.commands.settings.Settings;
 import me.evyn.bot.resources.Config;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
@@ -51,6 +54,9 @@ public class CommandHandler {
     private static final Command statistics;
     private static final Command userinfo;
 
+    // Settings command
+    private static final Command settings;
+
     // Commands list
     public static final List<Command> cmds;
 
@@ -64,9 +70,10 @@ public class CommandHandler {
         ping = new Ping();
         statistics = new Statistics();
         userinfo = new UserInfo();
+        settings = new Settings();
 
         // Add commands to list
-        cmds = Arrays.asList(say, aliases, commands, help, ping, statistics, userinfo);
+        cmds = Arrays.asList(say, aliases, commands, help, ping, statistics, userinfo, settings);
 
         // Send commands list to required commands
         aliases.addCommands(cmds);
@@ -100,6 +107,20 @@ public class CommandHandler {
                     .sendMessage("That command does not exist")
                     .queue();
             return;
+        }
+
+        // if command is settings, check if user has administrator permissions
+        if (command.getType() == CommandType.SETTINGS) {
+
+            Member member = event.getMember();
+
+            if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                event.getChannel()
+                        .sendMessage("You are missing the required permissions to run this command: " +
+                                "ADMINISTRATOR")
+                        .queue();
+                return;
+            }
         }
 
         // if command requires elevated permissions, check if author is the elevated user. Return error if not true.
