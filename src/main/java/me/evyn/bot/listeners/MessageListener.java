@@ -26,29 +26,18 @@ package me.evyn.bot.listeners;
 
 import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.resources.Config;
+import me.evyn.bot.resources.DataSource;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageListener extends ListenerAdapter {
-
-    private final Config config;
-    private final String globalPrefix;
-    private final CommandHandler ch;
-
-    /**
-     * Creates the MessageListener object and initializes the instance variables
-     * @param config Bot configuration
-     * @param ch Bot Command Handler
-     */
-    public MessageListener(Config config, CommandHandler ch) {
-        this.config = config;
-        this.globalPrefix = config.getPrefix();
-        this.ch = ch;
-    }
 
     /**
      * Runs when the bot receives a message. Does initial parsing and sends cleaned command and arguments to the
@@ -64,19 +53,21 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
+        String prefix = this.getPrefix(event.getGuild().getIdLong());
+
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
             event.getChannel()
                     .sendMessage(String.format("My prefix is currently `%s`" + "%n" + "" +
-                            "Try running `%shelp` for more information",this.globalPrefix, this.globalPrefix))
+                            "Try running `%shelp` for more information",prefix, prefix))
                     .queue();
         }
 
         // If message does not start with prefix, return
-        if (!content.startsWith(this.globalPrefix)) return;
+        if (!content.startsWith(prefix)) return;
 
         // Remove prefix from message, trim whitespace and split by space
-        String[] msg = content.replace(this.globalPrefix, "")
+        String[] msg = content.replace(prefix, "")
                 .trim()
                 .split(" ");
 
@@ -93,6 +84,34 @@ public class MessageListener extends ListenerAdapter {
         }
 
         // Take all of the information that was gathered and pass it to the CommandHandler
-        this.ch.run(event, globalPrefix, cmd, args);
+        CommandHandler.run(event, prefix, cmd, args);
+    }
+
+    private String getPrefix(long guildId) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("SELECT prefix FROM guild_settings WHERE guild_id = ?")) {
+
+            preparedStatement.setString(1, String.valueOf(guildId));
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("prefix");
+                }
+            }
+
+            try (final PreparedStatement insertStatement = DataSource
+                    .getConnection()
+                    .prepareStatement("INSERT INTO guild_settings(guild_id) VALUES(?)")) {
+
+                insertStatement.setString(1, String.valueOf(guildId));
+
+                insertStatement.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Config.prefix;
     }
 }
