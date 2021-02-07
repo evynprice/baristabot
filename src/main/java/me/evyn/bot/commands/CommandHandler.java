@@ -54,11 +54,6 @@ public class CommandHandler {
     // Commands list
     public static final List<Command> cmds;
 
-    /**
-     * Initializes bot commands when application starts and prints the amount of successful commands that were loaded
-     * @param config Bot configuration
-     */
-
     static {
         // Initialize commands
         shutdown = new Shutdown();
