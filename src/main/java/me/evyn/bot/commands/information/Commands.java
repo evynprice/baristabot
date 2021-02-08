@@ -85,8 +85,7 @@ public class Commands implements CommandWithCmds {
         User bot = event.getJDA().getSelfUser();
 
         // Create the embed with the commands as fields
-        EasyEmbed easyEmbed = new EasyEmbed();
-        EmbedBuilder eb = easyEmbed.newCommandEmbedMessage(bot);
+        EmbedBuilder eb = EasyEmbed.newCommandEmbedMessage(bot);
 
         eb.setTitle(bot.getName() + " commands")
                 .setDescription(String.format("Use `%shelp <command>` for information on a specific command", prefix))

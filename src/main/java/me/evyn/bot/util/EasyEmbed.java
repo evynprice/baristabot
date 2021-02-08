@@ -15,7 +15,7 @@ public class EasyEmbed {
      * @param description String Description of error message
      * @return EmbedBuilder error embed
      */
-    public EmbedBuilder newErrorEmbedMessage(User bot, String description) {
+    public static EmbedBuilder newErrorEmbedMessage(User bot, String description) {
 
         EmbedBuilder eb = new EmbedBuilder();
 
@@ -37,7 +37,7 @@ public class EasyEmbed {
      * @param bot Discord bot user
      * @return EmbedBuilder info embed
      */
-    public EmbedBuilder newInfoEmbedMessage(User bot) {
+    public static EmbedBuilder newInfoEmbedMessage(User bot) {
         EmbedBuilder eb = new EmbedBuilder();
 
         eb.setColor(0x386895)
@@ -53,7 +53,7 @@ public class EasyEmbed {
      * @param bot Discord bot user
      * @return EmbedBuilder command embed
      */
-    public EmbedBuilder newCommandEmbedMessage(User bot) {
+    public static EmbedBuilder newCommandEmbedMessage(User bot) {
         EmbedBuilder eb = new EmbedBuilder();
 
         eb.setColor(0xd35933)

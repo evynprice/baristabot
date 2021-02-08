@@ -61,11 +61,10 @@ public class Help implements CommandWithCmds {
     public void run(MessageReceivedEvent event, String prefix, List<String> args) {
         User bot = event.getJDA().getSelfUser();
 
-        EasyEmbed easyEmbed = new EasyEmbed();
         EmbedBuilder eb = null;
         // if there are no arguments, provide bot information and return
         if (args.isEmpty()) {
-            eb = easyEmbed.newInfoEmbedMessage(bot);
+            eb = EasyEmbed.newInfoEmbedMessage(bot);
 
             eb.setDescription("Just a simple Discord bot written in JDA. Contribute on GitHub using the link above!")
                     .setTitle(bot.getName(), "https://github.com/thetechnicalfox/baristabot")
@@ -83,7 +82,7 @@ public class Help implements CommandWithCmds {
 
         // if there are more than 1 arguments, send error message and return
         if (args.size() > 1) {
-            eb = easyEmbed.newErrorEmbedMessage(bot, String.format("Format should be `%shelp [command-name]`", prefix));
+            eb = EasyEmbed.newErrorEmbedMessage(bot, String.format("Format should be `%shelp [command-name]`", prefix));
 
             event.getChannel()
                     .sendMessage(eb.build())
@@ -109,7 +108,7 @@ public class Help implements CommandWithCmds {
         }
 
         // Command has been found, now send help information on command
-        eb = easyEmbed.newCommandEmbedMessage(bot)
+        eb = EasyEmbed.newCommandEmbedMessage(bot)
                 .setTitle("Command: " + cmd.getName())
                 .setDescription(cmd.getDescription())
                 .addField("Aliases", cmd.getAliases().toString(), true)

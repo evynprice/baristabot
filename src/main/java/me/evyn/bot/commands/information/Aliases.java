@@ -63,11 +63,10 @@ public class Aliases implements CommandWithCmds {
         User bot = event.getJDA().getSelfUser();
 
         EmbedBuilder eb = new EmbedBuilder();
-        EasyEmbed easyEmbed = new EasyEmbed();
 
         // if no args are present, send error message and return
         if (args.isEmpty()) {
-            eb = easyEmbed.newErrorEmbedMessage(bot, "No arguments were given. " +
+            eb = EasyEmbed.newErrorEmbedMessage(bot, "No arguments were given. " +
                     "Run `" + prefix + "help aliases` for more information");
             event.getChannel()
                     .sendMessage(eb.build())
@@ -77,7 +76,7 @@ public class Aliases implements CommandWithCmds {
 
         // if there are more than 1 arguments, send error message and return
         if (args.size() > 1) {
-            eb = easyEmbed.newErrorEmbedMessage(bot, String.format("Too many arguments." +
+            eb = EasyEmbed.newErrorEmbedMessage(bot, String.format("Too many arguments." +
                     " Run `%shelp aliases` for more information", prefix));
             event.getChannel()
                     .sendMessage(eb.build())
@@ -103,7 +102,7 @@ public class Aliases implements CommandWithCmds {
         }
 
         // create embed
-        eb = easyEmbed.newCommandEmbedMessage(bot);
+        eb = EasyEmbed.newCommandEmbedMessage(bot);
         eb.setTitle("Command Aliases: " + cmd.getName())
                 .setDescription(cmd.getAliases().toString());
 
