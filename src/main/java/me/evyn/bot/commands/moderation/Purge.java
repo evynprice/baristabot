@@ -77,13 +77,11 @@ public class Purge implements Command {
             return;
         }
 
-        if (args.length == 1) {
+        if (args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
 
-            // proper amount was given
-            if (args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
+            int amount = Integer.valueOf(args[0]) + 1;
 
-                // include purge command in number
-                int amount = Integer.valueOf(args[0]) + 1;
+            if (args.length == 1) {
 
                 MessageHistory history = event.getChannel().getHistory();
                 List<Message> messages = history.retrievePast(amount).complete();
@@ -99,48 +97,44 @@ public class Purge implements Command {
                 m.delete().completeAfter(3, TimeUnit.SECONDS);
 
                 // invalid number was given
-            } else {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
-                        prefix + "usage purge` for more information.");
+            } else if (args.length > 1) {
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-                return;
+                String id = args[1].replaceAll("[^0-9]", "");
+
+                TextChannel channel = null;
+                try {
+                    channel = event.getGuild().getTextChannelById(id);
+                } catch (NumberFormatException e ) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid channel provided.");
+
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                    return;
+                }
+
+                if (channel != null) {
+                    MessageHistory history = channel.getHistory();
+                    List<Message> messages = history.retrievePast(amount).complete();
+
+                    event.getChannel().purgeMessages(messages);
+
+                    eb = EmbedCreator.newCommandEmbedMessage(bot);
+                    eb.setTitle("Purge")
+                            .setDescription("Successfully purged " + args[0] + " messages.");
+
+                    Message m = event.getChannel().sendMessage(eb.build()).complete();
+
+                    m.delete().completeAfter(3, TimeUnit.SECONDS);
+                }
             }
-        }
+        } else {
+            eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid number of messages. Maximum message " +
+                    "count is 100.");
 
-        if (args.length > 1) {
-
-            String id = args[1].replaceAll("[^0-9]", "");
-
-            TextChannel channel = null;
-            try {
-                channel = event.getGuild().getTextChannelById(id);
-            } catch (NumberFormatException e ) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid channel provided.");
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-                return;
-            }
-
-            if (channel != null) {
-                int amount = Integer.valueOf(args[0]) + 1;
-                MessageHistory history = channel.getHistory();
-                List<Message> messages = history.retrievePast(amount).complete();
-
-                event.getChannel().purgeMessages(messages);
-
-                eb = EmbedCreator.newCommandEmbedMessage(bot);
-                eb.setTitle("Purge")
-                        .setDescription("Successfully purged " + args[0] + " messages.");
-
-                Message m = event.getChannel().sendMessage(eb.build()).complete();
-
-                m.delete().completeAfter(3, TimeUnit.SECONDS);
-            }
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
         }
     }
 
