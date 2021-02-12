@@ -22,49 +22,70 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.information;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
+import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.EmbedCreator;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Ping implements Command {
+public class Commands implements Command {
 
     @Override
-    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
-        String gatewayPing = String.valueOf(event.getJDA().getGatewayPing());
+        User bot = event.getJDA().getSelfUser();
+
+        StringBuilder info = new StringBuilder();
+
+        CommandHandler.commands.stream()
+                .forEach(command -> {
+                    if (command.getType() == CommandType.INFO) {
+                        info.append(command.getName()).append(", ");
+                    }
+                });
+
+        info.delete(info.length() - 2, info.length());
+
+        EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+        eb.setTitle("Bot commands")
+                .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +
+                        "To find the proper usage of a command, run `" + prefix + "usage commandName`")
+                .addField("Info", info.toString(), false);
 
         event.getChannel()
-                .sendMessage(String.format("Pong! %nGateway Ping: %sms", gatewayPing))
+                .sendMessage(eb.build())
                 .queue();
     }
 
     @Override
     public String getName() {
-        return "ping";
+        return "commands";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList("commands", "cmds");
     }
 
     @Override
     public String getDescription() {
-        return "Replies with `Pong` in the channel that the command was sent";
+        return "Provides a list of bot commands";
     }
 
     @Override
     public String getUsage() {
-        return "ping";
+        return "commands";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.INFORMATION;
+        return CommandType.INFO;
     }
 }
