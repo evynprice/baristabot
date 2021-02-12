@@ -43,21 +43,27 @@ public class Commands implements Command {
         User bot = event.getJDA().getSelfUser();
 
         StringBuilder info = new StringBuilder();
+        StringBuilder fun = new StringBuilder();
 
         CommandHandler.commands.stream()
                 .forEach(command -> {
                     if (command.getType() == CommandType.INFO) {
                         info.append(command.getName()).append(", ");
+                    } else if (command.getType() == CommandType.FUN) {
+                        fun.append(command.getName()).append(", ");
                     }
                 });
 
         info.delete(info.length() - 2, info.length());
+        fun.delete(fun.length() - 2, fun.length());
+
 
         EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
         eb.setTitle("Bot commands")
                 .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +
                         "To find the proper usage of a command, run `" + prefix + "usage commandName`")
-                .addField("Info", info.toString(), false);
+                .addField("Info", info.toString(), false)
+                .addField("Fun", fun.toString(), false);
 
         event.getChannel()
                 .sendMessage(eb.build())
