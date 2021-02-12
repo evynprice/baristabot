@@ -21,80 +21,68 @@ public class Kick implements Command {
         User botUser = event.getJDA().getSelfUser();
         Member botMember = event.getGuild().getSelfMember();
 
-        if (botMember.hasPermission(Permission.KICK_MEMBERS)) {
+        EmbedBuilder eb;
 
-            if (event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-                if (args.length > 0) {
+        if (!botMember.hasPermission(Permission.KICK_MEMBERS)) {
+            // if Bot does not have Kick Members permission
+            eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing required " +
+                    "permission `Kick Members`.");
+        } else {
+
+            if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
+                // if User does not have Kick Members permission
+                eb = EmbedCreator.newErrorEmbedMessage(botUser,"User is missing required " +
+                        "permission `Kick Members`.");
+            } else {
+
+                if (args.length == 0) {
+                    // no user is provided
+                    eb = EmbedCreator.newErrorEmbedMessage(botUser, "No user was provided " +
+                            "For more information run the command `" + prefix + "usage kick`.");
+                } else {
+                    // fetch user Id
                     String Id = args[0].replaceAll("[^0-9.]", "");
 
                     try {
                         RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
                         Member providedMember = tempMember.complete();
 
+                        eb = EmbedCreator.newCommandEmbedMessage(botUser);
+                        eb.setTitle("Kick");
+
                         if (args.length > 1) {
+                            // kick with reason
                             StringBuilder sb = new StringBuilder();
 
-                            for (int i=1; i < args.length; i++) {
+                            for (int i = 1; i < args.length; i++) {
                                 sb.append(args[i]).append(" ");
                             }
 
-                            event.getGuild()
-                                    .kick(providedMember, sb.toString())
-                                    .queue();
-
-                            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(botUser);
-                            eb.setTitle("Kick")
-                                    .setDescription("User `" + providedMember.getUser().getAsTag() + "` was kicked " +
+                            eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was kicked " +
                                             "successfully.")
                                     .addField("Reason", sb.toString(), false);
-
-                            event.getChannel()
-                                    .sendMessage(eb.build())
-                                    .queue();
-
                         } else {
+                            // kick without reason
                             event.getGuild()
                                     .kick(providedMember)
                                     .queue();
 
-                            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(botUser);
-                            eb.setTitle("Kick")
-                                    .setDescription("User " + providedMember.getUser().getAsTag() + " was kicked " +
+                                    eb.setDescription("User " + providedMember.getUser().getAsTag() + " was kicked " +
                                             "successfully.");
 
-                            event.getChannel()
-                                    .sendMessage(eb.build())
-                                    .queue();
                         }
                     } catch (Exception e) {
-                        EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "That Id is either invalid or " +
+                        // invalid user
+                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "That Id is either invalid or " +
                                 "the user provided is not in the server.");
-                        event.getChannel()
-                                .sendMessage(eb.build())
-                                .queue();
                     }
-                } else {
-                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "No user was provided " +
-                            "For more information run the command `" + prefix + "usage kick`.");
-                    event.getChannel()
-                            .sendMessage(eb.build())
-                            .queue();
                 }
-
-            } else {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "User is missing required " +
-                        "permission `Kick Members`.");
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
             }
-        } else {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing required " +
-                    "permission `Kick Members`.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
         }
+        // send message
+        event.getChannel()
+                .sendMessage(eb.build())
+                .queue();
     }
 
     @Override
