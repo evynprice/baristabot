@@ -31,15 +31,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ReadyListener extends ListenerAdapter {
 
-    private ReactionListener reactionListener;
-
-    /**
-     * Creates the ReadyListener object and initializes the instance variables
-     * @param reactionListener listener event
-     */
-    public ReadyListener(ReactionListener reactionListener) {
-        this.reactionListener = reactionListener;
-    }
 
     /**
      * When bot is ready, sends information to console and sets bot presence.
@@ -50,6 +41,5 @@ public class ReadyListener extends ListenerAdapter {
         System.out.printf("Bot is ready in %s guilds",event.getGuildTotalCount());
         event.getJDA().getPresence().setActivity(Activity.watching("you | " + Config.prefix + "help"));
 
-        reactionListener.init(event.getJDA().getGuildById("662895013352701952"));
     }
 }
