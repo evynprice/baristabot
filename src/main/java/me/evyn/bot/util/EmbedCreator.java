@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.time.Instant;
 
-public class EasyEmbed {
+public class EmbedCreator {
 
     /**
      * Generates a new EmbedBuilder object with an error message template. Description of error is provided by the
@@ -19,7 +19,7 @@ public class EasyEmbed {
 
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setColor(0xFF0000)
+        eb.setColor(0xd55745)
                 .setTitle("Error")
                 .setTimestamp(Instant.now())
                 .setFooter(bot.getName(), bot.getAvatarUrl());
@@ -40,7 +40,7 @@ public class EasyEmbed {
     public static EmbedBuilder newInfoEmbedMessage(User bot) {
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setColor(0x386895)
+        eb.setColor(0xdbb381)
                 .setTitle(bot.getName())
                 .setTimestamp(Instant.now())
                 .setFooter(bot.getName(), bot.getAvatarUrl());
@@ -56,7 +56,7 @@ public class EasyEmbed {
     public static EmbedBuilder newCommandEmbedMessage(User bot) {
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setColor(0xd35933)
+        eb.setColor(0xe6a040)
                 .setTimestamp(Instant.now())
                 .setFooter(bot.getName(), bot.getAvatarUrl());
 
