@@ -26,6 +26,7 @@ package me.evyn.bot.commands;
 
 import me.evyn.bot.commands.fun.Say;
 import me.evyn.bot.commands.info.*;
+import me.evyn.bot.commands.moderation.Ban;
 import me.evyn.bot.commands.moderation.Kick;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -50,6 +51,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new Ping());
         CommandHandler.addCommand(new Say());
         CommandHandler.addCommand(new Kick());
+        CommandHandler.addCommand(new Ban());
     }
 
     private static void addCommand(Command cmd) {
