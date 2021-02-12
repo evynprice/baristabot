@@ -35,7 +35,7 @@ public interface Command {
      * @param prefix Specific guild bot prefix
      * @param args Command arguments
      */
-    void run(MessageReceivedEvent event, String prefix, List<String> args);
+    void run(MessageReceivedEvent event, String prefix, String[] args);
 
     /**
      * Gives the command name
