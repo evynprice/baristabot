@@ -11,7 +11,7 @@ Add me to your Discord server [here](https://discord.com)! (coming soon)
 Have questions or want to hang out and talk about the world of Discord bots? Join our community server [here](https://discord.gg/u8hAu6sEtw).
 
 ## Wiki
-Interested in what all Barista Bot can do? Check out the bot wiki [here](https://github.com/thetechnicalfox/baristabot/wiki)
+Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/thetechnicalfox/baristabot/wiki/Commands)
 
 ## Contribution
 Are you a fellow developer and looking to add your own features or improvements? Please check out the contribution page [here]() (Coming soon)
