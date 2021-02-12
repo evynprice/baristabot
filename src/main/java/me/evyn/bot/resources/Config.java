@@ -24,6 +24,9 @@
 
 package me.evyn.bot.resources;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -31,9 +34,11 @@ import java.io.IOException;
 
 public class Config {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
+
     public static final String token;
     public static final String prefix;
-    public static final String elevated;
+    public static final String adminId;
 
     static {
         // attempt to read variables in .env.local
@@ -42,7 +47,7 @@ public class Config {
         // temp variables
         String botToken = null;
         String botPrefix = null;
-        String botElevated = null;
+        String botAdminId = null;
 
         if (env.exists()) {
             try {
@@ -59,9 +64,9 @@ public class Config {
                     } else if (line.startsWith("BOT_PREFIX")) {
                         line = line.replace("BOT_PREFIX=", "");
                         botPrefix = line;
-                    } else if (line.startsWith("BOT_ELEVATED")) {
-                        line = line.replace("BOT_ELEVATED=", "");
-                        botElevated = line;
+                    } else if (line.startsWith("BOT_ADMINID")) {
+                        line = line.replace("BOT_ADMINID=", "");
+                        botAdminId = line;
                     }
                 }
 
@@ -75,24 +80,26 @@ public class Config {
             // If .env.local is not present, set config variables to system environment variables
             botToken = System.getenv("TOKEN");
             botPrefix = System.getenv("PREFIX");
-            botElevated = System.getenv("PRIVILEGED");
+            botAdminId = System.getenv("ADMINID");
         }
 
         // Check if token exists and if it matches the proper pattern. Exit if error occurs
         if (botToken == null || !botToken.matches(".{59}")) {
-            System.out.println("Bot token was not in the proper format. Please check env variables or .env.local");
+            LOGGER.error("Bot token was not in proper format. Please check env variables or .env.local file");
             System.exit(0);
         }
 
         // check if prefix exists, exit if error occurs
         if (botPrefix == null) {
-            System.out.println("Bot prefix is invalid. Please check env variables or .env.local");
+            LOGGER.error("Bot prefix is invalid. Please check env variables or .env.local");
             System.exit(0);
         }
 
         // set static variables
         token = botToken;
         prefix = botPrefix;
-        elevated = botElevated;
+        adminId = botAdminId;
+
+        LOGGER.info("Loaded config file");
     }
 }
