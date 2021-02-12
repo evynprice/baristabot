@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.Arrays;
@@ -71,10 +72,12 @@ public class Kick implements Command {
                                             "successfully.");
 
                         }
+                    } catch (HierarchyException e) {
+                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user has the same " +
+                                "or greater permission levels as the bot.");
                     } catch (Exception e) {
-                        // invalid user
-                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "That Id is either invalid or " +
-                                "the user provided is not in the server.");
+                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user is either invalid " +
+                                "or not in the server.");
                     }
                 }
             }
