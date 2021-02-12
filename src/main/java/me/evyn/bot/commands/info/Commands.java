@@ -44,6 +44,7 @@ public class Commands implements Command {
 
         StringBuilder info = new StringBuilder();
         StringBuilder fun = new StringBuilder();
+        StringBuilder moderation = new StringBuilder();
 
         CommandHandler.commands.stream()
                 .forEach(command -> {
@@ -51,19 +52,22 @@ public class Commands implements Command {
                         info.append(command.getName()).append(", ");
                     } else if (command.getType() == CommandType.FUN) {
                         fun.append(command.getName()).append(", ");
+                    } else if (command.getType() == CommandType.MODERATION) {
+                        moderation.append(command.getName()).append(", ");
                     }
                 });
 
         info.delete(info.length() - 2, info.length());
         fun.delete(fun.length() - 2, fun.length());
-
+        moderation.delete(moderation.length() -2, moderation.length());
 
         EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
         eb.setTitle("Bot commands")
                 .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +
                         "To find the proper usage of a command, run `" + prefix + "usage commandName`")
                 .addField("Info", info.toString(), false)
-                .addField("Fun", fun.toString(), false);
+                .addField("Fun", fun.toString(), false)
+                .addField("Moderation", moderation.toString(), false);
 
         event.getChannel()
                 .sendMessage(eb.build())
