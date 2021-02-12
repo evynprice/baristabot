@@ -28,7 +28,6 @@ import me.evyn.bot.commands.info.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +45,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new ServerInfo());
         CommandHandler.addCommand(new Invite());
         CommandHandler.addCommand(new Support());
+        CommandHandler.addCommand(new Ping());
     }
 
     private static void addCommand(Command cmd) {
