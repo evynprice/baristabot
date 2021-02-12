@@ -24,6 +24,7 @@
 
 package me.evyn.bot.commands;
 
+import me.evyn.bot.commands.fun.Say;
 import me.evyn.bot.commands.info.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -46,6 +47,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new Invite());
         CommandHandler.addCommand(new Support());
         CommandHandler.addCommand(new Ping());
+        CommandHandler.addCommand(new Say());
     }
 
     private static void addCommand(Command cmd) {
