@@ -1,5 +1,5 @@
 package me.evyn.bot.commands;
 
 public enum CommandType {
-    INFO, FUN
+    INFO, FUN, MODERATION
 }
