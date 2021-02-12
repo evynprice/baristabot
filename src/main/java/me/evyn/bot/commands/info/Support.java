@@ -22,52 +22,47 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.elevated;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Shutdown implements Command {
+public class Support implements Command {
 
-    /**
-     * Shuts down the bot instance
-     * @param event Discord API message event
-     * @param prefix Specific guild bot prefix
-     * @param args Command arguments
-     */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
-       JDA api = event.getJDA();
-       api.shutdown();
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+        event.getChannel()
+                .sendMessage("Need help with the bot or want to chat with the maintainers? Join our support " +
+                        "Discord server here: " + "\n" + "https://discord.gg/u8hAu6sEtw")
+                .queue();
     }
 
     @Override
     public String getName() {
-        return "shutdown";
+        return "support";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("stop");
+        return Arrays.asList("");
     }
 
     @Override
     public String getDescription() {
-        return "Shuts down the bot instance (privileged users only)";
+        return "Provides link to Community Discord server";
     }
 
     @Override
     public String getUsage() {
-        return "shutdown";
+        return "support";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.ELEVATED;
+        return CommandType.INFO;
     }
 }

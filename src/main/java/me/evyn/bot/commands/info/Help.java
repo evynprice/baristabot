@@ -22,84 +22,65 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.fun;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.BotInfo;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Say implements Command {
+public class Help implements Command {
 
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
-        User botUser = event.getJDA().getSelfUser();
-        Member botMember = event.getGuild().getSelfMember();
+        User bot = event.getJDA().getSelfUser();
+        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
 
-        if (botMember.hasPermission(Permission.MESSAGE_MANAGE)) {
+        eb.setDescription("Barista bot is a simple yet effective, multi-purpose Discord bot written with JDA. " +
+                "It makes a perfect addition to your community, study group, or hang out server, and it " +
+                "adds a bit of fun and utility to any environment")
+                .setThumbnail(bot.getAvatarUrl())
+                .addField("Github", "[link](https://github.com/thetechnicalfox/baristabot)", true)
+                .addField("Logo", "[attribution]" +
+                        "(https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt)", true)
+                .addField("Version", BotInfo.BOT_VERSION, true)
+                .addField("Commands", prefix + "commands", false)
+                .addField("Command usage", prefix + "usage [command]", false);
 
-            if (args.length > 0) {
-                StringBuilder sb = new StringBuilder();
-
-                Arrays.stream(args)
-                        .forEach(arg -> {
-                            arg = arg.replace("@", "");
-                            sb.append(arg).append(" ");
-                        });
-
-                event.getChannel()
-                        .sendMessage(sb.toString())
-                        .queue();
-
-                event.getMessage()
-                        .delete()
-                        .queue();
-            } else {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
-                        "Try running `" + prefix + "usage say` for proper command usage.");
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            }
-        } else {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
-                            "required permission `Manage Messages`.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
-        }
+        event.getChannel()
+                .sendMessage(eb.build())
+                .queue();
     }
 
     @Override
     public String getName() {
-        return "say";
+        return "help";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("speak");
+        return Arrays.asList("info", "information");
     }
 
     @Override
     public String getDescription() {
-        return "Says the provided content and deletes the original message";
+        return "Provides information about the bot";
     }
 
     @Override
     public String getUsage() {
-        return "say [content]";
+        return "help";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.FUN;
+        return CommandType.INFO;
     }
 }

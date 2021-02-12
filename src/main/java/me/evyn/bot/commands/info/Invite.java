@@ -22,15 +22,48 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands;
+package me.evyn.bot.commands.info;
 
+import me.evyn.bot.commands.Command;
+import me.evyn.bot.commands.CommandType;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+import java.util.Arrays;
 import java.util.List;
 
-public interface CommandWithCmds extends Command {
+public class Invite implements Command {
 
-    /**
-     * Adds a list of commands from the command handler to the instance variables
-     * @param cmds bot commands
-     */
-    void addCommands(List<Command> cmds);
+    @Override
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+        event.getChannel()
+                .sendMessage("Invite me to your own Discord server using this link: " + "\n" + "<" +
+                        event.getJDA().getInviteUrl(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) + ">")
+                .queue();
+    }
+
+    @Override
+    public String getName() {
+        return "invite";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList("");
+    }
+
+    @Override
+    public String getDescription() {
+        return "Provides the bot invite link";
+    }
+
+    @Override
+    public String getUsage() {
+        return "invite";
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.INFO;
+    }
 }

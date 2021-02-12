@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.information;
+package me.evyn.bot.commands.info;
 
-import me.evyn.bot.util.BotInfo;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import me.evyn.bot.util.EasyEmbed;
+import me.evyn.bot.util.BotInfo;
+import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
@@ -36,48 +36,32 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class Statistics implements Command {
+public class Stats implements Command {
 
-    /**
-     * Provides statistics on the bot instance
-     * @param event Discord API message event
-     * @param prefix Specific guild bot prefix
-     * @param args Command arguments
-     */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         JDA api = event.getJDA();
-        User botUser = event.getJDA().getSelfUser();
+        User bot = api.getSelfUser();
 
-        // get memory in bytes and convert to MB
         long totalMemory = Runtime.getRuntime().totalMemory() / (1024 * 1024);
         long usedMemory = totalMemory - Runtime.getRuntime().freeMemory() / (1024 * 1024);
 
-        // format memory as String
         String memory = String.format("%dMB / %dMB", usedMemory, totalMemory);
 
-        // get guild information
-        int servers = api.getGuilds().size();
+        int guilds = api.getGuilds().size();
         int channels = api.getTextChannels().size();
         int users = api.getUsers().size();
 
-        // get versions
-        String botVersion = BotInfo.BOT_VERSION;
-        String jdaVersion = BotInfo.JDA_VERSION;
-
-        // format information as embed
-        EmbedBuilder eb = EasyEmbed.newInfoEmbedMessage(botUser);
-
-        eb.setTitle(botUser.getName() + " statistics")
+        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot)
+                .setTitle(bot.getName() + " statistics")
                 .addField("Memory", memory, true)
-                .addField("Servers", String.valueOf(servers), true)
-                .addField("Channels", String.valueOf(channels), true)
-                .addField("Users", String.valueOf(users), true)
-                .addField("Version", botVersion, true)
-                .addField("JDA", jdaVersion, true);
+                .addField("Guilds", "" + guilds, true)
+                .addField("Channels", "" + channels, true)
+                .addField("Users", "" + users, true)
+                .addField("Version", BotInfo.BOT_VERSION, true)
+                .addField("JDA", BotInfo.JDA_VERSION, true);
 
-        // send embed message
         event.getChannel()
                 .sendMessage(eb.build())
                 .queue();
@@ -85,26 +69,26 @@ public class Statistics implements Command {
 
     @Override
     public String getName() {
-        return "statistics";
+        return "stats";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("stats");
+        return Arrays.asList("statistics", "performance");
     }
 
     @Override
     public String getDescription() {
-        return "Provides bot statistics and information";
+        return "Provides technical information on the bot processes";
     }
 
     @Override
     public String getUsage() {
-        return "statistics";
+        return "stats";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.INFORMATION;
+        return CommandType.INFO;
     }
 }

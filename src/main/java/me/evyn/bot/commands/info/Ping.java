@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.information;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
@@ -34,12 +34,12 @@ import java.util.List;
 public class Ping implements Command {
 
     @Override
-    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         String gatewayPing = String.valueOf(event.getJDA().getGatewayPing());
 
         event.getChannel()
-                .sendMessage(String.format("Pong! %nGateway Ping: %sms", gatewayPing))
+                .sendMessage(String.format("Current gateway ping: %sms", gatewayPing))
                 .queue();
     }
 
@@ -55,7 +55,7 @@ public class Ping implements Command {
 
     @Override
     public String getDescription() {
-        return "Replies with `Pong` in the channel that the command was sent";
+        return "Provides the current bot ping";
     }
 
     @Override
@@ -65,6 +65,6 @@ public class Ping implements Command {
 
     @Override
     public CommandType getType() {
-        return CommandType.INFORMATION;
+        return CommandType.INFO;
     }
 }

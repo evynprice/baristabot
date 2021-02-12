@@ -25,5 +25,5 @@
 package me.evyn.bot.commands;
 
 public enum CommandType {
-    FUN, INFORMATION, SETTINGS, ELEVATED
+    INFO, FUN, MODERATION
 }

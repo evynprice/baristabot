@@ -22,84 +22,92 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.fun;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
+import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-public class Say implements Command {
-
+public class Usage implements Command {
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
-        User botUser = event.getJDA().getSelfUser();
-        Member botMember = event.getGuild().getSelfMember();
+        User bot = event.getJDA().getSelfUser();
 
-        if (botMember.hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (args.length == 0) {
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Proper usage is " + prefix +
+                    " usage [command]");
 
-            if (args.length > 0) {
-                StringBuilder sb = new StringBuilder();
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            String cmd = args[0];
 
-                Arrays.stream(args)
-                        .forEach(arg -> {
-                            arg = arg.replace("@", "");
-                            sb.append(arg).append(" ");
-                        });
+            Command command = CommandHandler.findCommand(cmd);
+
+            if (command == null) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Command was not found");
 
                 event.getChannel()
-                        .sendMessage(sb.toString())
-                        .queue();
-
-                event.getMessage()
-                        .delete()
+                        .sendMessage(eb.build())
                         .queue();
             } else {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
-                        "Try running `" + prefix + "usage say` for proper command usage.");
+                EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+
+                eb.setTitle("Usage: " + command.getName())
+                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                        .addField("Command Usage", prefix + command.getUsage(), false);
+
+                StringBuilder sb = new StringBuilder();
+
+                for (String alias : command.getAliases()) {
+                    sb.append(alias).append(", ");
+                }
+
+                if (sb.length() > 2) {
+                    sb.delete(sb.length() - 2, sb.length());
+                    eb.addField("Aliases", String.valueOf(sb.toString()), false);
+                }
+
+
                 event.getChannel()
                         .sendMessage(eb.build())
                         .queue();
             }
-        } else {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
-                            "required permission `Manage Messages`.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
         }
     }
 
     @Override
     public String getName() {
-        return "say";
+        return "usage";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("speak");
+        return Arrays.asList("");
     }
 
     @Override
     public String getDescription() {
-        return "Says the provided content and deletes the original message";
+        return "Provides the proper usage of a specific command";
     }
 
     @Override
     public String getUsage() {
-        return "say [content]";
+        return "usage [command]";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.FUN;
+        return CommandType.INFO;
     }
 }

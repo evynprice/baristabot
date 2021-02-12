@@ -22,84 +22,75 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.fun;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-public class Say implements Command {
+public class ServerInfo implements Command {
 
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
-        User botUser = event.getJDA().getSelfUser();
-        Member botMember = event.getGuild().getSelfMember();
+        User bot = event.getJDA().getSelfUser();
+        Guild guild = event.getGuild();
 
-        if (botMember.hasPermission(Permission.MESSAGE_MANAGE)) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a");
+        LocalDateTime registerTimeCreated = guild.getTimeCreated().toLocalDateTime();
 
-            if (args.length > 0) {
-                StringBuilder sb = new StringBuilder();
+        String createDate = formatter.format(registerTimeCreated);
 
-                Arrays.stream(args)
-                        .forEach(arg -> {
-                            arg = arg.replace("@", "");
-                            sb.append(arg).append(" ");
-                        });
+        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
+        eb.setTitle("Server Info: " + guild.getName())
+                .setThumbnail(guild.getIconUrl())
+                .setDescription(guild.getDescription())
+                .addField("Id", guild.getId(), true)
+                .addField("Owner", guild.getOwner().getUser().getAsTag(), true)
+                .addBlankField(true)
+                .addField("Region", guild.getRegion().getName(), true)
+                .addField("Created", createDate, true)
+                .addField("Boost Tier", guild.getBoostTier().name(), true)
+                .addField("Members", "" + guild.getMembers().size(), true)
+                .addField("Channels", "" + guild.getChannels().size(), true)
+                .addField("Emojis", "" + guild.getEmotes().size(), true);
 
-                event.getChannel()
-                        .sendMessage(sb.toString())
-                        .queue();
-
-                event.getMessage()
-                        .delete()
-                        .queue();
-            } else {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
-                        "Try running `" + prefix + "usage say` for proper command usage.");
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            }
-        } else {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
-                            "required permission `Manage Messages`.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
-        }
+        event.getChannel()
+                .sendMessage(eb.build())
+                .queue();
     }
 
     @Override
     public String getName() {
-        return "say";
+        return "serverinfo";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("speak");
+        return Arrays.asList("server", "guild", "guildinfo");
     }
 
     @Override
     public String getDescription() {
-        return "Says the provided content and deletes the original message";
+        return "Provides information about the current server";
     }
 
     @Override
     public String getUsage() {
-        return "say [content]";
+        return "serverinfo";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.FUN;
+        return CommandType.INFO;
     }
 }

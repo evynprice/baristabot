@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.commands.information;
+package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import me.evyn.bot.util.EasyEmbed;
+import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -40,42 +40,34 @@ import java.util.List;
 
 public class UserInfo implements Command {
 
-    /**
-     * Provides information on user that runs command or mentioned user
-     * @param event Discord API message event
-     * @param prefix Specific guild bot prefix
-     * @param args Command arguments
-     */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, List<String> args) {
+    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+
         User bot = event.getJDA().getSelfUser();
 
         Member member;
         User user;
 
-        // If there are no arguments, collect information on user that runs the command
-        if (args.isEmpty()) {
+        if (args.length == 0) {
             member = event.getMember();
-            user = event.getAuthor();
-        } else {  // Attempt to find user based on ID
+            user = member.getUser();
+        } else {
+            String Id = args[0].replaceAll("[^0-9.]", "");
 
-            // Strip argument down to ID
-            String ID = args.get(0).replaceAll("[^0-9.]", "");
-
-            // Attempt to find member by ID
             try {
-                RestAction<Member> tempMember = event.getGuild().retrieveMemberById(ID);
+                RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
                 member = tempMember.complete();
                 user = member.getUser();
             } catch (Exception e) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That Id is either invalid or " +
+                        "the user provided is not in the server.");
                 event.getChannel()
-                        .sendMessage("Error: That ID is either invalid or the user is not in the server")
+                        .sendMessage(eb.build())
                         .queue();
                 return;
             }
         }
 
-        // Format join and register dates
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a");
         LocalDateTime registerTimeCreated = user.getTimeCreated().toLocalDateTime();
         LocalDateTime joinTimeCreated = member.getTimeJoined().toLocalDateTime();
@@ -95,8 +87,7 @@ public class UserInfo implements Command {
             roles.append("none");
         }
 
-        // create embed
-        EmbedBuilder eb = EasyEmbed.newCommandEmbedMessage(bot);
+        EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
         eb.setTitle(user.getAsTag())
                 .setThumbnail(user.getAvatarUrl())
@@ -110,7 +101,6 @@ public class UserInfo implements Command {
         event.getTextChannel()
                 .sendMessage(eb.build())
                 .queue();
-        return;
     }
 
     @Override
@@ -120,21 +110,21 @@ public class UserInfo implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList("user");
     }
 
     @Override
     public String getDescription() {
-        return "Provides information on the user that runs the command or mentioned user";
+        return "Provides information about you or a specific user";
     }
 
     @Override
     public String getUsage() {
-        return "userinfo (user mention / ID)";
+        return "userinfo (userID/userMention)";
     }
 
     @Override
     public CommandType getType() {
-        return CommandType.INFORMATION;
+        return CommandType.INFO;
     }
 }

@@ -24,8 +24,6 @@
 
 package me.evyn.bot.main;
 
-import me.evyn.bot.commands.CommandHandler;
-import me.evyn.bot.listeners.ReactionListener;
 import me.evyn.bot.listeners.ReadyListener;
 import me.evyn.bot.resources.Config;
 import me.evyn.bot.listeners.MessageListener;
@@ -37,12 +35,18 @@ public class Bot {
 
     public static void main(String[] args) throws Exception {
 
-        DataSource.getConnection();
-        ReactionListener reactionListener = new ReactionListener();
+        Bot.startBot();
+    }
+
+    private static void startBot() throws Exception {
+
+        // start and test DataSource connection
+        DataSource.getConnection().close();
+
+        // Start the bot instance
         JDA api = JDABuilder.createDefault(Config.token)
                 .addEventListeners(new MessageListener())
-                .addEventListeners(new ReadyListener(reactionListener))
-                .addEventListeners(reactionListener)
+                .addEventListeners(new ReadyListener())
                 .build();
     }
 }

@@ -30,10 +30,11 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class MessageListener extends ListenerAdapter {
+
+    private CommandHandler ch = new CommandHandler();
 
     /**
      * Runs when the bot receives a message. Does initial parsing and sends cleaned command and arguments to the
@@ -58,7 +59,9 @@ public class MessageListener extends ListenerAdapter {
                     .sendMessage(String.format("My prefix is currently `%s`" + "%n" + "" +
                             "Try running `%shelp` for more information",prefix, prefix))
                     .queue();
+            return;
         }
+
 
         // If message does not start with prefix, return
         if (!content.startsWith(prefix)) return;
@@ -71,16 +74,24 @@ public class MessageListener extends ListenerAdapter {
         // First cleaned message argument is the command
         String cmd = msg[0];
 
-        // If there were any other arguments, add them to a new ArrayList
-        List<String> args = new ArrayList<>();
+        // Return if command is null
+        if (cmd == null) {
+            event.getChannel()
+                    .sendMessage("Error: That command does not exist")
+                    .queue();
+            return;
+        }
+
+        // Add arguments if there were any
+        String[] args;
+
         if (msg.length > 1) {
-            // start with 1 because we want the arguments after the command
-            for (int i = 1; i < msg.length; i++) {
-                args.add(msg[i]);
-            }
+            args = Arrays.copyOfRange(msg, 1, msg.length);
+        } else {
+            args = new String[]{};
         }
 
         // Take all of the information that was gathered and pass it to the CommandHandler
-        CommandHandler.run(event, prefix, cmd, args);
+        ch.run(event, prefix, cmd, args);
     }
 }

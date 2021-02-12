@@ -28,18 +28,12 @@ import me.evyn.bot.resources.Config;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReadyListener extends ListenerAdapter {
 
-    private ReactionListener reactionListener;
-
-    /**
-     * Creates the ReadyListener object and initializes the instance variables
-     * @param reactionListener listener event
-     */
-    public ReadyListener(ReactionListener reactionListener) {
-        this.reactionListener = reactionListener;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadyListener.class);
 
     /**
      * When bot is ready, sends information to console and sets bot presence.
@@ -47,9 +41,7 @@ public class ReadyListener extends ListenerAdapter {
      */
     @Override
     public void onReady(ReadyEvent event) {
-        System.out.printf("Bot is ready in %s guilds",event.getGuildTotalCount());
+        LOGGER.info("Bot is ready in " + event.getGuildTotalCount() + " guilds");
         event.getJDA().getPresence().setActivity(Activity.watching("you | " + Config.prefix + "help"));
-
-        reactionListener.init(event.getJDA().getGuildById("662895013352701952"));
     }
 }
