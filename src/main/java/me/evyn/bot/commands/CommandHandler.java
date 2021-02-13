@@ -24,6 +24,7 @@
 
 package me.evyn.bot.commands;
 
+import me.evyn.bot.commands.fun.PrequelMeme;
 import me.evyn.bot.commands.fun.Say;
 import me.evyn.bot.commands.info.*;
 import me.evyn.bot.commands.moderation.Ban;
@@ -54,6 +55,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new Kick());
         CommandHandler.addCommand(new Ban());
         CommandHandler.addCommand(new Purge());
+        CommandHandler.addCommand(new PrequelMeme());
     }
 
     private static void addCommand(Command cmd) {
