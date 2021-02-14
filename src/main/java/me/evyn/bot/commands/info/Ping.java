@@ -50,7 +50,7 @@ public class Ping implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList();
     }
 
     @Override

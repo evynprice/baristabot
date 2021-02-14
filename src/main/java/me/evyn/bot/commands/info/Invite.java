@@ -49,7 +49,7 @@ public class Invite implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList();
     }
 
     @Override

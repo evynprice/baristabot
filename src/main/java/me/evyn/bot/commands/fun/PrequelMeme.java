@@ -44,7 +44,7 @@ public class PrequelMeme implements Command {
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
         Random r = new Random();
 
-        event.getChannel()
+        event.getTextChannel()
                 .sendMessage(this.memes.get(r.nextInt(this.memes.size())))
                 .queue();
     }
@@ -56,7 +56,7 @@ public class PrequelMeme implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList();
     }
 
     @Override
