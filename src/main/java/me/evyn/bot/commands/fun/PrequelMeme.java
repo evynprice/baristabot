@@ -34,7 +34,7 @@ import java.util.Random;
 
 public class PrequelMeme implements Command {
 
-    List<String> memes;
+    private List<String> memes;
 
     public PrequelMeme() {
         this.memes = RESTCollector.getPrequelMemes();
