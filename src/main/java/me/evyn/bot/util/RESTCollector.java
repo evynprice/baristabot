@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSONAPICollector {
+public class RESTCollector {
 
     @SuppressWarnings("unchecked")
     public static List<String> getPrequelMemes() {
