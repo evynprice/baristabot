@@ -17,11 +17,9 @@
 hs_err_pid*
 
 # other project files
+.gradle
 database.db
 .env.local
-.gradle
 build
-gradlew.bat
-gradlew
 .idea
 **/.DS_Store
