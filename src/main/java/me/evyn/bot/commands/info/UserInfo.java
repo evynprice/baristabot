@@ -28,6 +28,7 @@ import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -44,6 +45,15 @@ public class UserInfo implements Command {
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
+
+        if (!event.isFromType(ChannelType.TEXT)) {
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers");
+
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
+        }
 
         Member member;
         User user;

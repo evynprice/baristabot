@@ -44,7 +44,7 @@ public class Usage implements Command {
 
         if (args.length == 0) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Proper usage is " + prefix +
-                    " usage [command]");
+                    "usage [command]");
 
             event.getChannel()
                     .sendMessage(eb.build())
@@ -63,21 +63,21 @@ public class Usage implements Command {
             } else {
                 EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
-                eb.setTitle("Usage: " + command.getName())
-                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
-                        .addField("Command Usage", prefix + command.getUsage(), false);
-
                 StringBuilder sb = new StringBuilder();
 
-                for (String alias : command.getAliases()) {
-                    sb.append(alias).append(", ");
-                }
-
-                if (sb.length() > 2) {
+                if (command.getAliases().size() == 0) {
+                    sb.append("None");
+                } else {
+                    for (String alias : command.getAliases()) {
+                        sb.append(alias).append(", ");
+                    }
                     sb.delete(sb.length() - 2, sb.length());
-                    eb.addField("Aliases", String.valueOf(sb.toString()), false);
                 }
 
+                eb.setTitle("Usage: " + command.getName())
+                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                        .addField("Command Usage", prefix + command.getUsage(), false)
+                        .addField("Aliases", sb.toString(), false);
 
                 event.getChannel()
                         .sendMessage(eb.build())
@@ -93,7 +93,7 @@ public class Usage implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList();
     }
 
     @Override

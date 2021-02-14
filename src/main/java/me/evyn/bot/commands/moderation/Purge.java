@@ -42,6 +42,15 @@ public class Purge implements Command {
 
         User bot = event.getJDA().getSelfUser();
 
+        if (!event.isFromType(ChannelType.TEXT)) {
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
+
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
+        }
+
         EmbedBuilder eb;
 
         // bot lacks manage messages permission

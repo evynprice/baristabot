@@ -25,7 +25,9 @@
 package me.evyn.bot.listeners;
 
 import me.evyn.bot.commands.CommandHandler;
+import me.evyn.bot.resources.Config;
 import me.evyn.bot.util.DataSourceCollector;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -50,8 +52,14 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
-        // get specific guild prefix from DB and return
-        String prefix = DataSourceCollector.getPrefix(event.getGuild().getIdLong());
+        // get prefix
+        String prefix;
+
+        if (event.isFromType(ChannelType.TEXT)) {
+            prefix = DataSourceCollector.getPrefix(event.getGuild().getIdLong());
+        } else {
+            prefix = Config.prefix;
+        }
 
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
@@ -73,14 +81,6 @@ public class MessageListener extends ListenerAdapter {
 
         // First cleaned message argument is the command
         String cmd = msg[0];
-
-        // Return if command is null
-        if (cmd == null) {
-            event.getChannel()
-                    .sendMessage("Error: That command does not exist")
-                    .queue();
-            return;
-        }
 
         // Add arguments if there were any
         String[] args;
