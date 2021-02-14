@@ -26,7 +26,7 @@ package me.evyn.bot.commands.fun;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import me.evyn.bot.util.JSONAPICollector;
+import me.evyn.bot.util.RESTCollector;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PrequelMeme implements Command {
     List<String> memes;
 
     public PrequelMeme() {
-        this.memes = JSONAPICollector.getPrequelMemes();
+        this.memes = RESTCollector.getPrequelMemes();
     }
 
     @Override
