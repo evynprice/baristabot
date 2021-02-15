@@ -78,9 +78,9 @@ public class Config {
 
         } else {
             // If .env.local is not present, set config variables to system environment variables
-            botToken = System.getenv("TOKEN");
-            botPrefix = System.getenv("PREFIX");
-            botAdminId = System.getenv("ADMINID");
+            botToken = System.getenv("BOT_TOKEN");
+            botPrefix = System.getenv("BOT_PREFIX");
+            botAdminId = System.getenv("BOT_ADMINID");
         }
 
         // Check if token exists and if it matches the proper pattern. Exit if error occurs
