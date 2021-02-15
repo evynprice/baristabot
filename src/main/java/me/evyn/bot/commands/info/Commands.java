@@ -37,15 +37,23 @@ import java.util.List;
 
 public class Commands implements Command {
 
+    /**
+     * Provides a list of bot commands separated by type
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
+        // create StringBuilder objects for each command type
         StringBuilder info = new StringBuilder();
         StringBuilder fun = new StringBuilder();
         StringBuilder moderation = new StringBuilder();
 
+        // stream commands and organize by type
         CommandHandler.commands.stream()
                 .forEach(command -> {
                     if (command.getType() == CommandType.INFO) {
@@ -57,10 +65,12 @@ public class Commands implements Command {
                     }
                 });
 
+        // delete last comma and space of each string
         info.delete(info.length() - 2, info.length());
         fun.delete(fun.length() - 2, fun.length());
         moderation.delete(moderation.length() -2, moderation.length());
 
+        // build embed and send
         EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
         eb.setTitle("Bot commands")
                 .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +

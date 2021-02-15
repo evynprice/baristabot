@@ -32,6 +32,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.Arrays;
@@ -39,11 +40,18 @@ import java.util.List;
 
 public class Ban implements Command {
 
+    /**
+     * If command is ran in guild and bot + user have perms, bans user with optional message deletion time and reason
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
+        // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
 
@@ -78,7 +86,7 @@ public class Ban implements Command {
             providedMember = tempMember.complete();
 
             // member was not found
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | ErrorResponseException e) {
 
             eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided member was not found.");
 

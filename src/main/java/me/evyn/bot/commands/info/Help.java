@@ -37,6 +37,12 @@ import java.util.List;
 
 public class Help implements Command {
 
+    /**
+     * Provides bot information and credits
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 

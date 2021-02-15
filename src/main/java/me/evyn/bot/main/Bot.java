@@ -34,10 +34,13 @@ import net.dv8tion.jda.api.JDABuilder;
 public class Bot {
 
     public static void main(String[] args) throws Exception {
-
         Bot.startBot();
     }
 
+    /**
+     * Starts the bot instance
+     * @throws Exception
+     */
     private static void startBot() throws Exception {
 
         // start and test DataSource connection

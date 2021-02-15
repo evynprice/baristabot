@@ -36,16 +36,26 @@ public class PrequelMeme implements Command {
 
     private List<String> memes;
 
+    /**
+     * Constructor calls the RestCollector method and pulls a list of the top images in r/prequelmemes
+     */
     public PrequelMeme() {
         this.memes = RESTCollector.getPrequelMemes();
     }
 
+    /**
+     * Pulls a random image from the List<String> instance variable and posts in channel
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
         Random r = new Random();
+        int num = r.nextInt(this.memes.size());
 
         event.getTextChannel()
-                .sendMessage(this.memes.get(r.nextInt(this.memes.size())))
+                .sendMessage(this.memes.get(num))
                 .queue();
     }
 
