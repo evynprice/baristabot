@@ -1,6 +1,20 @@
 ![Barista](branding/banner.jpg)
 
 # Barista Bot
+
+[build-status]: https://jenkins.evyn.me/job/baristabot
+[discord-invite]: https://discord.gg/u8hAu6sEtw
+[jenkins]: https://jenkins.evyn.me/job/baristabot
+[license]: https://github.com/thetechnicalfox/baristabot/tree/master/LICENSE
+[build-shield]: https://jenkins.evyn.me/buildStatus/icon?job=baristabot
+[discord-shield]: https://discord.com/api/guilds/809619459475898388/widget.png
+[jenkins-shield]: https://img.shields.io/badge/Download-Jenkins-blue.svg
+[license-shield]: https://img.shields.io/badge/License-MIT-red.svg
+[ ![build-shield][] ][build-status]
+[ ![jenkins-shield][] ][jenkins]
+[ ![discord-shield][] ][discord-invite]
+[ ![license-shield][] ][license]
+
 Barista Bot is a simple yet effective, multi-purpose Discord bot written with [JDA](https://github.com/DV8FromTheWorld/JDA). It makes a perfect addition to your community, study group, or hangout server, and it adds a bit of fun and utility to any environment.
 
 All of the code is open-source under the MIT license and included right here on GitHub. Contributions are encouraged and anyone is welcome to self host their own versions of Barista Bot as long as proper credit is given as described by the [license](LICENSE).
