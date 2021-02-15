@@ -32,6 +32,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.time.LocalDateTime;
@@ -41,11 +42,18 @@ import java.util.List;
 
 public class UserInfo implements Command {
 
+    /**
+     * If ran in guild, provides information on user account
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
+        // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers");
 
@@ -58,17 +66,21 @@ public class UserInfo implements Command {
         Member member;
         User user;
 
+        // no arguments are present
         if (args.length == 0) {
             member = event.getMember();
             user = member.getUser();
         } else {
+            // get Id from argument
             String Id = args[0].replaceAll("[^0-9.]", "");
 
+            // attempt to find user with Id
             try {
                 RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
                 member = tempMember.complete();
                 user = member.getUser();
-            } catch (Exception e) {
+            } catch (IllegalArgumentException | ErrorResponseException e) {
+                // user could not be found
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That Id is either invalid or " +
                         "the user provided is not in the server.");
                 event.getChannel()
@@ -78,6 +90,7 @@ public class UserInfo implements Command {
             }
         }
 
+        // create date time for user join and register date
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a");
         LocalDateTime registerTimeCreated = user.getTimeCreated().toLocalDateTime();
         LocalDateTime joinTimeCreated = member.getTimeJoined().toLocalDateTime();
@@ -85,7 +98,7 @@ public class UserInfo implements Command {
         String registerDate = formatter.format(registerTimeCreated);
         String joinDate = formatter.format(joinTimeCreated);
 
-        // format roles
+        // find and format roles
         StringBuilder roles = new StringBuilder();
 
         if (member.getRoles().size() > 0) {

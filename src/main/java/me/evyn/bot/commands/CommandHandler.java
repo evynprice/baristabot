@@ -40,6 +40,7 @@ public class CommandHandler {
 
     public static final List<Command> commands;
 
+    // load commands on initiation
     static {
         commands = new ArrayList<>();
         CommandHandler.addCommand(new Help());
@@ -58,15 +59,22 @@ public class CommandHandler {
         CommandHandler.addCommand(new PrequelMeme());
     }
 
+    /**
+     * Adds provided command to commands list
+     * @param cmd Command to add
+     */
     private static void addCommand(Command cmd) {
         if(!commands.contains(cmd)) {
             commands.add(cmd);
         }
     }
 
+    /**
+     * Attempts to find provided command name in commands list. Returns command if found, else returns null.
+     * @param cmdName Command to find
+     * @return Command found command
+     */
     public static Command findCommand(String cmdName) {
-
-
         Optional<Command> matching = commands.stream()
                 .filter(command -> command.getName().equals(cmdName) || command.getAliases().contains(cmdName))
                 .findFirst();
@@ -74,6 +82,13 @@ public class CommandHandler {
         return matching.orElse(null);
     }
 
+    /**
+     * Attempts to find command in list and run
+     * @param event Discord API Message Event
+     * @param prefix Bot prefix
+     * @param cmd Command to run
+     * @param args Command arguments
+     */
     public void run(MessageReceivedEvent event, String prefix, String cmd, String[] args) {
 
         Command command = CommandHandler.findCommand(cmd);

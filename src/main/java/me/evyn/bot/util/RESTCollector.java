@@ -37,9 +37,15 @@ import java.util.List;
 
 public class RESTCollector {
 
+    /**
+     * Attempts to collect top 50 posts in r/prequelmemes. Parses JSON objects and sends all image links to
+     * List<String> object.
+     * @return List<String> memes
+     */
     @SuppressWarnings("unchecked")
     public static List<String> getPrequelMemes() {
         try {
+            // attempt to connect to webpage
             URL url = new URL("https://www.reddit.com/r/prequelmemes.json?sort=top&t=week&limit=50");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -49,6 +55,7 @@ public class RESTCollector {
 
             int responseCode = conn.getResponseCode();
 
+            // Check if connection was a success
             if (responseCode != 200) {
                 throw new RuntimeException("HttpResponseCode: " + responseCode);
 
@@ -57,6 +64,7 @@ public class RESTCollector {
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder sb = new StringBuilder();
 
+                // append all JSON to StringBuilder object
                 String line;
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
@@ -65,13 +73,16 @@ public class RESTCollector {
 
                 JSONParser parse = new JSONParser();
 
+                // Convert StringBuilder to JSONObject
                 JSONObject jobj = (JSONObject) parse.parse(sb.toString());
 
+                // Go through nested JSON Objects
                 JSONObject data = (JSONObject) jobj.get("data");
                 JSONArray children = (JSONArray) data.get("children");
 
                 List<String> images = new ArrayList<>();
 
+                // Iterate through children and find posts that contain images. Add image links to List<String> object
                 for(Object child : children) {
                     JSONObject c = (JSONObject) child;
                     JSONObject childData = (JSONObject) c.get("data");

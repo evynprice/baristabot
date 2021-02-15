@@ -34,11 +34,38 @@ import java.util.List;
 
 public class Invite implements Command {
 
+    /**
+     * Generates and sends an oauth2 invite link
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
         event.getChannel()
                 .sendMessage("Invite me to your own Discord server using this link: " + "\n" + "<" +
-                        event.getJDA().getInviteUrl(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) + ">")
+                        event.getJDA().getInviteUrl(
+                                Permission.MANAGE_ROLES,
+                                Permission.MANAGE_CHANNEL,
+                                Permission.KICK_MEMBERS,
+                                Permission.BAN_MEMBERS,
+                                Permission.NICKNAME_MANAGE,
+                                Permission.NICKNAME_CHANGE,
+                                Permission.MANAGE_EMOTES,
+                                Permission.VIEW_AUDIT_LOGS,
+                                Permission.MESSAGE_READ,
+                                Permission.MESSAGE_WRITE,
+                                Permission.MESSAGE_MANAGE,
+                                Permission.MESSAGE_EMBED_LINKS,
+                                Permission.MESSAGE_ATTACH_FILES,
+                                Permission.MESSAGE_HISTORY,
+                                Permission.MESSAGE_MENTION_EVERYONE,
+                                Permission.MESSAGE_ADD_REACTION,
+                                Permission.VOICE_CONNECT,
+                                Permission.VOICE_SPEAK,
+                                Permission.VOICE_DEAF_OTHERS,
+                                Permission.VOICE_MOVE_OTHERS
+                        ) + ">")
                 .queue();
     }
 

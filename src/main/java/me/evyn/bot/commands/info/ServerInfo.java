@@ -40,11 +40,18 @@ import java.util.List;
 
 public class ServerInfo implements Command {
 
+    /**
+     * If ran in guild, provides information on it
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
+        // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
 
@@ -56,10 +63,11 @@ public class ServerInfo implements Command {
 
         Guild guild = event.getGuild();
 
+        // create date and time for guild creation
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a");
         LocalDateTime registerTimeCreated = guild.getTimeCreated().toLocalDateTime();
 
-        String createDate = formatter.format(registerTimeCreated);
+        String creationDate = formatter.format(registerTimeCreated);
 
         EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
         eb.setTitle("Server Info: " + guild.getName())
@@ -69,7 +77,7 @@ public class ServerInfo implements Command {
                 .addField("Owner", guild.getOwner().getUser().getAsTag(), true)
                 .addBlankField(true)
                 .addField("Region", guild.getRegion().getName(), true)
-                .addField("Created", createDate, true)
+                .addField("Created", creationDate, true)
                 .addField("Boost Tier", guild.getBoostTier().name(), true)
                 .addField("Members", "" + guild.getMembers().size(), true)
                 .addField("Channels", "" + guild.getChannels().size(), true)

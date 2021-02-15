@@ -33,6 +33,12 @@ import java.util.List;
 
 public class Support implements Command {
 
+    /**
+     * Sends an invite link to the support server
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
         event.getChannel()

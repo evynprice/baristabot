@@ -39,11 +39,19 @@ import java.util.List;
 
 public class Say implements Command {
 
+    /**
+     * If command is ran in guild, clean any mentions in command arguments and send cleaned content. Then delete
+     * the original message
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
+        // If message is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
 
@@ -55,32 +63,39 @@ public class Say implements Command {
 
         Member botMember = event.getGuild().getSelfMember();
 
+        // check if bot has Manage Messages permissions
         if (botMember.hasPermission(Permission.MESSAGE_MANAGE)) {
 
             if (args.length > 0) {
                 StringBuilder sb = new StringBuilder();
 
+                // delete all occurrences of "@" and append arguments together
                 Arrays.stream(args)
                         .forEach(arg -> {
                             arg = arg.replace("@", "");
                             sb.append(arg).append(" ");
                         });
 
+                // send cleaned command arguments
                 event.getChannel()
                         .sendMessage(sb.toString())
                         .queue();
 
+                // delete original message
                 event.getMessage()
                         .delete()
                         .queue();
             } else {
+                // no command arguments present
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
                         "Try running `" + prefix + "usage say` for proper command usage.");
+
                 event.getChannel()
                         .sendMessage(eb.build())
                         .queue();
             }
         } else {
+            // bot is missing manage messages
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
                             "required permission `Manage Messages`.");
             event.getChannel()

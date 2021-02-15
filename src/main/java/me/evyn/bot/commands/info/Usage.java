@@ -36,11 +36,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Usage implements Command {
+
+    /**
+     * Provides information on command usage and aliases
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
+        // if no arguments are present, send error and return
         if (args.length == 0) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Proper usage is " + prefix +
                     "usage [command]");
@@ -49,21 +57,25 @@ public class Usage implements Command {
                     .sendMessage(eb.build())
                     .queue();
         } else {
+            // attempt to find command
             String cmd = args[0];
 
             Command command = CommandHandler.findCommand(cmd);
 
+            // if command cannot be found, send error and return
             if (command == null) {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Command was not found");
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That command was not found");
 
                 event.getChannel()
                         .sendMessage(eb.build())
                         .queue();
             } else {
+                // found command, generate embed
                 EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
                 StringBuilder sb = new StringBuilder();
 
+                // set command aliases
                 if (command.getAliases().size() == 0) {
                     sb.append("None");
                 } else {

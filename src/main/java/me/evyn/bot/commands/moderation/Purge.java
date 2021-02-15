@@ -37,11 +37,19 @@ import java.util.concurrent.TimeUnit;
 
 public class Purge implements Command {
 
+    /**
+     * If command is ran in guild and bot + user have required permissions, delete selected amount of messages in
+     * current or mentioned channel.
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
+        // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
 
@@ -86,30 +94,37 @@ public class Purge implements Command {
             return;
         }
 
+        // check if arguments matches 0-100
         if (args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
 
+            // add one to amount to also delete command message
             int amount = Integer.valueOf(args[0]) + 1;
 
             if (args.length == 1) {
 
+                // fetch message history
                 MessageHistory history = event.getChannel().getHistory();
                 List<Message> messages = history.retrievePast(amount).complete();
 
+                // purge messages
                 event.getChannel().purgeMessages(messages);
 
                 eb = EmbedCreator.newCommandEmbedMessage(bot);
                 eb.setTitle("Purge")
                         .setDescription("Successfully purged " + args[0] + " messages.");
 
+                // send purge success message
                 Message m = event.getChannel().sendMessage(eb.build()).complete();
 
+                // delete purge success message
                 m.delete().completeAfter(3, TimeUnit.SECONDS);
 
-                // invalid number was given
             } else if (args.length > 1) {
 
+                // get channel Id from arguments
                 String id = args[1].replaceAll("[^0-9]", "");
 
+                // attempt to find channel
                 TextChannel channel = null;
                 try {
                     channel = event.getGuild().getTextChannelById(id);
@@ -122,6 +137,7 @@ public class Purge implements Command {
                     return;
                 }
 
+                // get message history in channel
                 if (channel != null) {
                     MessageHistory history = channel.getHistory();
                     List<Message> messages = history.retrievePast(amount).complete();
@@ -132,12 +148,15 @@ public class Purge implements Command {
                     eb.setTitle("Purge")
                             .setDescription("Successfully purged " + args[0] + " messages.");
 
+                    // send purge success message
                     Message m = event.getChannel().sendMessage(eb.build()).complete();
 
+                    // delete purge success message
                     m.delete().completeAfter(3, TimeUnit.SECONDS);
                 }
             }
         } else {
+            // invalid number of messages selected
             eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid number of messages. Maximum message " +
                     "count is 100.");
 

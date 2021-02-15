@@ -33,6 +33,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.requests.RestAction;
 
@@ -41,11 +42,18 @@ import java.util.List;
 
 public class Kick implements Command {
 
+    /**
+     * If command is ran in guild and bot + user have required permissions, kicks mentioned user with optional reason
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
+        // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
 
@@ -59,23 +67,24 @@ public class Kick implements Command {
 
         EmbedBuilder eb;
 
+        // if Bot does not have Kick Members permission
         if (!botMember.hasPermission(Permission.KICK_MEMBERS)) {
-            // if Bot does not have Kick Members permission
             eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing required " +
                     "permission `Kick Members`.");
         } else {
 
+            // if User does not have Kick Members permission
             if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-                // if User does not have Kick Members permission
                 eb = EmbedCreator.newErrorEmbedMessage(botUser,"User is missing required " +
                         "permission `Kick Members`.");
             } else {
 
+                // no user is provided
                 if (args.length == 0) {
-                    // no user is provided
                     eb = EmbedCreator.newErrorEmbedMessage(botUser, "No user was provided " +
                             "For more information run the command `" + prefix + "usage kick`.");
                 } else {
+
                     // fetch user Id
                     String Id = args[0].replaceAll("[^0-9.]", "");
 
@@ -86,8 +95,8 @@ public class Kick implements Command {
                         eb = EmbedCreator.newCommandEmbedMessage(botUser);
                         eb.setTitle("Kick");
 
+                        // kick with reason
                         if (args.length > 1) {
-                            // kick with reason
                             StringBuilder sb = new StringBuilder();
 
                             for (int i = 1; i < args.length; i++) {
@@ -98,6 +107,7 @@ public class Kick implements Command {
                                             "successfully.")
                                     .addField("Reason", sb.toString(), false);
                         } else {
+
                             // kick without reason
                             event.getGuild()
                                     .kick(providedMember)
@@ -110,13 +120,14 @@ public class Kick implements Command {
                     } catch (HierarchyException e) {
                         eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user has the same " +
                                 "or greater permission levels as the bot.");
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException | ErrorResponseException e) {
                         eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user is either invalid " +
                                 "or not in the server.");
                     }
                 }
             }
         }
+
         // send message
         event.getChannel()
                 .sendMessage(eb.build())

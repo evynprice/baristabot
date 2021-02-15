@@ -38,12 +38,19 @@ import java.util.List;
 
 public class Stats implements Command {
 
+    /**
+     * Provides information on bot instance
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
 
         JDA api = event.getJDA();
         User bot = api.getSelfUser();
 
+        // get process memory usage
         long totalMemory = Runtime.getRuntime().totalMemory() / (1024 * 1024);
         long usedMemory = totalMemory - Runtime.getRuntime().freeMemory() / (1024 * 1024);
 
