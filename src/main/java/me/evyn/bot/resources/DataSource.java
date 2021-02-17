@@ -57,10 +57,11 @@ public class DataSource {
         }
 
         config.setJdbcUrl("jdbc:sqlite:database.db");
-        config.setConnectionTestQuery("SELECT 1");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.getConnectionTestQuery();
+
+        config.addDataSourceProperty("implicitCachingEnabled", "true");
+        config.addDataSourceProperty("maxStatements", "250");
+
         ds = new HikariDataSource(config);
 
         try (final Statement statement = getConnection().createStatement()) {
