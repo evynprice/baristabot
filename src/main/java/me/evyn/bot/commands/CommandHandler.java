@@ -57,6 +57,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new Ban());
         CommandHandler.addCommand(new Purge());
         CommandHandler.addCommand(new PrequelMeme());
+        CommandHandler.addCommand(new Settings());
     }
 
     /**
