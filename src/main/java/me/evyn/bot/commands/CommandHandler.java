@@ -24,6 +24,7 @@
 
 package me.evyn.bot.commands;
 
+import me.evyn.bot.commands.Settings.Settings;
 import me.evyn.bot.commands.fun.PrequelMeme;
 import me.evyn.bot.commands.fun.Say;
 import me.evyn.bot.commands.info.*;
