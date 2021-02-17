@@ -43,6 +43,8 @@ public class Bot {
      */
     private static void startBot() throws Exception {
 
+        Config config = new Config();
+
         // start and test DataSource connection
         DataSource.getConnection().close();
 
