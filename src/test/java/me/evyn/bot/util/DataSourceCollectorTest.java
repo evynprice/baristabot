@@ -37,6 +37,8 @@ public class DataSourceCollectorTest extends TestCase {
 
     @Test
     public void testGetPrefix() {
+        Config config = new Config();
+
         // attempt to add guild into database
         try (final PreparedStatement insertStatement = DataSource
                 .getConnection()
