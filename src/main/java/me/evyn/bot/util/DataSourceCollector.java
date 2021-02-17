@@ -43,14 +43,11 @@ public class DataSourceCollector {
                 .getConnection()
                 .prepareStatement("SELECT prefix FROM guild_settings WHERE guild_id = ?")) {
 
-            preparedStatement.setString(1, String.valueOf(guildId));
+                 preparedStatement.setString(1, String.valueOf(guildId));
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-                String prefix;
                 if (resultSet.next()) {
-                    prefix = resultSet.getString("prefix");
-                    resultSet.close();
-                    return prefix;
+                    return resultSet.getString("prefix");
                 }
             }
 
@@ -69,14 +66,14 @@ public class DataSourceCollector {
         return Config.prefix;
     }
 
-    public static boolean setPrefix(long guildId, String prefix) {
+    public static boolean setPrefix(long guildId, String newPrefix) {
         try(final PreparedStatement preparedStatement = DataSource
             .getConnection()
             .prepareStatement("UPDATE guild_settings SET prefix = ? WHERE guild_id = ? ")) {
 
-            preparedStatement.setString(1, prefix);
+            preparedStatement.setString(1, newPrefix);
             preparedStatement.setString(2, String.valueOf(guildId));
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
             return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
