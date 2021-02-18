@@ -52,6 +52,7 @@ public class Commands implements Command {
         StringBuilder info = new StringBuilder();
         StringBuilder fun = new StringBuilder();
         StringBuilder moderation = new StringBuilder();
+        StringBuilder admin = new StringBuilder();
 
         // stream commands and organize by type
         CommandHandler.commands.stream()
@@ -62,13 +63,15 @@ public class Commands implements Command {
                         fun.append(command.getName()).append(", ");
                     } else if (command.getType() == CommandType.MODERATION) {
                         moderation.append(command.getName()).append(", ");
+                    } else if (command.getType() == CommandType.ADMIN) {
+                        admin.append(command.getName()).append(", ");
                     }
                 });
 
         // delete last comma and space of each string
         info.delete(info.length() - 2, info.length());
         fun.delete(fun.length() - 2, fun.length());
-        moderation.delete(moderation.length() -2, moderation.length());
+        admin.delete(admin.length() - 2, admin.length());
 
         // build embed and send
         EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
@@ -77,7 +80,8 @@ public class Commands implements Command {
                         "To find the proper usage of a command, run `" + prefix + "usage commandName`")
                 .addField("Info", info.toString(), false)
                 .addField("Fun", fun.toString(), false)
-                .addField("Moderation", moderation.toString(), false);
+                .addField("Moderation", moderation.toString(), false)
+                .addField("Admin", admin.toString(), false);
 
         event.getChannel()
                 .sendMessage(eb.build())

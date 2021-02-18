@@ -26,8 +26,6 @@ package me.evyn.bot.commands.Settings;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import me.evyn.bot.resources.Config;
-import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -36,9 +34,26 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Settings implements Command {
+
+    private static Map<String, Setting> settings;
+
+    static {
+        settings = new HashMap<>();
+        Settings.add(new Prefix());
+    }
+
+    private static void add(Setting setting) {
+        settings.putIfAbsent(setting.getName(), setting);
+    }
+
+    public static Map<String, Setting> getSettings() {
+        return settings;
+    }
 
     @Override
     public void run(MessageReceivedEvent event, String prefix, String[] args) {
@@ -54,55 +69,84 @@ public class Settings implements Command {
             return;
         }
 
-        // If user does not have manage server permissions, send error and return
+        // If user is missing permissions, send error and return
         if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
             EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "You do not have the required " +
-                    "permissions to run this command. Missing permission `manage server`");
+                            " permissions to run this command. Missing permission `Manage  Server`.");
+
             event.getChannel()
                     .sendMessage(eb.build())
                     .queue();
             return;
         }
 
-        // if no setting is listed, send usage error and return
-        if (args.length == 0) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid arguments. " +
-                    "Please run `" + prefix + "usage settings` for more information.");
+        // if command is [prefix] help and/or no arguments are present
+        if (args.length == 0 || (args.length == 1 && args[0].equals("help"))) {
+            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+
+            StringBuilder sb = new StringBuilder();
+            settings.keySet().stream()
+                    .forEach(setting -> sb.append(setting).append(", "));
+
+            sb.delete(sb.length() - 2, sb.length());
+
+            eb.setTitle(event.getJDA().getSelfUser().getName() + " Settings")
+                    .setDescription("Listed below are all of the customizable bot settings. To get more information " +
+                            "on any command, run `" + prefix + "settings help [settingName]`")
+                    .addField("Standard usage", prefix + "settings [setting] (new value)", false)
+                    .addField("Settings", sb.toString(), false);
+
             event.getChannel()
                     .sendMessage(eb.build())
                     .queue();
             return;
         }
 
-        // prefix settings
-        if (args[0].equals("prefix")) {
-            long guildId = event.getGuild().getIdLong();
+        // if setting is "help"
+        if (args[0].equals("help")) {
+            Setting setting = settings.getOrDefault(args[1], null);
 
-            // no arguments are present
-            if (args.length == 1) {
-               event.getChannel()
-                       .sendMessage("Current prefix is: `"  + prefix + "`")
-                       .queue();
+            // setting exists
+            if (setting != null) {
+                EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+                eb.setTitle("Settings: " + setting.getName())
+                        .setDescription(setting.getDescription())
+                        .addField("Usage", prefix + setting.getUsage(), false)
+                        .addField("Example", prefix + setting.getExample(), false);
+
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+                return;
+                // setting does not exist
             } else {
-                // prefix reset
-                boolean status;
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That setting does not exist.");
 
-                if (args[1].equals("reset")) {
-                    status = DataSourceCollector.setPrefix(guildId, Config.prefix);
-                } else {
-                    // prefix [prefix]
-                    status = DataSourceCollector.setPrefix(guildId, args[1]);
-                }
-                if (status) {
-                    event.getChannel()
-                            .sendMessage("Prefix updated successfully!")
-                            .queue();
-                } else {
-                    event.getChannel()
-                            .sendMessage("There was an error updating the prefix. Please try again later.")
-                            .queue();
-                }
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+                return;
             }
+        }
+
+        Setting setting = settings.getOrDefault(args[0], null);
+
+        // if the only arguments are the setting name, send the current value. Else, update the value
+        if (setting != null) {
+            if (args.length == 1) {
+                setting.view(event, prefix, args);
+            } else {
+                setting.edit(event, prefix, args);
+            }
+            // setting does not exist
+        } else {
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That setting does not exist try " +
+                    "running `" + prefix + "settings help` for more information.");
+
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
         }
     }
 
@@ -118,12 +162,12 @@ public class Settings implements Command {
 
     @Override
     public String getDescription() {
-        return "Changes per-guild settings";
+        return "Changes per-guild settings. Run `settings help` for more information";
     }
 
     @Override
     public String getUsage() {
-        return "setting [setting] (value)";
+        return "settings [setting] (value)";
     }
 
     @Override
