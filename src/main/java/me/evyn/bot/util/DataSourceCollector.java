@@ -82,7 +82,7 @@ public class DataSourceCollector {
         }
     }
 
-    public static char getEmbed(long guildId) {
+    public static Boolean getEmbed(long guildId) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
                 .prepareStatement("SELECT embed FROM guild_settings WHERE guild_id = ?")) {
@@ -93,9 +93,9 @@ public class DataSourceCollector {
                 if (resultSet.next()) {
                     String results = resultSet.getString("embed");
                     if (results.equals("1")) {
-                        return '1';
+                        return true;
                     } else if (results.equals("0")) {
-                        return '0';
+                        return false;
                     }
                 }
             }
@@ -103,7 +103,7 @@ public class DataSourceCollector {
             throwables.printStackTrace();
         }
 
-        return 'p';
+        return null;
     }
 
     public static boolean setEmbed(long guildId, boolean value) {

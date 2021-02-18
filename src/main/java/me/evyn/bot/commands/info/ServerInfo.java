@@ -26,6 +26,7 @@ package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -47,7 +48,7 @@ public class ServerInfo implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
@@ -69,23 +70,34 @@ public class ServerInfo implements Command {
 
         String creationDate = formatter.format(registerTimeCreated);
 
-        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
-        eb.setTitle("Server Info: " + guild.getName())
-                .setThumbnail(guild.getIconUrl())
-                .setDescription(guild.getDescription())
-                .addField("Id", guild.getId(), true)
-                .addField("Owner", guild.getOwner().getUser().getAsTag(), true)
-                .addBlankField(true)
-                .addField("Region", guild.getRegion().getName(), true)
-                .addField("Created", creationDate, true)
-                .addField("Boost Tier", guild.getBoostTier().name(), true)
-                .addField("Members", "" + guild.getMembers().size(), true)
-                .addField("Channels", "" + guild.getChannels().size(), true)
-                .addField("Emojis", "" + guild.getEmotes().size(), true);
+        if (embed) {
+            EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
+            eb.setTitle("Server Info: " + guild.getName())
+                    .setThumbnail(guild.getIconUrl())
+                    .setDescription(guild.getDescription())
+                    .addField("ID", guild.getId(), true)
+                    .addField("Owner", guild.getOwner().getUser().getAsTag(), true)
+                    .addBlankField(true)
+                    .addField("Region", guild.getRegion().getName(), true)
+                    .addField("Created", creationDate, true)
+                    .addField("Boost Tier", guild.getBoostTier().name(), true)
+                    .addField("Members", "" + guild.getMembers().size(), true)
+                    .addField("Channels", "" + guild.getChannels().size(), true)
+                    .addField("Emojis", "" + guild.getEmotes().size(), true);
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("**Server Info:** " + guild.getName() + "\n\n" + "**ID:** " + guild.getId() +
+                            "\n" + "**Owner:** " + guild.getOwner().getUser().getAsTag() + "\n" + "**Region:** " +
+                            guild.getRegion().getName() + "\n" + "**Created:** " + creationDate + "\n" +
+                            "**Boost Tier:** " + guild.getBoostTier().name() + "\n" + "**Members:** " +
+                            guild.getMembers().size() + "\n" + "**Channels:** " + guild.getChannels().size() +
+                            "\n" + "**Emojis:** " + guild.getEmotes().size())
+                    .queue();
+        }
     }
 
     @Override

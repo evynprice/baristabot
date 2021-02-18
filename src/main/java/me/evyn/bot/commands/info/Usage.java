@@ -29,6 +29,7 @@ import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -44,18 +45,24 @@ public class Usage implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
         // if no arguments are present, send error and return
         if (args.length == 0) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Proper usage is " + prefix +
-                    "usage [command]");
-
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            String desc = "Proper usage is " + prefix + "usage [command]";
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+                return;
+            } else {
+                event.getChannel()
+                        .sendMessage(desc)
+                        .queue();
+            }
         } else {
             // attempt to find command
             String cmd = args[0];
@@ -64,15 +71,20 @@ public class Usage implements Command {
 
             // if command cannot be found, send error and return
             if (command == null) {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That command was not found");
+                String desc = "That command was not found.";
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage(desc)
+                            .queue();
+                }
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
             } else {
                 // found command, generate embed
-                EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
-
                 StringBuilder sb = new StringBuilder();
 
                 // set command aliases
@@ -85,15 +97,25 @@ public class Usage implements Command {
                     sb.delete(sb.length() - 2, sb.length());
                 }
 
-                eb.setTitle("Usage: " + command.getName())
-                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
-                        .addField("Description", command.getDescription(), false)
-                        .addField("Command Usage", prefix + command.getUsage(), false)
-                        .addField("Aliases", sb.toString(), false);
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot)
+                            .setTitle("Usage: " + command.getName())
+                            .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                            .addField("Description", command.getDescription(), false)
+                            .addField("Command Usage", prefix + command.getUsage(), false)
+                            .addField("Aliases", sb.toString(), false);
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage("**Usage: " + command.getName() + "**\n" + "() Optional Argument" +
+                                    "\n" + "[] Required Argument" + "\n\n" + "**Description:** " +
+                                    command.getDescription() + "\n" + "**Command Usage:** " + prefix +
+                                    command.getUsage() + "\n" + "**Aliases:** " + sb.toString())
+                            .queue();
+                }
             }
         }
     }

@@ -1,17 +1,96 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Evyn Price
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package me.evyn.bot.commands.Settings;
 
+import me.evyn.bot.util.DataSourceCollector;
+import me.evyn.bot.util.EmbedCreator;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class Embeds implements Setting {
+import java.util.Arrays;
+import java.util.List;
+
+public class Embed implements Setting {
 
     @Override
     public void edit(MessageReceivedEvent event, String prefix, String[] args) {
+        User bot = event.getJDA().getSelfUser();
 
+        // too many arguments
+        if(args.length > 2) {
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
+                    prefix + "settings help embed` for more information.");
+
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
+        }
+
+        long guildId = event.getGuild().getIdLong();
+        EmbedBuilder eb;
+
+        List<String> positive = Arrays.asList("true", "enabled", "yes");
+        List<String> negative = Arrays.asList("false", "disabled", "no");
+
+        boolean result = false;
+        if (positive.contains(args[1])) {
+            result = DataSourceCollector.setEmbed(guildId, true);
+        } else if (negative.contains(args[1])) {
+            result = DataSourceCollector.setEmbed(guildId, false);
+        } else {
+            eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
+                    prefix + "settings help embed` for more information.");
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
+        }
+
+        if (result) {
+            eb = EmbedCreator.newCommandEmbedMessage(bot);
+            eb.setColor(0x00CC00)
+                    .setDescription("Success! The new Embed Messages setting will now go into effect.");
+        } else {
+            eb = EmbedCreator.newErrorEmbedMessage(bot, "There was an error updating the setting. Please " +
+                    "try again later.");
+        }
+
+        event.getChannel()
+                .sendMessage(eb.build())
+                .queue();
     }
 
     @Override
     public void view(MessageReceivedEvent event, String prefix, String[] args) {
+        boolean value = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
 
+        event.getChannel()
+                .sendMessage("Current value is: `" + value + "`")
+                .queue();
     }
 
     @Override
@@ -21,16 +100,16 @@ public class Embeds implements Setting {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Changes if the bot should respond with embed messages (Default is true)";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "setting embed (true/false)";
     }
 
     @Override
     public String getExample() {
-        return null;
+        return "setting embed enabled";
     }
 }

@@ -27,8 +27,10 @@ package me.evyn.bot.commands.info;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.BotInfo;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -44,25 +46,38 @@ public class Help implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
-        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
 
-        eb.setDescription("Barista bot is a simple yet effective, multi-purpose Discord bot written with JDA. " +
-                "It makes a perfect addition to your community, study group, or hang out server, and it " +
-                "adds a bit of fun and utility to any environment")
-                .setThumbnail(bot.getAvatarUrl())
-                .addField("Github", "[link](https://github.com/thetechnicalfox/baristabot)", true)
-                .addField("Logo", "[attribution]" +
-                        "(https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt)", true)
-                .addField("Version", BotInfo.BOT_VERSION, true)
-                .addField("Commands", prefix + "commands", false)
-                .addField("Command usage", prefix + "usage [command]", false);
+        if (embed) {
+            EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot);
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+            eb.setDescription("Barista bot is a simple yet effective, multi-purpose Discord bot written with JDA. " +
+                    "It makes a perfect addition to your community, study group, or hang out server, and it " +
+                    "adds a bit of fun and utility to any environment")
+                    .setThumbnail(bot.getAvatarUrl())
+                    .addField("Github", "[link](https://github.com/thetechnicalfox/baristabot)", true)
+                    .addField("Logo", "[attribution]" +
+                            "(https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt)", true)
+                    .addField("Version", BotInfo.BOT_VERSION, true)
+                    .addField("Commands", prefix + "commands", false)
+                    .addField("Command usage", prefix + "usage [command]", false);
+
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("Barista bot is a simple yet effective, multi-purpose Discord bot written with " +
+                            "JDA. It makes a perfect addition to your community, study group, or hang out server, and "+
+                            "it adds a bit of fun and utility to any environment" + "\n\n" + "**Github:**" + "\n" +
+                            "<https://github.com/thetechnicalfox/baristabot>" + "\n\n" + "**Logo:**" + "\n" +
+                            "<https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt>" +
+                            "\n\n" + "**Version:** " + BotInfo.BOT_VERSION + "\n" + "**Commands:** " + prefix + "commands" +
+                            "\n" + "**Command Usage:** " + prefix + "usage [command]")
+                    .queue();
+        }
     }
 
     @Override

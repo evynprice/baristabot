@@ -27,8 +27,10 @@ package me.evyn.bot.commands.info;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -44,8 +46,7 @@ public class Commands implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
-
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         User bot = event.getJDA().getSelfUser();
 
         // create StringBuilder objects for each command type
@@ -71,21 +72,32 @@ public class Commands implements Command {
         // delete last comma and space of each string
         info.delete(info.length() - 2, info.length());
         fun.delete(fun.length() - 2, fun.length());
+        moderation.delete(moderation.length() - 2, moderation.length());
         admin.delete(admin.length() - 2, admin.length());
 
-        // build embed and send
-        EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
-        eb.setTitle("Bot commands")
-                .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +
-                        "To find the proper usage of a command, run `" + prefix + "usage commandName`")
-                .addField("Info", info.toString(), false)
-                .addField("Fun", fun.toString(), false)
-                .addField("Moderation", moderation.toString(), false)
-                .addField("Admin", admin.toString(), false);
+        if (embed) {
+            // build embed and send
+            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+            eb.setTitle("Bot commands")
+                    .setDescription("To run any command, type `" + prefix + "commandName (arguments)`" + "\n" +
+                            "To find the proper usage of a command, run `" + prefix + "usage commandName`")
+                    .addField("Info", info.toString(), false)
+                    .addField("Fun", fun.toString(), false)
+                    .addField("Moderation", moderation.toString(), false)
+                    .addField("Admin", admin.toString(), false);
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("**Bot commands:**" + "\n" + "To run any command, type `" + prefix +
+                            "commandName (arguments)`" + "\n" + "To find the proper usage of a command, run `" +
+                            prefix + "usage commandName`" + "\n\n" + "**Info**" + "\n" + info.toString() + "\n\n" +
+                            "**Fun**" + "\n" + fun.toString() + "\n\n" + "**Moderation**" + "\n" + moderation.toString() +
+                            "\n\n" + "**Admin**" + "\n" + admin.toString())
+                    .queue();
+        }
     }
 
     @Override

@@ -31,6 +31,8 @@ import me.evyn.bot.commands.info.*;
 import me.evyn.bot.commands.moderation.Ban;
 import me.evyn.bot.commands.moderation.Kick;
 import me.evyn.bot.commands.moderation.Purge;
+import me.evyn.bot.util.DataSourceCollector;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -100,7 +102,15 @@ public class CommandHandler {
                     .sendMessage("Error: That command was not found.")
                     .queue();
         } else {
-            command.run(event, prefix, args);
+            boolean embed = true;
+            if (event.isFromGuild()) {
+                if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
+                    embed = false;
+                } else {
+                    embed = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
+                }
+            }
+            command.run(event, prefix, embed, args);
         }
     }
 }
