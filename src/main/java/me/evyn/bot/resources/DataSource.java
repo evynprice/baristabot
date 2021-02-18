@@ -73,10 +73,11 @@ public class DataSource {
         try (final Statement statement = getConnection().createStatement()) {
             final String defaultPrefix = Config.prefix;
 
-            statement.execute("CREATE TABLE IF NOT EXISTS guild_settings (" +
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS guild_settings (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "guild_id VARCHAR(20) NOT NULL," +
-                    "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'" +
+                    "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'," +
+                    "embed VARCHAR(1) NOT NULL DEFAULT '1'" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();
