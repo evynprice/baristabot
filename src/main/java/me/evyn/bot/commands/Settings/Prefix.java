@@ -34,17 +34,24 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Prefix implements Setting {
 
     @Override
-    public void edit(MessageReceivedEvent event, String prefix, String[] args) {
+    public void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         User bot = event.getJDA().getSelfUser();
 
         // too ma ny arguments
         if(args.length > 2) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
-                    prefix + "settings help prefix` for more information.");
+            String desc = "Invalid command usage. Please run `" + prefix + "settings help prefix` for more information.";
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + desc)
+                        .queue();
+            }
+
             return;
         }
 
@@ -58,24 +65,41 @@ public class Prefix implements Setting {
         }
 
         boolean status = DataSourceCollector.setPrefix(guildId, newPrefix);
-        EmbedBuilder eb;
+        EmbedBuilder eb = null;
+        String msg = "";
 
         if (status) {
-            eb = EmbedCreator.newCommandEmbedMessage(bot);
-            eb.setColor(0x00CC00)
-                    .setDescription("Success! New prefix is `" + newPrefix + "`");
+            String desc = "Success! New prefix is `" + newPrefix + "`";
+            if (embed) {
+                eb = EmbedCreator.newCommandEmbedMessage(bot);
+                eb.setColor(0x00CC00)
+                        .setDescription(desc);
+            } else {
+                msg = desc;
+            }
+
         } else {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "There was an error resetting the prefix. Please " +
-                    "try again later.");
+            String desc = "There was an error resetting the prefix. Please try again later.";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
+            } else {
+                msg = "ERROR: " + desc;
+            }
         }
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+        if (embed) {
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(msg)
+                    .queue();
+        }
     }
 
     @Override
-    public void view(MessageReceivedEvent event, String prefix, String[] args) {
+    public void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         event.getChannel()
                 .sendMessage("Current prefix is: `" + prefix + "`")
                 .queue();

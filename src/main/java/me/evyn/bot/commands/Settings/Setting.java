@@ -28,9 +28,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public interface Setting {
 
-    void edit(MessageReceivedEvent event, String prefix, String[] args);
+    void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args);
 
-    void view(MessageReceivedEvent event, String prefix, String[] args);
+    void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args);
 
     String getName();
 

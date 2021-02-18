@@ -81,11 +81,17 @@ public class UserInfo implements Command {
                 user = member.getUser();
             } catch (IllegalArgumentException | ErrorResponseException e) {
                 // user could not be found
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That Id is either invalid or " +
-                        "the user provided is not in the server.");
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                String desc = "That ID is either invalid or the user provided is not in the server.";
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage("ERROR: " + desc)
+                            .queue();
+                }
                 return;
             }
         }
@@ -110,20 +116,29 @@ public class UserInfo implements Command {
             roles.append("none");
         }
 
-        EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
-        eb.setTitle(user.getAsTag())
-                .setThumbnail(user.getAvatarUrl())
-                .addField("ID", user.getId(), true)
-                .addField("Bot", String.valueOf(user.isBot()), true)
-                .addField("Joined", joinDate, true)
-                .addField("Registered", registerDate, false)
-                .addField("Roles (" + member.getRoles().size() + ")", roles.toString(), true);
+        if (embed) {
+            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
-        // send embed
-        event.getTextChannel()
-                .sendMessage(eb.build())
-                .queue();
+            eb.setTitle(user.getAsTag())
+                    .setThumbnail(user.getAvatarUrl())
+                    .addField("ID", user.getId(), true)
+                    .addField("Bot", String.valueOf(user.isBot()), true)
+                    .addField("Joined", joinDate, true)
+                    .addField("Registered", registerDate, false)
+                    .addField("Roles (" + member.getRoles().size() + ")", roles.toString(), true);
+
+            // send embed
+            event.getTextChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("**User: **" + user.getAsTag() + "\n\n" + "**ID:** " + user.getId() + "\n" +
+                            "**Bot:** " + user.isBot() + "\n" + "**Joined:** " + joinDate + "\n" + "**Registered:** " +
+                            registerDate + "\n" + "**Roles (" + member.getRoles().size() + "):** " + roles.toString())
+                    .queue();
+        }
     }
 
     @Override

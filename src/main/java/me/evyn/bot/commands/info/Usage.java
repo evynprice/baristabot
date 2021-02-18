@@ -60,7 +60,7 @@ public class Usage implements Command {
                 return;
             } else {
                 event.getChannel()
-                        .sendMessage(desc)
+                        .sendMessage("ERROR: " + desc)
                         .queue();
             }
         } else {
@@ -79,7 +79,7 @@ public class Usage implements Command {
                             .queue();
                 } else {
                     event.getChannel()
-                            .sendMessage(desc)
+                            .sendMessage("ERROR: " + desc)
                             .queue();
                 }
 

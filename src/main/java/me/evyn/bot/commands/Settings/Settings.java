@@ -72,18 +72,25 @@ public class Settings implements Command {
 
         // If user is missing permissions, send error and return
         if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "You do not have the required " +
-                            " permissions to run this command. Missing permission `Manage  Server`.");
+            String desc = "You do not have the required permissions to run this command. Missing permission `Manage " +
+                    "Server`";
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + desc)
+                        .queue();
+            }
+
             return;
         }
 
         // if command is [prefix] help and/or no arguments are present
         if (args.length == 0 || (args.length == 1 && args[0].equals("help"))) {
-            EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
 
             StringBuilder sb = new StringBuilder();
             settings.keySet().stream()
@@ -91,15 +98,26 @@ public class Settings implements Command {
 
             sb.delete(sb.length() - 2, sb.length());
 
-            eb.setTitle(event.getJDA().getSelfUser().getName() + " Settings")
-                    .setDescription("Listed below are all of the customizable bot settings. To get more information " +
-                            "on any command, run `" + prefix + "settings help [settingName]`")
-                    .addField("Standard usage", prefix + "settings [setting] (new value)", false)
-                    .addField("Settings", sb.toString(), false);
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+                eb.setTitle(event.getJDA().getSelfUser().getName() + " Settings")
+                        .setDescription("Listed below are all of the customizable bot settings. To get more information " +
+                                "on any command, run `" + prefix + "settings help [settingName]`")
+                        .addField("Standard usage", prefix + "settings [setting] (new value)", false)
+                        .addField("Settings", sb.toString(), false);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("**" + event.getJDA().getSelfUser().getName() + " Settings**" + "\n" +
+                                "Listed below are all of the customizable bot settings. To get more information on " +
+                                "any command, run `" + prefix + "settings help [settingName]`" + "\n\n" +
+                                "**Standard Usage:** " + prefix + "settings [setting] (new value)" + "\n" +
+                                "**Settings:** " + sb.toString())
+                        .queue();
+            }
             return;
         }
 
@@ -109,24 +127,41 @@ public class Settings implements Command {
 
             // setting exists
             if (setting != null) {
-                EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
-                eb.setTitle("Settings: " + setting.getName())
-                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
-                        .addField("Description", setting.getDescription(), false)
-                        .addField("Usage", prefix + setting.getUsage(), false)
-                        .addField("Example", prefix + setting.getExample(), false);
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
+                    eb.setTitle("Settings: " + setting.getName())
+                            .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                            .addField("Description", setting.getDescription(), false)
+                            .addField("Usage", prefix + setting.getUsage(), false)
+                            .addField("Example", prefix + setting.getExample(), false);
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage("**Settings: **" + setting.getName() + "\n" + "() Optional Argument " +
+                                    "\n" + "[] Required Argument" + "\n\n" + "**Description: ** " +
+                                    setting.getDescription() + "\n" + "**Usage:** " + prefix + setting.getUsage() +
+                                    "**Example:** " + prefix + setting.getExample())
+                            .queue();
+                }
+
                 return;
                 // setting does not exist
             } else {
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That setting does not exist.");
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That setting does not exist.");
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage("ERROR: That setting does not exist.")
+                            .queue();
+                }
+
                 return;
             }
         }
@@ -136,18 +171,26 @@ public class Settings implements Command {
         // if the only arguments are the setting name, send the current value. Else, update the value
         if (setting != null) {
             if (args.length == 1) {
-                setting.view(event, prefix, args);
+                setting.view(event, prefix, embed, args);
             } else {
-                setting.edit(event, prefix, args);
+                setting.edit(event, prefix, embed, args);
             }
             // setting does not exist
         } else {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "That setting does not exist try " +
-                    "running `" + prefix + "settings help` for more information.");
+            String desc = "That setting does not exist. Try running `" + prefix + "settings help` for more " +
+                    "information.";
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + desc)
+                        .queue();
+            }
+
             return;
         }
     }

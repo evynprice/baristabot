@@ -36,22 +36,30 @@ import java.util.List;
 public class Embed implements Setting {
 
     @Override
-    public void edit(MessageReceivedEvent event, String prefix, String[] args) {
+    public void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         User bot = event.getJDA().getSelfUser();
+
+        String usageErr = "Invalid command usage. Please run `" + prefix + "settings help embed` for more information.";
 
         // too many arguments
         if(args.length > 2) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
-                    prefix + "settings help embed` for more information.");
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, usageErr);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + usageErr)
+                        .queue();
+            }
+
             return;
         }
 
         long guildId = event.getGuild().getIdLong();
-        EmbedBuilder eb;
+        EmbedBuilder eb = null;
 
         List<String> positive = Arrays.asList("true", "enabled", "yes");
         List<String> negative = Arrays.asList("false", "disabled", "no");
@@ -62,30 +70,54 @@ public class Embed implements Setting {
         } else if (negative.contains(args[1])) {
             result = DataSourceCollector.setEmbed(guildId, false);
         } else {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
-                    prefix + "settings help embed` for more information.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, usageErr);
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + usageErr)
+                        .queue();
+            }
+
             return;
         }
 
+        String message = "";
         if (result) {
-            eb = EmbedCreator.newCommandEmbedMessage(bot);
-            eb.setColor(0x00CC00)
-                    .setDescription("Success! The new Embed Messages setting will now go into effect.");
+            String msg = "Success! The new Embed Messages setting will now go into effect.";
+            if (embed) {
+                eb = EmbedCreator.newCommandEmbedMessage(bot);
+                eb.setColor(0x00CC00)
+                        .setDescription(msg);
+            } else {
+                message = msg;
+            }
+
         } else {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "There was an error updating the setting. Please " +
-                    "try again later.");
+            String msg = "There was an error updating the setting. Please try again later.";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+            } else {
+                message = msg;
+            }
+
         }
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+        if (embed) {
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(message)
+                    .queue();
+        }
     }
 
     @Override
-    public void view(MessageReceivedEvent event, String prefix, String[] args) {
+    public void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         boolean value = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
 
         event.getChannel()
