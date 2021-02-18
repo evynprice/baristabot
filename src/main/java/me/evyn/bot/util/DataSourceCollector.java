@@ -35,6 +35,7 @@ public class DataSourceCollector {
 
     /**
      * Returns the current prefix of the guild provided
+     *
      * @param guildId long Discord API Guild Id
      * @return String bot prefix
      */
@@ -64,5 +65,64 @@ public class DataSourceCollector {
         }
 
         return Config.prefix;
+    }
+
+    public static boolean setPrefix(long guildId, String newPrefix) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("UPDATE guild_settings SET prefix = ? WHERE guild_id = ? ")) {
+
+            preparedStatement.setString(1, newPrefix);
+            preparedStatement.setString(2, String.valueOf(guildId));
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Boolean getEmbed(long guildId) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("SELECT embed FROM guild_settings WHERE guild_id = ?")) {
+
+            preparedStatement.setString(1, String.valueOf(guildId));
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String results = resultSet.getString("embed");
+                    if (results.equals("1")) {
+                        return true;
+                    } else if (results.equals("0")) {
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static boolean setEmbed(long guildId, boolean value) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("UPDATE guild_settings SET embed = ? WHERE guild_id = ? ")) {
+
+            if (value) {
+                preparedStatement.setString(1, String.valueOf(1));
+            } else {
+                preparedStatement.setString(1, String.valueOf(0));
+            }
+
+            preparedStatement.setString(2, String.valueOf(guildId));
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
     }
 }

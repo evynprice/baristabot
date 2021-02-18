@@ -45,7 +45,7 @@ public class Purge implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
 
@@ -60,37 +60,59 @@ public class Purge implements Command {
         }
 
         EmbedBuilder eb;
+        String message = "";
 
         // bot lacks manage messages permission
         if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "Bot is missing the required permission: " +
-                    "`Manage Messages`.");
+            message = "Bot is missing the required permission: `Manage Messages`";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + message)
+                        .queue();
+            }
+
             return;
         }
 
         // user lacks manage messages permission
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "You are missing the required permission: " +
-                    "`Manage Messages`.");
+            message = "You are missing the required permission: `Manage Messages`";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + message)
+                        .queue();
+            }
             return;
         }
 
         // no arguments were given
         if (args.length == 0) {
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid command usage. Please run `" +
-                    prefix + "usage purge` for more information.");
+            message = "Invalid command usage. Please run `" + prefix + "usage purge` for more information.";
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
+
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + message)
+                        .queue();
+            }
             return;
         }
 
@@ -110,11 +132,20 @@ public class Purge implements Command {
                 event.getChannel().purgeMessages(messages);
 
                 eb = EmbedCreator.newCommandEmbedMessage(bot);
-                eb.setTitle("Purge")
-                        .setDescription("Successfully purged " + args[0] + " messages.");
+                Message m;
 
-                // send purge success message
-                Message m = event.getChannel().sendMessage(eb.build()).complete();
+                if (embed) {
+                    eb.setTitle("Purge")
+                            .setDescription("Successfully purged " + args[0] + " messages.");
+
+                    // send purge success message
+                    m = event.getChannel().sendMessage(eb.build()).complete();
+                } else {
+                    message = "Successfully purged " + args[0] + " messages.";
+                    m = event.getChannel()
+                            .sendMessage(message)
+                            .complete();
+                }
 
                 // delete purge success message
                 m.delete().completeAfter(3, TimeUnit.SECONDS);
@@ -129,11 +160,17 @@ public class Purge implements Command {
                 try {
                     channel = event.getGuild().getTextChannelById(id);
                 } catch (NumberFormatException e ) {
-                    eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid channel provided.");
 
-                    event.getChannel()
-                            .sendMessage(eb.build())
-                            .queue();
+                    if (embed) {
+                        eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid channel provided.");
+                        event.getChannel()
+                                .sendMessage(eb.build())
+                                .queue();
+                    } else {
+                        event.getChannel()
+                                .sendMessage("ERROR: Invalid channel provided.")
+                                .queue();
+                    }
                     return;
                 }
 
@@ -145,11 +182,18 @@ public class Purge implements Command {
                     event.getChannel().purgeMessages(messages);
 
                     eb = EmbedCreator.newCommandEmbedMessage(bot);
-                    eb.setTitle("Purge")
-                            .setDescription("Successfully purged " + args[0] + " messages.");
+                    Message m;
+                    if (embed) {
+                        eb.setTitle("Purge")
+                                .setDescription("Successfully purged " + args[0] + " messages.");
 
-                    // send purge success message
-                    Message m = event.getChannel().sendMessage(eb.build()).complete();
+                        // send purge success message
+                        m = event.getChannel().sendMessage(eb.build()).complete();
+                    } else {
+                        m = event.getChannel()
+                                .sendMessage("Successfully purged " + args[0] + " messages")
+                                .complete();
+                    }
 
                     // delete purge success message
                     m.delete().completeAfter(3, TimeUnit.SECONDS);
@@ -157,12 +201,18 @@ public class Purge implements Command {
             }
         } else {
             // invalid number of messages selected
-            eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid number of messages. Maximum message " +
-                    "count is 100.");
+            message = "Invalid number of messages. Maximum Message count is 100";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                    .sendMessage("ERROR: " + message)
                     .queue();
+            }
         }
     }
 

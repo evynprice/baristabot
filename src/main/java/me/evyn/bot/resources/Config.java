@@ -36,13 +36,16 @@ public class Config {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
-    public static final String token;
-    public static final String prefix;
-    public static final String adminId;
+    public static String token;
+    public static String prefix;
+    public static String adminId;
 
-    static {
-        // attempt to read variables in .env.local
-        File env = new File(".env.local");
+    public Config() {
+        new Config(".env.local");
+    }
+
+    public Config(String configName) {
+        File env = new File(configName);
 
         // temp variables
         String botToken = null;

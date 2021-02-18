@@ -26,6 +26,7 @@ package me.evyn.bot.commands.fun;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -47,7 +48,7 @@ public class Say implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
@@ -87,20 +88,37 @@ public class Say implements Command {
                         .queue();
             } else {
                 // no command arguments present
-                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
-                        "Try running `" + prefix + "usage say` for proper command usage.");
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "Missing message. " +
+                            "Try running `" + prefix + "usage say` for proper command usage.");
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                    return;
+                } else {
+                    event.getChannel()
+                            .sendMessage("ERROR: Missing message. " + "\n"
+                                    + "Try running `" + prefix + "usage say` for proper command usage.")
+                            .queue();
+                    return;
+                }
+
             }
         } else {
             // bot is missing manage messages
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
-                            "required permission `Manage Messages`.");
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
+                        "required permission `Manage Messages`.");
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+                return;
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: The bot is missing the required permission `Manage Messages`.")
+                        .queue();
+            }
         }
     }
 

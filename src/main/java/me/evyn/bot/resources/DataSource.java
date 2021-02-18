@@ -57,20 +57,27 @@ public class DataSource {
         }
 
         config.setJdbcUrl("jdbc:sqlite:database.db");
-        config.setConnectionTestQuery("SELECT 1");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.setMinimumIdle(100);
+        config.setMaximumPoolSize(1000);
+
         ds = new HikariDataSource(config);
+
+        try {
+            Connection conn = ds.getConnection();
+            conn.isValid(0);
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         try (final Statement statement = getConnection().createStatement()) {
             final String defaultPrefix = Config.prefix;
 
-            // language=SQLite
-            statement.execute("CREATE TABLE IF NOT EXISTS guild_settings (" +
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS guild_settings (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "guild_ID VARCHAR(20) NOT NULL," +
-                    "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'" +
+                    "guild_id VARCHAR(20) NOT NULL," +
+                    "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'," +
+                    "embed VARCHAR(1) NOT NULL DEFAULT '1'" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();

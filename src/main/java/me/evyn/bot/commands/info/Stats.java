@@ -27,9 +27,11 @@ package me.evyn.bot.commands.info;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.BotInfo;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -45,7 +47,7 @@ public class Stats implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         JDA api = event.getJDA();
         User bot = api.getSelfUser();
@@ -60,18 +62,27 @@ public class Stats implements Command {
         int channels = api.getTextChannels().size();
         int users = api.getUsers().size();
 
-        EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot)
-                .setTitle(bot.getName() + " statistics")
-                .addField("Memory", memory, true)
-                .addField("Guilds", "" + guilds, true)
-                .addField("Channels", "" + channels, true)
-                .addField("Users", "" + users, true)
-                .addField("Version", BotInfo.BOT_VERSION, true)
-                .addField("JDA", BotInfo.JDA_VERSION, true);
+        if (embed) {
+            EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot)
+                    .setTitle(bot.getName() + " statistics")
+                    .addField("Memory", memory, true)
+                    .addField("Guilds", "" + guilds, true)
+                    .addField("Channels", "" + channels, true)
+                    .addField("Users", "" + users, true)
+                    .addField("Version", BotInfo.BOT_VERSION, true)
+                    .addField("JDA", BotInfo.JDA_VERSION, true);
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("**" + bot.getName() + " statistics**" + "\n\n" + "**Memory:** " + memory +
+                            "\n" + "**Guilds:** " + guilds + "\n" + "**Channels:** " + channels + "\n" +
+                            "**Users:** " + users + "\n" + "**Version:** " + BotInfo.BOT_VERSION + "\n" + "**JDA:** " +
+                            BotInfo.JDA_VERSION)
+                    .queue();
+        }
     }
 
     @Override

@@ -22,36 +22,21 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.main;
+package me.evyn.bot.commands.Settings;
 
-import me.evyn.bot.listeners.ReadyListener;
-import me.evyn.bot.resources.Config;
-import me.evyn.bot.listeners.MessageListener;
-import me.evyn.bot.resources.DataSource;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class Bot {
+public interface Setting {
 
-    public static void main(String[] args) throws Exception {
-        Bot.startBot();
-    }
+    void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args);
 
-    /**
-     * Starts the bot instance
-     * @throws Exception
-     */
-    private static void startBot() throws Exception {
+    void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args);
 
-        Config config = new Config();
+    String getName();
 
-        // start and test DataSource connection
-        DataSource.getConnection().close();
+    String getDescription();
 
-        // Start the bot instance
-        JDA api = JDABuilder.createDefault(Config.token)
-                .addEventListeners(new MessageListener())
-                .addEventListeners(new ReadyListener())
-                .build();
-    }
+    String getUsage();
+
+    String getExample();
 }

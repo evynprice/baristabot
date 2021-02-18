@@ -26,6 +26,11 @@ package me.evyn.bot.commands.info;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.util.DataSourceCollector;
+import me.evyn.bot.util.EmbedCreator;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
@@ -40,11 +45,24 @@ public class Support implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
-        event.getChannel()
-                .sendMessage("Need help with the bot or want to chat with the maintainers? Join our support " +
-                        "Discord server here: " + "\n" + "https://discord.gg/u8hAu6sEtw")
-                .queue();
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
+
+        User bot = event.getJDA().getSelfUser();
+
+        if (embed) {
+            EmbedBuilder eb = EmbedCreator.newInfoEmbedMessage(bot)
+                    .setTitle("Barista Bot Support")
+                    .setDescription("Need help with the bot or want to chat with the maintainers? Join our support " +
+                            "Discord server [here](https://discord.gg/u8hAu6sEtw)");
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage("Need help with the bot or want to chat with the maintainers? Join our support " +
+                            "Discord server here: " + "\n" + "https://discord.gg/u8hAu6sEtw")
+                    .queue();
+        }
     }
 
     @Override

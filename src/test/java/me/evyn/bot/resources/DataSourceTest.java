@@ -22,36 +22,27 @@
  * SOFTWARE.
  */
 
-package me.evyn.bot.main;
+package me.evyn.bot.resources;
 
-import me.evyn.bot.listeners.ReadyListener;
-import me.evyn.bot.resources.Config;
-import me.evyn.bot.listeners.MessageListener;
-import me.evyn.bot.resources.DataSource;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
+import junit.framework.TestCase;
+import org.junit.Test;
 
-public class Bot {
+import java.sql.Connection;
+import java.sql.SQLException;
 
-    public static void main(String[] args) throws Exception {
-        Bot.startBot();
-    }
+public class DataSourceTest extends TestCase {
 
-    /**
-     * Starts the bot instance
-     * @throws Exception
-     */
-    private static void startBot() throws Exception {
+    @Test
+    public void testDataSourceConnection() {
+        Connection conn = null;
 
-        Config config = new Config();
-
-        // start and test DataSource connection
-        DataSource.getConnection().close();
-
-        // Start the bot instance
-        JDA api = JDABuilder.createDefault(Config.token)
-                .addEventListeners(new MessageListener())
-                .addEventListeners(new ReadyListener())
-                .build();
+        try {
+            conn = DataSource.getConnection();
+            assertTrue(conn.isValid(0));
+            conn.close();
+            assertTrue(conn.isClosed());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

@@ -50,7 +50,7 @@ public class PrequelMeme implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         Random r = new Random();
         int num = r.nextInt(this.memes.size());
 

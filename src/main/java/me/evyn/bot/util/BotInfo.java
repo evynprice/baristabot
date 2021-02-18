@@ -26,7 +26,7 @@ package me.evyn.bot.util;
 
 public class BotInfo {
 
-    public static final String BOT_VERSION = "1.2.3";
+    public static final String BOT_VERSION = "1.3.0";
 
     public static final String JDA_VERSION = "4.2.0_168";
 }

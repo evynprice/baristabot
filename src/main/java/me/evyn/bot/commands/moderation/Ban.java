@@ -47,7 +47,7 @@ public class Ban implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
@@ -67,12 +67,18 @@ public class Ban implements Command {
 
         // if no arguments are present send error message
         if (args.length == 0) {
-            eb = EmbedCreator.newErrorEmbedMessage(botUser, "Invalid command usage. Please run `" +
-                    prefix + "usage ban` for more information.");
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(botUser, "Invalid command usage. Please run `" +
+                        prefix + "usage ban` for more information.");
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel().sendMessage("ERROR: Invalid command usage. Please run `" + prefix + "usage" +
+                        " ban` for more information.")
+                        .queue();
+            }
             return;
         }
 
@@ -88,49 +94,83 @@ public class Ban implements Command {
             // member was not found
         } catch (IllegalArgumentException | ErrorResponseException e) {
 
-            eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided member was not found.");
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided member was not found.");
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: Provided member was not found.")
+                        .queue();
+            }
             return;
         }
 
         // check if bot has required permissions
         if (!botMember.canInteract(providedMember)) {
-            eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot does not have the required " +
-                    "permissions for this command.");
+            String desc = "The bot does not have the required permissions for this command. Missing permission " +
+                    "`Ban Members`";
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + desc)
+                        .queue();
+            }
+
             return;
         }
 
         // check if user has required permissions
         if (!event.getMember().canInteract(providedMember)) {
-            eb = EmbedCreator.newErrorEmbedMessage(botUser, "You do not have the required " +
-                    "permissions for this command.");
+            String desc = "You do not have the required permissions for this command. Missing permission `Ban Members`";
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + desc)
+                        .queue();
+            }
             return;
         }
 
         eb = EmbedCreator.newCommandEmbedMessage(botUser);
-        eb.setTitle("Ban");
-        eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was banned successfully.");
+        String banMsg = "";
+        if (embed) {
+            eb.setTitle("Ban");
+            eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was banned successfully.");
+        } else {
+            banMsg = "User `" + providedMember.getUser().getAsTag() + "` was banned successfully.";
+        }
 
         // Run command if no time or reason is specified
         if (args.length == 1) {
             providedMember.ban(0).queue();
 
-            eb.addField("Deleted message history (days)", "0", true);
+            if (embed) {
+                eb.addField("Deleted message history (days)", "0", true);
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                banMsg += "\n" + "Deleted message history (days): 0";
+                event.getChannel()
+                        .sendMessage(banMsg)
+                        .queue();
+            }
             return;
         }
 
@@ -144,11 +184,19 @@ public class Ban implements Command {
                 if (args.length == 2) {
                     providedMember.ban(Integer.valueOf(args[1])).queue();
 
-                    eb.addField("Deleted message history (days)", args[1], true);
+                    if (embed) {
+                        eb.addField("Deleted message history (days)", args[1], true);
 
-                    event.getChannel()
-                            .sendMessage(eb.build())
-                            .queue();
+                        event.getChannel()
+                                .sendMessage(eb.build())
+                                .queue();
+                    } else {
+                        banMsg += "\n" + "Deleted message history (days): " + args[1];
+                        event.getChannel()
+                                .sendMessage(banMsg)
+                                .queue();
+                    }
+
                     return;
                 } else {
                     // reason provided
@@ -161,22 +209,38 @@ public class Ban implements Command {
 
                     providedMember.ban(Integer.valueOf(args[1]), sb.toString()).queue();
 
-                    eb.addField("Deleted message history (days)", args[1], true)
-                            .addField("Reason", sb.toString(), false);
+                    if (embed) {
+                        eb.addField("Deleted message history (days)", args[1], true)
+                                .addField("Reason", sb.toString(), false);
 
-                    event.getChannel()
-                            .sendMessage(eb.build())
-                            .queue();
+                        event.getChannel()
+                                .sendMessage(eb.build())
+                                .queue();
+                    } else {
+                        banMsg += "\n" + "Deleted message history (days): " + args[1] + "\n" + "Reason: " +
+                                sb.toString();
+                        event.getChannel()
+                                .sendMessage(banMsg)
+                                .queue();
+                    }
+
                     return;
                 }
 
             } else {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser, "Invalid arguments. Please run `" + prefix +
-                        "usage ban` for more information.");
+                String desc = "Invalid arguments. Please run `" + prefix + "usage ban` for more information.";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage(desc)
+                            .queue();
+                }
+
                 return;
             }
         }
@@ -190,12 +254,19 @@ public class Ban implements Command {
 
         providedMember.ban(0, sb.toString()).queue();
 
-        eb.addField("Deleted message history (days)", "0", true);
-        eb.addField("Reason", sb.toString(), false);
+        if (embed) {
+            eb.addField("Deleted message history (days)", "0", true);
+            eb.addField("Reason", sb.toString(), false);
 
-        event.getChannel()
-                .sendMessage(eb.build())
-                .queue();
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            banMsg += "Deleted message history (days): 0" + "\n" + "Reason: " + sb.toString();
+            event.getChannel()
+                    .sendMessage(banMsg)
+                    .queue();
+        }
     }
 
     @Override

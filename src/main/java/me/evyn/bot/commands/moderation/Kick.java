@@ -49,7 +49,7 @@ public class Kick implements Command {
      * @param args Command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
 
@@ -65,24 +65,41 @@ public class Kick implements Command {
 
         Member botMember = event.getGuild().getSelfMember();
 
-        EmbedBuilder eb;
+        EmbedBuilder eb = null;
+        String message = "";
 
         // if Bot does not have Kick Members permission
         if (!botMember.hasPermission(Permission.KICK_MEMBERS)) {
-            eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing required " +
-                    "permission `Kick Members`.");
+            String desc = "The bot is missing the required permission `Kick Members`";
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+            } else {
+                message = "ERROR: " + desc;
+            }
+
         } else {
 
             // if User does not have Kick Members permission
             if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser,"User is missing required " +
-                        "permission `Kick Members`.");
+                String desc = "You are missing the required permission `Kick Members`";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(botUser,desc);
+                } else {
+                    message = "ERROR: " + desc;
+                }
+
             } else {
 
                 // no user is provided
                 if (args.length == 0) {
-                    eb = EmbedCreator.newErrorEmbedMessage(botUser, "No user was provided " +
-                            "For more information run the command `" + prefix + "usage kick`.");
+                    String desc = "No user was provided. For more information run the command `" + prefix + "usage " +
+                            "kick`";
+                    if (embed) {
+                        eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+                    } else {
+                        message = "ERROR: " + desc;
+                    }
+
                 } else {
 
                     // fetch user Id
@@ -93,7 +110,11 @@ public class Kick implements Command {
                         Member providedMember = tempMember.complete();
 
                         eb = EmbedCreator.newCommandEmbedMessage(botUser);
-                        eb.setTitle("Kick");
+
+                        if (embed) {
+                            eb.setTitle("Kick");
+
+                        }
 
                         // kick with reason
                         if (args.length > 1) {
@@ -103,9 +124,14 @@ public class Kick implements Command {
                                 sb.append(args[i]).append(" ");
                             }
 
-                            eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was kicked " +
-                                            "successfully.")
-                                    .addField("Reason", sb.toString(), false);
+                            if (embed) {
+                                eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was kicked " +
+                                        "successfully.")
+                                        .addField("Reason", sb.toString(), false);
+                            } else {
+                                message = "User `" + providedMember.getUser().getAsTag() + "` was kicked " +
+                                        "successfully." + "\n" + "Reason: " + sb.toString();
+                            }
                         } else {
 
                             // kick without reason
@@ -113,25 +139,44 @@ public class Kick implements Command {
                                     .kick(providedMember)
                                     .queue();
 
-                                    eb.setDescription("User " + providedMember.getUser().getAsTag() + " was kicked " +
-                                            "successfully.");
+                            String desc = "User `" + providedMember.getUser().getAsTag() + "` was kicked " +
+                                    "successfully.";
+                            if (embed) {
+                                eb.setDescription(desc);
 
+                            } else {
+                                message = desc;
+                            }
                         }
                     } catch (HierarchyException e) {
-                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user has the same " +
-                                "or greater permission levels as the bot.");
+                        String desc = "Provided user has the same or greater permission levels as the bot.";
+                        if (embed) {
+                            eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+                        } else {
+                            message = "ERROR" + desc;
+                        }
                     } catch (IllegalArgumentException | ErrorResponseException e) {
-                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided user is either invalid " +
-                                "or not in the server.");
+                        String desc = "Provided user is either invalid or is no longer in the server.";
+                        if (embed) {
+                            eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+                        } else {
+                            message = "ERROR: " + desc;
+                        }
                     }
                 }
             }
         }
 
         // send message
-        event.getChannel()
+        if (embed) {
+            event.getChannel()
                 .sendMessage(eb.build())
                 .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(message)
+                    .queue();
+        }
     }
 
     @Override
