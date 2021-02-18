@@ -87,6 +87,7 @@ public class Usage implements Command {
 
                 eb.setTitle("Usage: " + command.getName())
                         .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                        .addField("Description", command.getDescription(), false)
                         .addField("Command Usage", prefix + command.getUsage(), false)
                         .addField("Aliases", sb.toString(), false);
 

@@ -110,7 +110,8 @@ public class Settings implements Command {
             if (setting != null) {
                 EmbedBuilder eb = EmbedCreator.newCommandEmbedMessage(bot);
                 eb.setTitle("Settings: " + setting.getName())
-                        .setDescription(setting.getDescription())
+                        .setDescription("() Optional Argument" + "\n" + "[] Required Argument")
+                        .addField("Description", setting.getDescription(), false)
                         .addField("Usage", prefix + setting.getUsage(), false)
                         .addField("Example", prefix + setting.getExample(), false);
 
