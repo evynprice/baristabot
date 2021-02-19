@@ -77,7 +77,8 @@ public class DataSource {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "guild_id VARCHAR(20) NOT NULL," +
                     "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'," +
-                    "embed VARCHAR(1) NOT NULL DEFAULT '1'" +
+                    "embed VARCHAR(1) NOT NULL DEFAULT '1'," + "modlog_id VARCHAR(18) NOT NULL DEFAULT '" +
+                    "000000000000000000" + "'" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();

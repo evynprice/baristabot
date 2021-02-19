@@ -46,6 +46,7 @@ public class Settings implements Command {
         settings = new HashMap<>();
         Settings.add(new Prefix());
         Settings.add(new Embed());
+        Settings.add(new ModLogs());
     }
 
     private static void add(Setting setting) {
