@@ -27,8 +27,7 @@ Have questions or want to hang out and talk about the world of Discord bots? Joi
 ## Wiki
 Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/evynprice/baristabot/wiki/Commands).
 
+<!--
 ## Contribution
 Are you a fellow developer and looking to add your own features or improvements? Please check out the contribution page [here](https://github.com/evynprice/baristabot/wiki/Contribution).
-
-## Bugs
-Find one of those nasty bugs? Please fill out a bug report [here]() (Coming soon)
+-->
