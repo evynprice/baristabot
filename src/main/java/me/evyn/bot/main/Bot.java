@@ -32,6 +32,7 @@ import me.evyn.bot.resources.DataSource;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Bot {
 
@@ -53,6 +54,7 @@ public class Bot {
         // Start the bot instance
         JDA api = JDABuilder.createDefault(Config.token)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .addEventListeners(new MessageListener())
                 .addEventListeners(new ReadyListener())
                 .addEventListeners(new ActivityListener())

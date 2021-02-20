@@ -77,7 +77,9 @@ public class ActivityLogs implements Setting {
             String channelId = args[1].replaceAll("[^0-9]", "");
 
             try {
-                channel = event.getGuild().getTextChannelById(channelId);
+                if (!channelId.equals("")) {
+                    channel = event.getGuild().getTextChannelById(channelId);
+                }
             } catch (NumberFormatException e) {
 
                 String msg = "The provided channel is invalid. Please choose a valid channel.";
@@ -103,9 +105,9 @@ public class ActivityLogs implements Setting {
         if (result) {
             String msg = "";
             if (channel != null) {
-                msg = "Success! The new mod-log channel will be " + channel.getAsMention();
+                msg = "Success! The new activity-log channel will be " + channel.getAsMention();
             } else {
-                msg = "Success! The mod-log setting has been disabled.";
+                msg = "Success! The activity-log setting has been disabled.";
             }
             if (embed) {
                 eb = EmbedCreator.newCommandEmbedMessage(bot);
