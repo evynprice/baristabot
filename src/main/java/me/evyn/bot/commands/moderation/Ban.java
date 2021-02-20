@@ -34,6 +34,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.RestAction;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -190,14 +191,13 @@ public class Ban implements Command {
                                 if (embed) {
                                     EmbedBuilder modLog = new EmbedBuilder()
                                             .setDescription(logMessage)
-                                            .setColor(0xFF0000);
+                                            .setColor(0xFF0000)
+                                            .setTimestamp(Instant.now());
 
-                                    event.getChannel()
-                                            .sendMessage(modLog.build())
+                                    modLogs.sendMessage(modLog.build())
                                             .queue();
                                 } else {
-                                    event.getChannel()
-                                            .sendMessage(logMessage)
+                                    modLogs.sendMessage(logMessage)
                                             .queue();
                                 }
                             }

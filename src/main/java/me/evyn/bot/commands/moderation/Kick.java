@@ -26,17 +26,21 @@ package me.evyn.bot.commands.moderation;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.commands.Settings.ModLogs;
+import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.requests.RestAction;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,25 +117,20 @@ public class Kick implements Command {
 
                         if (embed) {
                             eb.setTitle("Kick");
-
                         }
+
+                        StringBuilder sb = new StringBuilder();
 
                         // kick with reason
                         if (args.length > 1) {
-                            StringBuilder sb = new StringBuilder();
 
                             for (int i = 1; i < args.length; i++) {
                                 sb.append(args[i]).append(" ");
                             }
 
-                            if (embed) {
-                                eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was kicked " +
-                                        "successfully.")
-                                        .addField("Reason", sb.toString(), false);
-                            } else {
-                                message = "User `" + providedMember.getUser().getAsTag() + "` was kicked " +
-                                        "successfully." + "\n" + "Reason: " + sb.toString();
-                            }
+                            event.getGuild()
+                                    .kick(providedMember, sb.toString())
+                                    .queue();
                         } else {
 
                             // kick without reason
@@ -139,15 +138,46 @@ public class Kick implements Command {
                                     .kick(providedMember)
                                     .queue();
 
-                            String desc = "User `" + providedMember.getUser().getAsTag() + "` was kicked " +
-                                    "successfully.";
-                            if (embed) {
-                                eb.setDescription(desc);
+                        }
 
+                        String desc = "User `" + providedMember.getUser().getAsTag() + "` was kicked " +
+                                "successfully.";
+                        if (embed) {
+                            eb.setDescription(desc);
+
+                        } else {
+                            message = desc;
+                        }
+
+                        TextChannel modLogs = ModLogs.getModLogChannel(event, event.getGuild().getIdLong());
+
+                        if (modLogs != null) {
+                            String logMessage = "**Action:** Kick" + "\n" + "**User:** " +
+                                    providedMember.getUser().getAsTag() + " (" +
+                                    providedMember.getUser().getId() + ") " + "\n" + "**Reason:** ";
+
+                            if (sb.toString().equals("")) {
+                                logMessage += "None";
                             } else {
-                                message = desc;
+                                logMessage += sb.toString();
+                            }
+
+                            logMessage += "\n" + "**Moderator:** " + event.getAuthor().getAsTag();
+
+                            if (embed) {
+                                EmbedBuilder modLog = new EmbedBuilder()
+                                        .setDescription(logMessage)
+                                        .setColor(0xffa500)
+                                        .setTimestamp(Instant.now());
+
+                                modLogs.sendMessage(modLog.build())
+                                        .queue();
+                            } else {
+                                modLogs.sendMessage(logMessage)
+                                        .queue();
                             }
                         }
+
                     } catch (HierarchyException e) {
                         String desc = "Provided user has the same or greater permission levels as the bot.";
                         if (embed) {
