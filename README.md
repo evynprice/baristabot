@@ -5,7 +5,7 @@
 [build-status]: https://jenkins.evyn.me/job/baristabot
 [discord-invite]: https://discord.gg/u8hAu6sEtw
 [jenkins]: https://jenkins.evyn.me/job/baristabot
-[license]: https://github.com/thetechnicalfox/baristabot/tree/master/LICENSE
+[license]: https://github.com/evynprice/baristabot/tree/master/LICENSE
 [build-shield]: https://jenkins.evyn.me/buildStatus/icon?job=baristabot
 [discord-shield]: https://discord.com/api/guilds/809619459475898388/widget.png
 [jenkins-shield]: https://img.shields.io/badge/Download-Jenkins-blue.svg
@@ -25,10 +25,10 @@ Add me to your Discord server [here](https://discord.com/api/oauth2/authorize?cl
 Have questions or want to hang out and talk about the world of Discord bots? Join our community server [here](https://discord.gg/u8hAu6sEtw).
 
 ## Wiki
-Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/thetechnicalfox/baristabot/wiki/Commands).
+Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/evynprice/baristabot/wiki/Commands).
 
 ## Contribution
-Are you a fellow developer and looking to add your own features or improvements? Please check out the contribution page [here](https://github.com/thetechnicalfox/baristabot/wiki/Contribution).
+Are you a fellow developer and looking to add your own features or improvements? Please check out the contribution page [here](https://github.com/evynprice/baristabot/wiki/Contribution).
 
 ## Bugs
 Find one of those nasty bugs? Please fill out a bug report [here]() (Coming soon)
