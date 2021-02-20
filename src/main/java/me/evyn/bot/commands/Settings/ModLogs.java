@@ -164,7 +164,7 @@ public class ModLogs implements Setting {
 
     @Override
     public String getUsage() {
-        return "settings mod-logs (disabled/channelId/ChannelMention)";
+        return "settings mod-logs (disabled/channel-id/ChannelMention)";
     }
 
     @Override
