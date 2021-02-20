@@ -164,4 +164,43 @@ public class DataSourceCollector {
             return false;
         }
     }
+
+    public static String getActivityLog(long guildId) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("SELECT activitylog_id FROM guild_settings WHERE guild_id = ?")) {
+
+            preparedStatement.setString(1, String.valueOf(guildId));
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String results = resultSet.getString("activitylog_id");
+                    if (results.equals("0")) {
+                        return null;
+                    } else {
+                        return results;
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static boolean setActivityLog(long guildId, long channelId) {
+        try (final PreparedStatement preparedStatement = DataSource
+                .getConnection()
+                .prepareStatement("UPDATE guild_settings SET activitylog_id = ? WHERE guild_id = ? ")) {
+
+            preparedStatement.setString(1, String.valueOf(channelId));
+            preparedStatement.setString(2, String.valueOf(guildId));
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
 }

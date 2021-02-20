@@ -47,6 +47,7 @@ public class Settings implements Command {
         Settings.add(new Prefix());
         Settings.add(new Embed());
         Settings.add(new ModLogs());
+        Settings.add(new ActivityLogs());
     }
 
     private static void add(Setting setting) {
