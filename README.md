@@ -2,11 +2,11 @@
 
 # Barista Bot
 
-[build-status]: https://jenkins.evyn.me/job/baristabot
+[build-status]: https://ci.evyn.me/job/baristabot
 [discord-invite]: https://discord.gg/u8hAu6sEtw
-[jenkins]: https://jenkins.evyn.me/job/baristabot
+[jenkins]: https://ci.evyn.me/job/baristabot
 [license]: https://github.com/evynprice/baristabot/tree/master/LICENSE
-[build-shield]: https://jenkins.evyn.me/buildStatus/icon?job=baristabot
+[build-shield]: https://ci.evyn.me/buildStatus/icon?job=baristabot
 [discord-shield]: https://discord.com/api/guilds/809619459475898388/widget.png
 [jenkins-shield]: https://img.shields.io/badge/Download-Jenkins-blue.svg
 [license-shield]: https://img.shields.io/badge/License-MIT-red.svg
