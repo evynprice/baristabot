@@ -25,10 +25,12 @@
 package me.evyn.bot.listeners;
 
 import me.evyn.bot.commands.CommandHandler;
+import me.evyn.bot.commands.fun.Counting;
 import me.evyn.bot.resources.Config;
 import me.evyn.bot.util.DataSourceCollector;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -52,14 +54,17 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
-        // get prefix
         String prefix;
+        String counting = null;
 
         if (event.isFromType(ChannelType.TEXT)) {
             prefix = DataSourceCollector.getPrefix(event.getGuild().getIdLong());
+            counting = DataSourceCollector.getCountingChannel(event.getGuild().getIdLong());
         } else {
             prefix = Config.prefix;
         }
+
+        long guildId = event.getGuild().getIdLong();
 
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
@@ -68,6 +73,61 @@ public class MessageListener extends ListenerAdapter {
                             "Try running `%shelp` for more information",prefix, prefix))
                     .queue();
             return;
+        }
+
+        // if content starts with number and counting game is enabled
+        if (counting != null) {
+            // find counting channel
+            TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
+
+            // counting channel exits and message contains number
+            if (countingChannel != null && content.matches(".*[0-9]+.*")) {
+
+                // replace all non-numbers and fetch integer value
+                String msg = content.replaceAll("[^0-9]", "");
+
+                int msgCount;
+                try {
+                    msgCount = Integer.valueOf(msg);
+                } catch (NumberFormatException e) {
+                    return;
+                }
+
+                // if current channel is counting channel
+                if (event.getChannel().getIdLong() == countingChannel.getIdLong()) {
+
+                    // get current count and the last user ID
+                    String currentCount = DataSourceCollector.getCurrentScore(guildId);
+                    String lastUserId = DataSourceCollector.getLastUserId(guildId);
+
+                    // if provided count is the next value
+                    if ((currentCount.equals("0") && msgCount == Integer.valueOf(currentCount) + 1)||
+                            msgCount == Integer.valueOf(currentCount) + 1 && !event.getMember().getId().equals(lastUserId)) {
+                        DataSourceCollector.setCurrentScore(guildId, String.valueOf(msgCount));
+                        DataSourceCollector.setLastUserId(guildId, event.getAuthor().getId());
+
+                        // get and possibly set top score
+                        int topScore = Integer.valueOf(DataSourceCollector.getTopScore(guildId));
+
+                        if (msgCount > topScore) {
+                            DataSourceCollector.setTopScore(guildId, String.valueOf(msgCount));
+                        }
+
+                        int usrTotalCount = Integer.valueOf(DataSourceCollector.getUserTotalCount(guildId, event.getMember().getIdLong()));
+                        DataSourceCollector.setUserTotalScore(guildId, event.getMember().getIdLong(), String.valueOf((usrTotalCount+1)));
+
+                        event.getMessage().addReaction("\u2705").queue();
+                    } else {
+                        DataSourceCollector.setCurrentScore(event.getGuild().getIdLong(), "0");
+                        event.getMessage().addReaction("\u274C").queue();
+                        event.getChannel()
+                                .sendMessage("\u274C Score lost! Top score was: " + currentCount)
+                                .queue();
+                    }
+                }
+                return;
+            }
+
         }
 
 
