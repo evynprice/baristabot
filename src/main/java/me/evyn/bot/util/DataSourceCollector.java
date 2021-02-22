@@ -408,7 +408,7 @@ public class DataSourceCollector {
     public static Map<String, Integer> getTopUsers(long guildId) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
-                .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_count DESC")) {
+                .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_count DESC LIMIT 10")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
 
