@@ -27,10 +27,8 @@ package me.evyn.bot.commands.info;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.BotInfo;
-import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -43,6 +41,7 @@ public class Help implements Command {
      * Provides bot information and credits
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -57,9 +56,9 @@ public class Help implements Command {
                     "It makes a perfect addition to your community, study group, or hang out server, and it " +
                     "adds a bit of fun and utility to any environment")
                     .setThumbnail(bot.getAvatarUrl())
-                    .addField("Github", "[link](https://github.com/thetechnicalfox/baristabot)", true)
+                    .addField("Github", "[link](https://github.com/evynprice/baristabot)", true)
                     .addField("Logo", "[attribution]" +
-                            "(https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt)", true)
+                            "(https://github.com/evynprice/baristabot/blob/main/branding/attribution.txt)", true)
                     .addField("Version", BotInfo.BOT_VERSION, true)
                     .addField("Commands", prefix + "commands", false)
                     .addField("Command usage", prefix + "usage [command]", false);
@@ -72,8 +71,8 @@ public class Help implements Command {
                     .sendMessage("Barista bot is a simple yet effective, multi-purpose Discord bot written with " +
                             "JDA. It makes a perfect addition to your community, study group, or hang out server, and "+
                             "it adds a bit of fun and utility to any environment" + "\n\n" + "**Github:**" + "\n" +
-                            "<https://github.com/thetechnicalfox/baristabot>" + "\n\n" + "**Logo:**" + "\n" +
-                            "<https://github.com/thetechnicalfox/baristabot/blob/main/branding/attribution.txt>" +
+                            "<https://github.com/evynprice/baristabot>" + "\n\n" + "**Logo:**" + "\n" +
+                            "<https://github.com/evynprice/baristabot/blob/main/branding/attribution.txt>" +
                             "\n\n" + "**Version:** " + BotInfo.BOT_VERSION + "\n" + "**Commands:** " + prefix + "commands" +
                             "\n" + "**Command Usage:** " + prefix + "usage [command]")
                     .queue();

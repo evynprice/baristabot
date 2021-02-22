@@ -47,6 +47,7 @@ public class PrequelMeme implements Command {
      * Pulls a random image from the List<String> instance variable and posts in channel
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override

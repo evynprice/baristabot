@@ -46,6 +46,8 @@ public class Settings implements Command {
         settings = new HashMap<>();
         Settings.add(new Prefix());
         Settings.add(new Embed());
+        Settings.add(new ModLogs());
+        Settings.add(new ActivityLogs());
     }
 
     private static void add(Setting setting) {
@@ -72,8 +74,7 @@ public class Settings implements Command {
 
         // If user is missing permissions, send error and return
         if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-            String desc = "You do not have the required permissions to run this command. Missing permission `Manage " +
-                    "Server`";
+            String desc = "You are missing permission `Manage Server`";
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 

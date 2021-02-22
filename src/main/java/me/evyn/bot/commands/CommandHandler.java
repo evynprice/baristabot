@@ -25,6 +25,7 @@
 package me.evyn.bot.commands;
 
 import me.evyn.bot.commands.Settings.Settings;
+import me.evyn.bot.commands.fun.Counting;
 import me.evyn.bot.commands.fun.PrequelMeme;
 import me.evyn.bot.commands.fun.Say;
 import me.evyn.bot.commands.info.*;
@@ -61,6 +62,7 @@ public class CommandHandler {
         CommandHandler.addCommand(new Purge());
         CommandHandler.addCommand(new PrequelMeme());
         CommandHandler.addCommand(new Settings());
+        CommandHandler.addCommand(new Counting());
     }
 
     /**
@@ -107,7 +109,7 @@ public class CommandHandler {
                 if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
                     embed = false;
                 } else {
-                    embed = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
+                    embed = DataSourceCollector.getGuildEmbed(event.getGuild().getIdLong());
                 }
             }
             command.run(event, prefix, embed, args);

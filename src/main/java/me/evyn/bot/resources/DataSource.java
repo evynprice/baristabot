@@ -70,6 +70,7 @@ public class DataSource {
             throwables.printStackTrace();
         }
 
+        // create settings table
         try (final Statement statement = getConnection().createStatement()) {
             final String defaultPrefix = Config.prefix;
 
@@ -77,11 +78,35 @@ public class DataSource {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "guild_id VARCHAR(20) NOT NULL," +
                     "prefix VARCHAR(255) NOT NULL DEFAULT '" + defaultPrefix +"'," +
-                    "embed VARCHAR(1) NOT NULL DEFAULT '1'" +
+                    "embed VARCHAR(1) NOT NULL DEFAULT '1'," + "modlog_id VARCHAR(18) NOT NULL DEFAULT '" +
+                    "0" + "'," + "activitylog_id VARCHAR(18) NOT NULL DEFAULT '" +
+                    "0'" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // create counting_guilds
+        try (final Statement statement = getConnection().createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS counting_guilds (" +
+                    "guild_id VARCHAR(20) NOT NULL PRIMARY KEY," + "channel VARCHAR(18) NOT NULL DEFAULT " +
+                    "'0'" + ", current_score VARCHAR(1000) NOT NULL DEFAULT '0'," +
+                    "last_userid VARCHAR(18) NOT NULL DEFAULT '0'," + "top_score VARCHAR(1000) NOT NULL DEFAULT '0'" +
+                    ");");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // create counting_users
+       try (final Statement statement = getConnection().createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS counting_users (" +
+                    "guild_id VARCHAR(20) NOT NULL," + "user_id VARCHAR(18) NOT NULL," +
+                    "total_count VARCHAR(10000) DEFAULT '1'," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
+                    ");");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static Connection getConnection() throws SQLException {

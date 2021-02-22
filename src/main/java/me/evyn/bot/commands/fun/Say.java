@@ -26,7 +26,6 @@ package me.evyn.bot.commands.fun;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
-import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -45,6 +44,7 @@ public class Say implements Command {
      * the original message
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -54,7 +54,8 @@ public class Say implements Command {
 
         // If message is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
+            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser,
+                    "This command can only be ran in servers.");
 
             event.getChannel()
                     .sendMessage(eb.build())
@@ -109,14 +110,14 @@ public class Say implements Command {
             // bot is missing manage messages
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "The bot is missing the " +
-                        "required permission `Manage Messages`.");
+                        "`Manage Messages` permission.");
                 event.getChannel()
                         .sendMessage(eb.build())
                         .queue();
                 return;
             } else {
                 event.getChannel()
-                        .sendMessage("ERROR: The bot is missing the required permission `Manage Messages`.")
+                        .sendMessage("ERROR: The bot is missing the `Manage Messages` permission.")
                         .queue();
             }
         }

@@ -26,15 +26,15 @@ package me.evyn.bot.commands.moderation;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.commands.Settings.ModLogs;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.RestAction;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,227 +44,174 @@ public class Ban implements Command {
      * If command is ran in guild and bot + user have perms, bans user with optional message deletion time and reason
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
     public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
+        Member botMember = event.getGuild().getSelfMember();
+        EmbedBuilder eb = null;
+        String message = null;
+
 
         // if command is not ran in guild, send error and return
         if (!event.isFromType(ChannelType.TEXT)) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
+            eb = EmbedCreator.newErrorEmbedMessage(botUser, "This command can only be ran in servers.");
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
-            return;
-        }
-
-        Member botMember = event.getGuild().getSelfMember();
-
-        EmbedBuilder eb;
-
-        // if no arguments are present send error message
-        if (args.length == 0) {
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser, "Invalid command usage. Please run `" +
-                        prefix + "usage ban` for more information.");
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel().sendMessage("ERROR: Invalid command usage. Please run `" + prefix + "usage" +
-                        " ban` for more information.")
-                        .queue();
-            }
-            return;
-        }
-
-        // fetch User id
-        String Id = args[0].replaceAll("[^0-9.]", "");
-
-        Member providedMember;
-
-        try {
-            RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
-            providedMember = tempMember.complete();
-
-            // member was not found
-        } catch (IllegalArgumentException | ErrorResponseException e) {
-
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided member was not found.");
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: Provided member was not found.")
-                        .queue();
-            }
-            return;
-        }
-
-        // check if bot has required permissions
-        if (!botMember.canInteract(providedMember)) {
-            String desc = "The bot does not have the required permissions for this command. Missing permission " +
-                    "`Ban Members`";
-
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + desc)
-                        .queue();
-            }
-
-            return;
-        }
-
-        // check if user has required permissions
-        if (!event.getMember().canInteract(providedMember)) {
-            String desc = "You do not have the required permissions for this command. Missing permission `Ban Members`";
-
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + desc)
-                        .queue();
-            }
-            return;
-        }
-
-        eb = EmbedCreator.newCommandEmbedMessage(botUser);
-        String banMsg = "";
-        if (embed) {
-            eb.setTitle("Ban");
-            eb.setDescription("User `" + providedMember.getUser().getAsTag() + "` was banned successfully.");
         } else {
-            banMsg = "User `" + providedMember.getUser().getAsTag() + "` was banned successfully.";
-        }
 
-        // Run command if no time or reason is specified
-        if (args.length == 1) {
-            providedMember.ban(0).queue();
+            // get guildId, if mod-logs are enabled, and the bot account
+            long guildId = event.getGuild().getIdLong();
+            TextChannel modLogChannel = ModLogs.getModLogChannel(event, guildId);
+            Member bot = event.getGuild().getSelfMember();
 
-            if (embed) {
-                eb.addField("Deleted message history (days)", "0", true);
+            // if no arguments are present, send error message
+            if (args.length == 0) {
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                banMsg += "\n" + "Deleted message history (days): 0";
-                event.getChannel()
-                        .sendMessage(banMsg)
-                        .queue();
-            }
-            return;
-        }
-
-        // if the first argument is a number
-        if (args[1].matches("[0-9]*")) {
-
-            // if the number is in proper delDay format
-            if (args[1].matches("[0-7]")) {
-
-                // no reason provided
-                if (args.length == 2) {
-                    providedMember.ban(Integer.valueOf(args[1])).queue();
-
-                    if (embed) {
-                        eb.addField("Deleted message history (days)", args[1], true);
-
-                        event.getChannel()
-                                .sendMessage(eb.build())
-                                .queue();
-                    } else {
-                        banMsg += "\n" + "Deleted message history (days): " + args[1];
-                        event.getChannel()
-                                .sendMessage(banMsg)
-                                .queue();
-                    }
-
-                    return;
-                } else {
-                    // reason provided
-
-                    StringBuilder sb = new StringBuilder();
-
-                    for (int i=2; i < args.length; i++) {
-                        sb.append(args[i]).append(" ");
-                    }
-
-                    providedMember.ban(Integer.valueOf(args[1]), sb.toString()).queue();
-
-                    if (embed) {
-                        eb.addField("Deleted message history (days)", args[1], true)
-                                .addField("Reason", sb.toString(), false);
-
-                        event.getChannel()
-                                .sendMessage(eb.build())
-                                .queue();
-                    } else {
-                        banMsg += "\n" + "Deleted message history (days): " + args[1] + "\n" + "Reason: " +
-                                sb.toString();
-                        event.getChannel()
-                                .sendMessage(banMsg)
-                                .queue();
-                    }
-
-                    return;
-                }
-
-            } else {
-                String desc = "Invalid arguments. Please run `" + prefix + "usage ban` for more information.";
+                String msg = "Invalid command usage. Try running `" + prefix + "usage ban` for more information.";
                 if (embed) {
-                    eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
-
-                    event.getChannel()
-                            .sendMessage(eb.build())
-                            .queue();
+                    eb = EmbedCreator.newErrorEmbedMessage(botUser, msg);
                 } else {
-                    event.getChannel()
-                            .sendMessage(desc)
-                            .queue();
+                    message = "ERROR: " + msg;
                 }
 
-                return;
+            } else {
+
+                // fetch User id
+                String Id = args[0].replaceAll("[^0-9.]", "");
+
+                Member providedMember = null;
+
+                try {
+                    RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
+                    providedMember = tempMember.complete();
+
+                    // member was not found
+                } catch (IllegalArgumentException | ErrorResponseException e) {
+                    if (embed) {
+                        eb = EmbedCreator.newErrorEmbedMessage(botUser, "Provided member was not found.");
+                    } else {
+                        message = "ERROR: Provided member was not found.";
+                    }
+                }
+
+                if (providedMember != null) {
+
+                    // check if bot has required permissions
+                    if (!botMember.canInteract(providedMember)) {
+                        String desc = "The bot is missing permission `Ban Members`";
+                        if (embed) {
+                            eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+                        } else {
+                            message = "ERROR: " + desc;
+                        }
+                    } else {
+
+                        // check if user has required permissions
+                        if (!event.getMember().canInteract(providedMember)) {
+                            String desc = "You are missing permission `Ban Members`";
+                            if (embed) {
+                                eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
+                            } else {
+                                message = "ERROR: " + desc;
+                            }
+                        } else {
+
+                            String delDays = "";
+                            String reason = "none";
+
+                            // If no time or reason is specified
+                            if (args.length == 1) {
+                                providedMember.ban(0).queue();
+                                delDays = "0";
+                                reason = null;
+                            } else {
+                                // if the first argument is a number
+                                if (args[1].matches("[0-9]*")) {
+                                    // if the number is in proper delDay format
+                                    if (args[1].matches("[0-7]")) {
+                                        // no reason provided
+                                        if (args.length == 2) {
+                                            providedMember.ban(Integer.valueOf(args[1])).queue();
+                                            delDays = args[1];
+                                            reason = null;
+                                        } else {
+                                            // reason is provided
+                                            StringBuilder sb = new StringBuilder();
+
+                                            for (int i = 2; i < args.length; i++) {
+                                                sb.append(args[i]).append(" ");
+                                            }
+
+                                            providedMember.ban(Integer.valueOf(args[1]), sb.toString()).queue();
+
+                                            delDays = args[1];
+                                            reason = sb.toString();
+                                        }
+                                    }
+                                } else {
+                                    // no time was provided but args are provided
+                                    StringBuilder sb = new StringBuilder();
+
+                                    for (int i=1; i < args.length; i++) {
+                                        sb.append(args[i]).append(" ");
+                                    }
+
+                                    providedMember.ban(0, sb.toString()).queue();
+
+                                    delDays = "0";
+                                    reason = sb.toString();
+                                }
+                            }
+
+                            // create ban message
+                            if (embed) {
+                                eb = EmbedCreator.newCommandEmbedMessage(botUser);
+                                eb.setTitle("Ban")
+                                        .setDescription("User `" + providedMember.getUser().getAsTag() +
+                                                "` was banned successfully.");
+                            } else {
+                                message = "User `" + providedMember.getUser().getAsTag() + "` was banned " +
+                                        "successfully.";
+                            }
+
+                            // send mod-logs message
+                            TextChannel modLogs = ModLogs.getModLogChannel(event, guildId);
+
+                            if (modLogs != null) {
+                                String logMessage = "**Action:** Ban" + "\n" + "**User:** " +
+                                        providedMember.getUser().getAsTag() + " (" +
+                                        providedMember.getUser().getId() + ") " + "\n" + "**Message History " +
+                                        "Deletion (Days):** " + delDays + "\n" + "**Reason:** " + reason +
+                                        "\n" + "**Moderator:** " + event.getAuthor().getAsTag();
+                                if (embed) {
+                                    EmbedBuilder modLog = new EmbedBuilder()
+                                            .setDescription(logMessage)
+                                            .setColor(0xFF0000)
+                                            .setTimestamp(Instant.now());
+
+                                    modLogs.sendMessage(modLog.build())
+                                            .queue();
+                                } else {
+                                    modLogs.sendMessage(logMessage)
+                                            .queue();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        // No time was provided but args were provided
-        StringBuilder sb = new StringBuilder();
-
-        for (int i=1; i < args.length; i++) {
-            sb.append(args[i]).append(" ");
-        }
-
-        providedMember.ban(0, sb.toString()).queue();
-
-        if (embed) {
-            eb.addField("Deleted message history (days)", "0", true);
-            eb.addField("Reason", sb.toString(), false);
-
+        if (eb != null) {
             event.getChannel()
                     .sendMessage(eb.build())
                     .queue();
-        } else {
-            banMsg += "Deleted message history (days): 0" + "\n" + "Reason: " + sb.toString();
+        } else if (message != null) {
             event.getChannel()
-                    .sendMessage(banMsg)
+                    .sendMessage(message)
                     .queue();
         }
     }

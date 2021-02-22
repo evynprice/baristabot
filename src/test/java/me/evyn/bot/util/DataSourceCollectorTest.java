@@ -52,7 +52,7 @@ public class DataSourceCollectorTest extends TestCase {
         }
 
         // guild exists in database
-        assertEquals(Config.prefix, DataSourceCollector.getPrefix(12345679));
+        assertEquals(Config.prefix, DataSourceCollector.getGuildPrefix(12345679));
 
         // attempt to delete guild from database
         try (final PreparedStatement insertStatement = DataSource

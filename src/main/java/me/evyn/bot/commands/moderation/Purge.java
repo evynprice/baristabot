@@ -26,11 +26,14 @@ package me.evyn.bot.commands.moderation;
 
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
+import me.evyn.bot.commands.Settings.ModLogs;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +45,7 @@ public class Purge implements Command {
      * current or mentioned channel.
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -49,170 +53,172 @@ public class Purge implements Command {
 
         User bot = event.getJDA().getSelfUser();
 
-        // if command is not ran in guild, send error and return
+        EmbedBuilder eb = null;
+        String message = null;
+
+        // command was not run in guild
         if (!event.isFromType(ChannelType.TEXT)) {
-            EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
+            eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
 
-            event.getChannel()
-                    .sendMessage(eb.build())
-                    .queue();
-            return;
-        }
+        } else if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            // bot is missing mange messages
 
-        EmbedBuilder eb;
-        String message = "";
-
-        // bot lacks manage messages permission
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            message = "Bot is missing the required permission: `Manage Messages`";
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + message)
-                        .queue();
-            }
-
-            return;
-        }
-
-        // user lacks manage messages permission
-        if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            message = "You are missing the required permission: `Manage Messages`";
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
-
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + message)
-                        .queue();
-            }
-            return;
-        }
-
-        // no arguments were given
-        if (args.length == 0) {
-            message = "Invalid command usage. Please run `" + prefix + "usage purge` for more information.";
+            String description = "The bot is missing permission: `Manage Messages`";
 
             if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
+                eb = EmbedCreator.newErrorEmbedMessage(bot, description);
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
             } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + message)
-                        .queue();
+                message = "ERROR: " + description;
             }
-            return;
-        }
 
-        // check if arguments matches 0-100
-        if (args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
+        } else if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            // User is missing manage messages
 
-            // add one to amount to also delete command message
+            String description = "You are missing permission: `Manage Messages`";
+
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, description);
+            } else {
+                message = "ERROR: " + description;
+            }
+
+        } else if ((args.length == 0)) {
+            // no arguments were given
+
+            String description = "Invalid command usage. Try running `" + prefix + "usage purge` for more information.";
+
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, description);
+            } else {
+                message = "ERROR: " + description;
+            }
+
+        } else if (!args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
+
+            // invalid usage
+            String description = "Invalid command usage. Try running `" + prefix + "usage purge` for more information.";
+
+            if (embed) {
+                eb = EmbedCreator.newErrorEmbedMessage(bot, description);
+            } else {
+                message = "ERROR: " + description;
+            }
+        } else {
+
+            // add one to the amount to also delete command message
             int amount = Integer.valueOf(args[0]) + 1;
 
-            if (args.length == 1) {
+            MessageChannel channel = null;
+            StringBuilder reason = new StringBuilder();
 
+            if (args.length == 1) {
+                channel = event.getChannel();
+
+            } else if (args[1].matches("<#[0-9]{18}>") || args[1].matches("[0-9]{18}")) {
+                // first argument is channel Id or mention
+
+                // add one to the amount to also delete command message
+                amount = Integer.valueOf(args[0]);
+
+                String id = args[1].replaceAll("[^0-9]", "");
+
+                try {
+                    channel = event.getGuild().getTextChannelById(id);
+                } catch (NumberFormatException e) {
+                    channel = null;
+                }
+
+                // if reason is provided
+                if (args.length > 2) {
+                    for(int i=2; i < args.length; i++) {
+                        reason.append(args[i]).append(" ");
+                    }
+
+                    reason.delete(reason.length() - 1, reason.length());
+                }
+            } else {
+                channel = event.getChannel();
+
+                // if reason is provided
+                if (args.length > 2) {
+                    for(int i=1; i < args.length; i++) {
+                        reason.append(args[i]).append(" ");
+                    }
+
+                    reason.delete(reason.length() - 1, reason.length());
+                }
+            }
+
+            if (channel != null) {
                 // fetch message history
-                MessageHistory history = event.getChannel().getHistory();
+                MessageHistory history = channel.getHistory();
                 List<Message> messages = history.retrievePast(amount).complete();
 
                 // purge messages
-                event.getChannel().purgeMessages(messages);
+                channel.purgeMessages(messages);
 
-                eb = EmbedCreator.newCommandEmbedMessage(bot);
+                // send completion message
                 Message m;
-
+                String msg = "Successfully purged " + args[0] + " messages.";
                 if (embed) {
-                    eb.setTitle("Purge")
-                            .setDescription("Successfully purged " + args[0] + " messages.");
-
-                    // send purge success message
+                    eb = EmbedCreator.newCommandEmbedMessage(bot)
+                            .setTitle("Purge")
+                            .setDescription(msg);
                     m = event.getChannel().sendMessage(eb.build()).complete();
                 } else {
-                    message = "Successfully purged " + args[0] + " messages.";
-                    m = event.getChannel()
-                            .sendMessage(message)
-                            .complete();
+                    m = event.getChannel().sendMessage(msg).complete();
                 }
 
-                // delete purge success message
+                // delete completion message
                 m.delete().completeAfter(3, TimeUnit.SECONDS);
 
-            } else if (args.length > 1) {
+                TextChannel modLogChannel = ModLogs.getModLogChannel(event, event.getGuild().getIdLong());
 
-                // get channel Id from arguments
-                String id = args[1].replaceAll("[^0-9]", "");
-
-                // attempt to find channel
-                TextChannel channel = null;
-                try {
-                    channel = event.getGuild().getTextChannelById(id);
-                } catch (NumberFormatException e ) {
-
-                    if (embed) {
-                        eb = EmbedCreator.newErrorEmbedMessage(bot, "Invalid channel provided.");
-                        event.getChannel()
-                                .sendMessage(eb.build())
-                                .queue();
-                    } else {
-                        event.getChannel()
-                                .sendMessage("ERROR: Invalid channel provided.")
-                                .queue();
-                    }
-                    return;
-                }
-
-                // get message history in channel
-                if (channel != null) {
-                    MessageHistory history = channel.getHistory();
-                    List<Message> messages = history.retrievePast(amount).complete();
-
-                    event.getChannel().purgeMessages(messages);
-
-                    eb = EmbedCreator.newCommandEmbedMessage(bot);
-                    Message m;
-                    if (embed) {
-                        eb.setTitle("Purge")
-                                .setDescription("Successfully purged " + args[0] + " messages.");
-
-                        // send purge success message
-                        m = event.getChannel().sendMessage(eb.build()).complete();
-                    } else {
-                        m = event.getChannel()
-                                .sendMessage("Successfully purged " + args[0] + " messages")
-                                .complete();
+                if (modLogChannel != null) {
+                    if (reason.toString().equals("")) {
+                        reason.append("None");
                     }
 
-                    // delete purge success message
-                    m.delete().completeAfter(3, TimeUnit.SECONDS);
-                }
-            }
-        } else {
-            // invalid number of messages selected
-            message = "Invalid number of messages. Maximum Message count is 100";
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, message);
+                    String logMessage = "**Action:** Purge" + "\n" + "**Amount:** " +
+                            args[0] + "\n" + "**Channel:** " + "<#" + channel.getId() + ">" + "\n" + "**Reason:** " +
+                            reason.toString() + "\n" + "**Moderator:** " + event.getAuthor().getAsTag();
 
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
+                    if (embed) {
+                        EmbedBuilder modLog = new EmbedBuilder()
+                                .setDescription(logMessage)
+                                .setColor(0xffa500)
+                                .setTimestamp(Instant.now());
+
+                        modLogChannel.sendMessage(modLog.build())
+                                .queue();
+                    } else {
+                        modLogChannel.sendMessage(logMessage)
+                                .queue();
+                    }
+                }
+
+                return;
             } else {
-                event.getChannel()
-                    .sendMessage("ERROR: " + message)
-                    .queue();
+                String description = "Invalid channel was provided.";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, description);
+                } else {
+                    message = "ERROR: " + description;
+                }
             }
+        }
+
+
+        // error occurred somewhere, send message
+        if (eb != null) {
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(message)
+                    .queue();
         }
     }
 
@@ -233,7 +239,7 @@ public class Purge implements Command {
 
     @Override
     public String getUsage() {
-        return "purge (0-100) (channel name)";
+        return "purge (0-100) (channel name/reason) (reason)";
     }
 
     @Override

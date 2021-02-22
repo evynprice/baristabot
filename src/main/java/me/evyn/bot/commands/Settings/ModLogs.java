@@ -27,19 +27,23 @@ package me.evyn.bot.commands.Settings;
 import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Embed implements Setting {
+public class ModLogs implements Setting {
 
     @Override
     public void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         User bot = event.getJDA().getSelfUser();
+        long guildId = event.getGuild().getIdLong();
 
-        String usageErr = "Invalid command usage. Try running `" + prefix + "settings help embed` for more information.";
+        String usageErr = "Invalid command usage. Try running `" + prefix + "settings help mod-logs` for more " +
+                "information.";
 
         // too many arguments
         if(args.length > 2) {
@@ -58,35 +62,48 @@ public class Embed implements Setting {
             return;
         }
 
-        long guildId = event.getGuild().getIdLong();
-        EmbedBuilder eb = null;
-
-        List<String> positive = Arrays.asList("true", "enabled", "yes");
         List<String> negative = Arrays.asList("false", "disabled", "no");
 
         boolean result = false;
-        if (positive.contains(args[1])) {
-            result = DataSourceCollector.setGuildEmbed(guildId, true);
-        } else if (negative.contains(args[1])) {
-            result = DataSourceCollector.setGuildEmbed(guildId, false);
+        TextChannel channel = null;
+
+        if (negative.contains(args[1])) {
+            result = DataSourceCollector.setGuildModLogId(guildId, 000000000000000000);
+
         } else {
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, usageErr);
-                event.getChannel()
-                        .sendMessage(eb.build())
-                        .queue();
-            } else {
-                event.getChannel()
-                        .sendMessage("ERROR: " + usageErr)
-                        .queue();
+            String channelId = args[1].replaceAll("[^0-9]", "");
+
+            try {
+                channel = event.getGuild().getTextChannelById(channelId);
+            } catch (NumberFormatException e) {
+
+                String msg = "The provided channel is invalid. Please choose a valid channel.";
+                if (embed) {
+                    EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                    event.getChannel()
+                            .sendMessage(eb.build())
+                            .queue();
+                } else {
+                    event.getChannel()
+                            .sendMessage("ERROR: " + msg)
+                            .queue();
+                }
+                return;
             }
 
-            return;
+            result = DataSourceCollector.setGuildModLogId(guildId, channel.getIdLong());
         }
 
+        EmbedBuilder eb = null;
         String message = "";
+
         if (result) {
-            String msg = "Success! The new Embed Messages setting will now go into effect.";
+            String msg = "";
+            if (channel != null) {
+                msg = "Success! The new mod-log channel will be " + channel.getAsMention();
+            } else {
+                msg = "Success! The mod-log setting has been disabled.";
+            }
             if (embed) {
                 eb = EmbedCreator.newCommandEmbedMessage(bot);
                 eb.setColor(0x00CC00)
@@ -102,7 +119,6 @@ public class Embed implements Setting {
             } else {
                 message = msg;
             }
-
         }
 
         if (embed) {
@@ -118,30 +134,63 @@ public class Embed implements Setting {
 
     @Override
     public void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
-        boolean value = DataSourceCollector.getGuildEmbed(event.getGuild().getIdLong());
+        User bot = event.getJDA().getSelfUser();
+
+        GuildChannel channel = ModLogs.getModLogChannel(event, event.getGuild().getIdLong());
+
+        if (channel == null) {
+            String msg = "mod-logs are not currently set up or the current channel is invalid. " +
+                    "For more information, run " + prefix + "`settings help mod-logs`";
+            if (embed) {
+                EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                event.getChannel()
+                        .sendMessage(eb.build())
+                        .queue();
+            } else {
+                event.getChannel()
+                        .sendMessage("ERROR: " + msg)
+                        .queue();
+            }
+            return;
+        }
 
         event.getChannel()
-                .sendMessage("Current value is: `" + value + "`")
+                .sendMessage("The current mod-log channel is " + channel.getName() + " (" +
+                        channel.getId() + ")")
                 .queue();
+    }
+
+    public static TextChannel getModLogChannel(MessageReceivedEvent event, long guildId) {
+        String channelId = DataSourceCollector.getGuildModLogId(guildId);
+
+        if (channelId == null) {
+            return null;
+        } else {
+            try {
+                return event.getGuild().getTextChannelById(channelId);
+            } catch (NumberFormatException e ) {
+                return null;
+            }
+        }
     }
 
     @Override
     public String getName() {
-        return "embed";
+        return "mod-logs";
     }
 
     @Override
     public String getDescription() {
-        return "Changes if the bot should respond with embed messages (Default is true)";
+        return "Sends logs of moderation activity to specified channel";
     }
 
     @Override
     public String getUsage() {
-        return "setting embed (true/false)";
+        return "settings mod-logs (disabled/channel-id/ChannelMention)";
     }
 
     @Override
     public String getExample() {
-        return "setting embed enabled";
+        return "settings mod-logs #mod-logs";
     }
 }

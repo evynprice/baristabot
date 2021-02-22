@@ -43,6 +43,7 @@ public class Invite implements Command {
      * Generates and sends an oauth2 invite link
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
