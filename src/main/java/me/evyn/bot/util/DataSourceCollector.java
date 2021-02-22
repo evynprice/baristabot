@@ -308,7 +308,7 @@ public class DataSourceCollector {
      * @param guildId
      * @return String score
      */
-    public static String getCountingCurrentGuildScore(long guildId) {
+    public static Integer getCountingCurrentGuildScore(long guildId) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
                 .prepareStatement("SELECT current_score FROM counting_guilds WHERE guild_id = ?")) {
@@ -317,7 +317,7 @@ public class DataSourceCollector {
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getString("current_score");
+                    return resultSet.getInt("current_score");
                 }
             }
         } catch (SQLException throwables) {
@@ -333,12 +333,12 @@ public class DataSourceCollector {
      * @param num
      * @return boolean status
      */
-    public static boolean setCountingCurrentGuildScore(long guildId, String num) {
+    public static boolean setCountingCurrentGuildScore(long guildId, int num) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
                 .prepareStatement("UPDATE counting_guilds SET current_score = ? WHERE guild_id = ? ")) {
 
-            preparedStatement.setString(1, num);
+            preparedStatement.setInt(1, num);
             preparedStatement.setString(2, String.valueOf(guildId));
             preparedStatement.executeUpdate();
             return true;
@@ -398,7 +398,7 @@ public class DataSourceCollector {
      * @param guildId
      * @return String high score
      */
-    public static String getCountingGuildTopScore(long guildId) {
+    public static Integer getCountingGuildTopScore(long guildId) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
                 .prepareStatement("SELECT top_score FROM counting_guilds WHERE guild_id = ?")) {
@@ -407,7 +407,7 @@ public class DataSourceCollector {
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getString("top_score");
+                    return resultSet.getInt("top_score");
                 }
             }
         } catch (SQLException throwables) {
@@ -423,12 +423,12 @@ public class DataSourceCollector {
      * @param newTop
      * @return
      */
-    public static boolean setCountingGuildTopScore(long guildId, String newTop) {
+    public static boolean setCountingGuildTopScore(long guildId, int newTop) {
         try (final PreparedStatement preparedStatement = DataSource
                 .getConnection()
                 .prepareStatement("UPDATE counting_guilds SET top_score = ? WHERE guild_id = ? ")) {
 
-            preparedStatement.setString(1, newTop);
+            preparedStatement.setInt(1, newTop);
             preparedStatement.setString(2, String.valueOf(guildId));
             preparedStatement.executeUpdate();
             return true;
@@ -444,7 +444,7 @@ public class DataSourceCollector {
      * @param userId
      * @return String count
      */
-    public static String getCountingUserTotalCount(long guildId, long userId) {
+    public static Integer getCountingUserTotalCount(long guildId, long userId) {
 
         String memberId = String.valueOf(guildId) + userId;
 
@@ -456,7 +456,7 @@ public class DataSourceCollector {
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getString("total_count");
+                    return resultSet.getInt("total_count");
                 }
             }
 
@@ -473,7 +473,7 @@ public class DataSourceCollector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "0";
+        return 0;
     }
 
     /**
@@ -483,7 +483,7 @@ public class DataSourceCollector {
      * @param newScore
      * @return boolean status
      */
-    public static boolean setCountingUserTotalCount(long guildId, long userId, String newScore) {
+    public static boolean setCountingUserTotalCount(long guildId, long userId, int newScore) {
 
         String memberId = String.valueOf(guildId) + userId;
 
@@ -491,7 +491,7 @@ public class DataSourceCollector {
                 .getConnection()
                 .prepareStatement("UPDATE counting_users SET total_count = ? WHERE member_id = ?")) {
 
-            preparedStatement.setString(1, newScore);
+            preparedStatement.setInt(1, newScore);
             preparedStatement.setString(2, memberId);
             preparedStatement.executeUpdate();
             return true;
@@ -517,7 +517,7 @@ public class DataSourceCollector {
                 Map<String, Integer> members = new HashMap<>();
                 while(resultSet.next()) {
                     String id = resultSet.getString("user_id");
-                    int count = Integer.valueOf(resultSet.getString("total_count"));
+                    int count = resultSet.getInt("total_count");
                     members.put(id, count);
                 }
                 return members;

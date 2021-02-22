@@ -90,8 +90,8 @@ public class DataSource {
         try (final Statement statement = getConnection().createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS counting_guilds (" +
                     "guild_id VARCHAR(20) NOT NULL PRIMARY KEY," + "channel VARCHAR(18) NOT NULL DEFAULT " +
-                    "'0'" + ", current_score VARCHAR(1000) NOT NULL DEFAULT '0'," +
-                    "last_userid VARCHAR(18) NOT NULL DEFAULT '0'," + "top_score VARCHAR(1000) NOT NULL DEFAULT '0'" +
+                    "'0'" + ", current_score INTEGER," +
+                    "last_userid VARCHAR(18) NOT NULL DEFAULT '0'," + "top_score INTEGER" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class DataSource {
        try (final Statement statement = getConnection().createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS counting_users (" +
                     "guild_id VARCHAR(20) NOT NULL," + "user_id VARCHAR(18) NOT NULL," +
-                    "total_count VARCHAR(10000) DEFAULT '1'," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
+                    "total_count INTEGER," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();
