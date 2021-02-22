@@ -109,7 +109,7 @@ public class CommandHandler {
                 if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
                     embed = false;
                 } else {
-                    embed = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
+                    embed = DataSourceCollector.getGuildEmbed(event.getGuild().getIdLong());
                 }
             }
             command.run(event, prefix, embed, args);

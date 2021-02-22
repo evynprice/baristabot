@@ -29,7 +29,6 @@ import me.evyn.bot.commands.CommandHandler;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -42,6 +41,7 @@ public class Usage implements Command {
      * Provides information on command usage and aliases
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -51,7 +51,7 @@ public class Usage implements Command {
 
         // if no arguments are present, send error and return
         if (args.length == 0) {
-            String desc = "Proper usage is " + prefix + "usage [command]";
+            String desc = "Invalid command usage. Try running `" + prefix + "usage [command]`";
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
                 event.getChannel()
@@ -71,7 +71,7 @@ public class Usage implements Command {
 
             // if command cannot be found, send error and return
             if (command == null) {
-                String desc = "That command was not found.";
+                String desc = "That command could not be found.";
                 if (embed) {
                     EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
                     event.getChannel()

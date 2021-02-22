@@ -45,6 +45,7 @@ public class Purge implements Command {
      * current or mentioned channel.
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -62,7 +63,7 @@ public class Purge implements Command {
         } else if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             // bot is missing mange messages
 
-            String description = "The bot is missing the required permission: `Manage Messages`";
+            String description = "The bot is missing permission: `Manage Messages`";
 
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(bot, description);
@@ -74,7 +75,7 @@ public class Purge implements Command {
         } else if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             // User is missing manage messages
 
-            String description = "You are missing the required permission: `Manage Messages`";
+            String description = "You are missing permission: `Manage Messages`";
 
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(bot, description);
@@ -85,7 +86,7 @@ public class Purge implements Command {
         } else if ((args.length == 0)) {
             // no arguments were given
 
-            String description = "Invalid command usage. Please run `" + prefix + "usage purge` for more information.";
+            String description = "Invalid command usage. Try running `" + prefix + "usage purge` for more information.";
 
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(bot, description);
@@ -96,7 +97,7 @@ public class Purge implements Command {
         } else if (!args[0].matches("(0*(?:[1-9][0-9]?|100))")) {
 
             // invalid usage
-            String description = "Invalid command usage. Please run `" + prefix + "usage purge` for more information.";
+            String description = "Invalid command usage. Try running `" + prefix + "usage purge` for more information.";
 
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(bot, description);

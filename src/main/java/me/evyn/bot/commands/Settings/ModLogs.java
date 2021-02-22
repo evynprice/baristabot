@@ -42,7 +42,7 @@ public class ModLogs implements Setting {
         User bot = event.getJDA().getSelfUser();
         long guildId = event.getGuild().getIdLong();
 
-        String usageErr = "Invalid command usage. Please run `" + prefix + "settings help mod-logs` for more " +
+        String usageErr = "Invalid command usage. Try running `" + prefix + "settings help mod-logs` for more " +
                 "information.";
 
         // too many arguments
@@ -68,7 +68,7 @@ public class ModLogs implements Setting {
         TextChannel channel = null;
 
         if (negative.contains(args[1])) {
-            result = DataSourceCollector.setModLog(guildId, 000000000000000000);
+            result = DataSourceCollector.setGuildModLogId(guildId, 000000000000000000);
 
         } else {
             String channelId = args[1].replaceAll("[^0-9]", "");
@@ -91,7 +91,7 @@ public class ModLogs implements Setting {
                 return;
             }
 
-            result = DataSourceCollector.setModLog(guildId, channel.getIdLong());
+            result = DataSourceCollector.setGuildModLogId(guildId, channel.getIdLong());
         }
 
         EmbedBuilder eb = null;
@@ -161,7 +161,7 @@ public class ModLogs implements Setting {
     }
 
     public static TextChannel getModLogChannel(MessageReceivedEvent event, long guildId) {
-        String channelId = DataSourceCollector.getModLog(guildId);
+        String channelId = DataSourceCollector.getGuildModLogId(guildId);
 
         if (channelId == null) {
             return null;

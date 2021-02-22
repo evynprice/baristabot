@@ -39,7 +39,7 @@ public class Embed implements Setting {
     public void edit(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
         User bot = event.getJDA().getSelfUser();
 
-        String usageErr = "Invalid command usage. Please run `" + prefix + "settings help embed` for more information.";
+        String usageErr = "Invalid command usage. Try running `" + prefix + "settings help embed` for more information.";
 
         // too many arguments
         if(args.length > 2) {
@@ -66,9 +66,9 @@ public class Embed implements Setting {
 
         boolean result = false;
         if (positive.contains(args[1])) {
-            result = DataSourceCollector.setEmbed(guildId, true);
+            result = DataSourceCollector.setGuildEmbed(guildId, true);
         } else if (negative.contains(args[1])) {
-            result = DataSourceCollector.setEmbed(guildId, false);
+            result = DataSourceCollector.setGuildEmbed(guildId, false);
         } else {
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(bot, usageErr);
@@ -118,7 +118,7 @@ public class Embed implements Setting {
 
     @Override
     public void view(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
-        boolean value = DataSourceCollector.getEmbed(event.getGuild().getIdLong());
+        boolean value = DataSourceCollector.getGuildEmbed(event.getGuild().getIdLong());
 
         event.getChannel()
                 .sendMessage("Current value is: `" + value + "`")

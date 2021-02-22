@@ -74,8 +74,7 @@ public class Settings implements Command {
 
         // If user is missing permissions, send error and return
         if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-            String desc = "You do not have the required permissions to run this command. Missing permission `Manage " +
-                    "Server`";
+            String desc = "You are missing permission `Manage Server`";
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 

@@ -27,7 +27,6 @@ package me.evyn.bot.commands.moderation;
 import me.evyn.bot.commands.Command;
 import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.commands.Settings.ModLogs;
-import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -50,6 +49,7 @@ public class Kick implements Command {
      * If command is ran in guild and bot + user have required permissions, kicks mentioned user with optional reason
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -74,7 +74,7 @@ public class Kick implements Command {
 
         // if Bot does not have Kick Members permission
         if (!botMember.hasPermission(Permission.KICK_MEMBERS)) {
-            String desc = "The bot is missing the required permission `Kick Members`";
+            String desc = "The bot is missing permission `Kick Members`";
             if (embed) {
                 eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
             } else {
@@ -85,7 +85,7 @@ public class Kick implements Command {
 
             // if User does not have Kick Members permission
             if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-                String desc = "You are missing the required permission `Kick Members`";
+                String desc = "You are missing permission `Kick Members`";
                 if (embed) {
                     eb = EmbedCreator.newErrorEmbedMessage(botUser,desc);
                 } else {
@@ -96,7 +96,7 @@ public class Kick implements Command {
 
                 // no user is provided
                 if (args.length == 0) {
-                    String desc = "No user was provided. For more information run the command `" + prefix + "usage " +
+                    String desc = "No user was provided. For more information try running `" + prefix + "usage " +
                             "kick`";
                     if (embed) {
                         eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);

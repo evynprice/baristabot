@@ -45,7 +45,7 @@ public class ActivityLogs implements Setting {
         User bot = event.getJDA().getSelfUser();
         long guildId = event.getGuild().getIdLong();
 
-        String usageErr = "Invalid command usage. Please run `" + prefix + "settings help activity-logs` for more " +
+        String usageErr = "Invalid command usage. Try running `" + prefix + "settings help activity-logs` for more " +
                 "information.";
 
         // too many arguments
@@ -71,7 +71,7 @@ public class ActivityLogs implements Setting {
         TextChannel channel = null;
 
         if (negative.contains(args[1])) {
-            result = DataSourceCollector.setActivityLog(guildId, 000000000000000000);
+            result = DataSourceCollector.setGuildActivityLogId(guildId, 000000000000000000);
 
         } else {
             String channelId = args[1].replaceAll("[^0-9]", "");
@@ -96,7 +96,7 @@ public class ActivityLogs implements Setting {
                 return;
             }
 
-            result = DataSourceCollector.setActivityLog(guildId, channel.getIdLong());
+            result = DataSourceCollector.setGuildActivityLogId(guildId, channel.getIdLong());
         }
 
         EmbedBuilder eb = null;
@@ -145,7 +145,7 @@ public class ActivityLogs implements Setting {
 
         if (channel == null) {
             String msg = "activity-logs are not currently set up or the current channel is invalid. " +
-                    "For more information, run " + prefix + "`settings help activity-logs`";
+                    "For more information try running " + prefix + "`settings help activity-logs`";
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
                 event.getChannel()
@@ -166,7 +166,7 @@ public class ActivityLogs implements Setting {
     }
 
     public static TextChannel getActivityChannel(GenericGuildEvent event, long guildId) {
-        String channelId = DataSourceCollector.getActivityLog(guildId);
+        String channelId = DataSourceCollector.getGuildActivityLogId(guildId);
 
         if (channelId == null) {
             return null;
@@ -180,7 +180,7 @@ public class ActivityLogs implements Setting {
     }
 
     public static TextChannel getActivityChannel(GenericMessageEvent event, long guildId) {
-        String channelId = DataSourceCollector.getActivityLog(guildId);
+        String channelId = DataSourceCollector.getGuildActivityLogId(guildId);
 
         if (channelId == null) {
             return null;

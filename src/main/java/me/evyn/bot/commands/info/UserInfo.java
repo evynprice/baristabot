@@ -46,6 +46,7 @@ public class UserInfo implements Command {
      * If ran in guild, provides information on user account
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override

@@ -37,6 +37,7 @@ public class Ping implements Command {
      * Gets the current gateway ping and sends in channel
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override

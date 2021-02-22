@@ -41,6 +41,10 @@ import java.time.format.DateTimeFormatter;
 
 public class ActivityListener extends ListenerAdapter {
 
+    /**
+     * If activity logs are enabled, sends log on new guild member join
+     * @param event GuildMemberJoinEvent
+     */
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
 
@@ -54,7 +58,7 @@ public class ActivityListener extends ListenerAdapter {
 
 
         if (actLogChannel != null) {
-            boolean embed = DataSourceCollector.getEmbed(guildId);
+            boolean embed = DataSourceCollector.getGuildEmbed(guildId);
             if (embed) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getUser().getAsTag() + " (" + event.getUser().getId() + ")",
@@ -72,6 +76,10 @@ public class ActivityListener extends ListenerAdapter {
         }
     }
 
+    /**
+     * If activity logs are enabled, sends log on guild member leave
+     * @param event GuildMemberRemoveEvent
+     */
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
 
@@ -80,7 +88,7 @@ public class ActivityListener extends ListenerAdapter {
         TextChannel actLogChannel = ActivityLogs.getActivityChannel(event, guildId);
 
         if (actLogChannel != null) {
-            boolean embed = DataSourceCollector.getEmbed(guildId);
+            boolean embed = DataSourceCollector.getGuildEmbed(guildId);
             if (embed) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getUser().getAsTag() + " (" + event.getUser().getId() + ")",
@@ -97,6 +105,10 @@ public class ActivityListener extends ListenerAdapter {
         }
     }
 
+    /**
+     * If activity logs are enabled, sends log on guild member role add
+     * @param event GuildMemberRoleAddEvent
+     */
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
         long guildId = event.getGuild().getIdLong();
@@ -110,7 +122,7 @@ public class ActivityListener extends ListenerAdapter {
 
             sb.delete(sb.length() - 2, sb.length());
 
-            boolean embed = DataSourceCollector.getEmbed(guildId);
+            boolean embed = DataSourceCollector.getGuildEmbed(guildId);
             if (embed) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getUser().getAsTag() + " (" + event.getUser().getId() + ")",
@@ -128,6 +140,10 @@ public class ActivityListener extends ListenerAdapter {
         }
     }
 
+    /**
+     * If activity logs are enabled, sends log on guild member role removal
+     * @param event GuildMemberRoleRemoveEvent
+     */
     @Override
     public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
         long guildId = event.getGuild().getIdLong();
@@ -141,7 +157,7 @@ public class ActivityListener extends ListenerAdapter {
 
             sb.delete(sb.length() - 2, sb.length());
 
-            boolean embed = DataSourceCollector.getEmbed(guildId);
+            boolean embed = DataSourceCollector.getGuildEmbed(guildId);
             if (embed) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getUser().getAsTag() + " (" + event.getUser().getId() + ")",
@@ -159,6 +175,10 @@ public class ActivityListener extends ListenerAdapter {
         }
     }
 
+    /**
+     * If activity logs are enabled, sends log on guild member nickname change
+     * @param event GuildMemberUpdateNicknameEvent
+     */
     @Override
     public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
         long guildId = event.getGuild().getIdLong();
@@ -175,7 +195,7 @@ public class ActivityListener extends ListenerAdapter {
                 newNickname = event.getUser().getName();
             }
 
-            boolean embed = DataSourceCollector.getEmbed(guildId);
+            boolean embed = DataSourceCollector.getGuildEmbed(guildId);
             if (embed) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getUser().getAsTag() + " (" + event.getUser().getId() + ")",

@@ -39,7 +39,7 @@ public class Prefix implements Setting {
 
         // too ma ny arguments
         if(args.length > 2) {
-            String desc = "Invalid command usage. Please run `" + prefix + "settings help prefix` for more information.";
+            String desc = "Invalid command usage. Try running `" + prefix + "settings help prefix` for more information.";
             if (embed) {
                 EmbedBuilder eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
 
@@ -64,7 +64,7 @@ public class Prefix implements Setting {
             newPrefix = args[1];
         }
 
-        boolean status = DataSourceCollector.setPrefix(guildId, newPrefix);
+        boolean status = DataSourceCollector.setGuildPrefix(guildId, newPrefix);
         EmbedBuilder eb = null;
         String msg = "";
 

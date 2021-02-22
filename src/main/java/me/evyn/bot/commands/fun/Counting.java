@@ -90,7 +90,7 @@ public class Counting implements Command {
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             if (countingChannel != null) {
-                Map<String, Integer> top = DataSourceCollector.getTopUsers(event.getGuild().getIdLong());
+                Map<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().getIdLong());
 
                 StringBuilder sb = new StringBuilder();
 
@@ -256,7 +256,7 @@ public class Counting implements Command {
     }
 
     /**
-     * Gets the TextChannel form of the current guild counting channel. Returns null if counting is disabled.
+     * Gets the TextChannel object of the current guild counting channel. Returns null if counting is disabled.
      * @param event Discord API Message Event
      * @param guildId long guildId
      * @return TextChannel countingChannel
@@ -282,7 +282,7 @@ public class Counting implements Command {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("");
+        return Arrays.asList();
     }
 
     @Override

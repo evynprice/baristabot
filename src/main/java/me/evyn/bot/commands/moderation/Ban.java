@@ -44,6 +44,7 @@ public class Ban implements Command {
      * If command is ran in guild and bot + user have perms, bans user with optional message deletion time and reason
      * @param event Discord API message event
      * @param prefix Specific guild bot prefix
+     * @param embed Guild embed setting
      * @param args Command arguments
      */
     @Override
@@ -69,12 +70,11 @@ public class Ban implements Command {
             // if no arguments are present, send error message
             if (args.length == 0) {
 
+                String msg = "Invalid command usage. Try running `" + prefix + "usage ban` for more information.";
                 if (embed) {
-                    eb = EmbedCreator.newErrorEmbedMessage(botUser, "Invalid command usage. Please run `" +
-                            prefix + "usage ban` for more information.");
+                    eb = EmbedCreator.newErrorEmbedMessage(botUser, msg);
                 } else {
-                    message = "ERROR: Invalid command usage. Please run `" + prefix + "usage" +
-                            " ban` for more information.";
+                    message = "ERROR: " + msg;
                 }
 
             } else {
@@ -101,8 +101,7 @@ public class Ban implements Command {
 
                     // check if bot has required permissions
                     if (!botMember.canInteract(providedMember)) {
-                        String desc = "The bot does not have the required permissions for this command. " +
-                                "Missing permission `Ban Members`";
+                        String desc = "The bot is missing permission `Ban Members`";
                         if (embed) {
                             eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
                         } else {
@@ -112,8 +111,7 @@ public class Ban implements Command {
 
                         // check if user has required permissions
                         if (!event.getMember().canInteract(providedMember)) {
-                            String desc = "You do not have the required permissions for this command. " +
-                                    "Missing permission `Ban Members`";
+                            String desc = "You are missing permission `Ban Members`";
                             if (embed) {
                                 eb = EmbedCreator.newErrorEmbedMessage(botUser, desc);
                             } else {
