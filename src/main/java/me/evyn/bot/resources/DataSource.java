@@ -48,6 +48,7 @@ public class DataSource {
             config.setUsername(Config.db_user);
             config.setPassword(Config.db_pass);
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.setMinimumIdle(100);
             config.setMaximumPoolSize(1000);
         } else {
             try {
