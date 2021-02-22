@@ -29,6 +29,7 @@ import me.evyn.bot.commands.CommandType;
 import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -41,6 +42,13 @@ import java.util.Map;
 
 public class Counting implements Command {
 
+    /**
+     * Includes all commands related to the counting game
+     * @param event Discord API message event
+     * @param prefix Specific guild bot prefix
+     * @param embed embed messages boolean
+     * @param args Command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
@@ -50,15 +58,8 @@ public class Counting implements Command {
         EmbedBuilder eb = null;
         String message = null;
 
-        if (args.length == 0) {
-            String desc = "Invalid usage. Please run `" + prefix + "counting help` for more information.";
-            if (embed) {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, desc);
-            } else {
-                message = "ERROR: " + desc;
-            }
-        } else if (args[0].equals("help")) {
-            // help command
+        // help command
+        if (args.length == 0 || args[0].equals("help")) {
             if (embed) {
                 eb = EmbedCreator.newCommandEmbedMessage(bot);
                 eb.setTitle("Counting Game")
@@ -82,6 +83,8 @@ public class Counting implements Command {
                         prefix + "counting channel <channel-mention>`" + "\n" + "To view the top players in your " +
                         "server, run `" + prefix + "counting top`";
             }
+
+            // get top users in guild
         } else if (args[0].equals("top")) {
 
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
@@ -94,17 +97,40 @@ public class Counting implements Command {
                 top.keySet().stream()
                         .forEach(memberId -> {
                             Member member = event.getGuild().getMemberById(memberId);
-                            sb.append(member.getEffectiveName()).append(",** ").append(top.get(memberId)).append("**\n");
+                            sb.append(member.getEffectiveName()).append(":** ").append(top.get(memberId)).append("**\n");
                         });
 
-                eb = EmbedCreator.newErrorEmbedMessage(bot, sb.toString());
+                if (embed) {
+                    eb = EmbedCreator.newCommandEmbedMessage(bot);
+                    eb.setTitle("Top 10 Counters")
+                            .setColor(0x008080)
+                            .setDescription(sb.toString())
+                            .setFooter("Barista Bot")
+                            .setTimestamp(Instant.now());
+                } else {
+                    message = "**Top 10 Counters**" + "\n" + sb.toString();
+                }
+
             } else {
-                eb = EmbedCreator.newErrorEmbedMessage(bot, "The counting game is currently disabled.");
+                String msg = "The counting game is currently disabled";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, "The counting game is currently disabled.");
+
+                } else {
+                    message = "ERROR" + msg;
+                }
             }
 
-
+        // change channel
         } else if (args[0].equals("channel")) {
-            if (args.length == 1) {
+            if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+                String msg = "This command requires the `Manage Server` permission.";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                } else {
+                    message = "ERROR: " + msg;
+                }
+            } else if (args.length == 1) {
                 // view channel
                 TextChannel channel = Counting.getCountingChannel(event, guildId);
 
@@ -112,7 +138,12 @@ public class Counting implements Command {
                     String msg = "The current counting channel is " + channel.getAsMention();
 
                     if (embed) {
-                        eb = EmbedCreator.newInfoEmbedMessage(bot).setDescription(msg);
+                        eb = EmbedCreator.newCommandEmbedMessage(bot);
+                        eb.setTitle("Counting Game")
+                                .setColor(0x008080)
+                                .setDescription(msg)
+                                .setFooter("Barista Bot")
+                                .setTimestamp(Instant.now());
                     } else {
                         message = msg;
                     }
@@ -126,11 +157,13 @@ public class Counting implements Command {
                     }
                 }
 
-            } else if ((args[1].matches("<#[0-9]{18}>")) || args[1].matches("[0-9]{18}")) {
                 // edit channel
+            } else if ((args[1].matches("<#[0-9]{18}>")) || args[1].matches("[0-9]{18}")) {
+
                 boolean result = false;
                 TextChannel channel = null;
 
+                // get channel id
                 String channelId = args[1].replaceAll("[^0-9]", "");
 
                 try {
@@ -172,12 +205,13 @@ public class Counting implements Command {
                     }
                 }
 
-            } else if (negative.contains(args[1])) {
                 // disable game
+            } else if (negative.contains(args[1])) {
+
                 boolean result = false;
                 TextChannel channel = null;
 
-                result = DataSourceCollector.setCountingChannel(guildId, 000000000000000000);
+                result = DataSourceCollector.setCountingChannel(guildId, 0);
 
                 if (result) {
                     String msg = "Success! The counting game will now be disabled.";
@@ -200,6 +234,13 @@ public class Counting implements Command {
 
             } else {
                 // invalid arguments
+                String msg = "Invalid arguments were provided. Try running `" + prefix + "counting help` for more " +
+                        "information.";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                } else {
+                    message = "ERROR: " + msg;
+                }
             }
         }
 
@@ -214,6 +255,12 @@ public class Counting implements Command {
         }
     }
 
+    /**
+     * Gets the TextChannel form of the current guild counting channel. Returns null if counting is disabled.
+     * @param event Discord API Message Event
+     * @param guildId long guildId
+     * @return TextChannel countingChannel
+     */
     public static TextChannel getCountingChannel(MessageReceivedEvent event, long guildId) {
         String channelId = DataSourceCollector.getCountingChannel(guildId);
 
