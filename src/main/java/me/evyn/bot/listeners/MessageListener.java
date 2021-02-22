@@ -97,28 +97,28 @@ public class MessageListener extends ListenerAdapter {
                 if (event.getChannel().getIdLong() == countingChannel.getIdLong()) {
 
                     // get current count and the last user ID
-                    String currentCount = DataSourceCollector.getCountingCurrentGuildScore(guildId);
+                    int currentCount = DataSourceCollector.getCountingCurrentGuildScore(guildId);
                     String lastUserId = DataSourceCollector.getCountingGuildLastUserId(guildId);
 
                     // if provided count is the next value
-                    if ((currentCount.equals("0") && msgCount == Integer.valueOf(currentCount) + 1)||
-                            msgCount == Integer.valueOf(currentCount) + 1 && !event.getMember().getId().equals(lastUserId)) {
-                        DataSourceCollector.setCountingCurrentGuildScore(guildId, String.valueOf(msgCount));
+                    if ((currentCount == 0) && msgCount == (currentCount + 1) ||
+                            msgCount == currentCount + 1 && !event.getMember().getId().equals(lastUserId)) {
+                        DataSourceCollector.setCountingCurrentGuildScore(guildId, msgCount);
                         DataSourceCollector.setCountingGuildLastUserId(guildId, event.getAuthor().getId());
 
                         // get and possibly set top score
-                        int topScore = Integer.valueOf(DataSourceCollector.getCountingGuildTopScore(guildId));
+                        int topScore = DataSourceCollector.getCountingGuildTopScore(guildId);
 
                         if (msgCount > topScore) {
-                            DataSourceCollector.setCountingGuildTopScore(guildId, String.valueOf(msgCount));
+                            DataSourceCollector.setCountingGuildTopScore(guildId, msgCount);
                         }
 
-                        int usrTotalCount = Integer.valueOf(DataSourceCollector.getCountingUserTotalCount(guildId, event.getMember().getIdLong()));
-                        DataSourceCollector.setCountingUserTotalCount(guildId, event.getMember().getIdLong(), String.valueOf((usrTotalCount+1)));
+                        int usrTotalCount = DataSourceCollector.getCountingUserTotalCount(guildId, event.getMember().getIdLong());
+                        DataSourceCollector.setCountingUserTotalCount(guildId, event.getMember().getIdLong(), (usrTotalCount+1));
 
                         event.getMessage().addReaction("\u2705").queue();
                     } else {
-                        DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), "0");
+                        DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), 0);
                         event.getMessage().addReaction("\u274C").queue();
                         event.getChannel()
                                 .sendMessage("\u274C Score lost! Top score was: " + currentCount)

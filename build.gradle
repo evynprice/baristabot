@@ -5,7 +5,7 @@ plugins {
 
 mainClassName = 'me.evyn.bot.main.Bot'
 
-version '1.4.0'
+version '1.4.1'
 def jdaVersion = '4.2.0_168'
 
 sourceCompatibility = targetCompatibility = 1.8
@@ -19,6 +19,8 @@ dependencies {
     compile('com.googlecode.json-simple:json-simple:1.1.1')
     compile("ch.qos.logback:logback-classic:1.2.3")
     compile("com.zaxxer:HikariCP:4.0.2")
-    compile 'org.xerial:sqlite-jdbc:3.34.0'}
+    compile 'org.xerial:sqlite-jdbc:3.34.0'
+    compile 'mysql:mysql-connector-java:8.0.23'
+}
 
 compileJava.options.encoding = 'UTF-8'

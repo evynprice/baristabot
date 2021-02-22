@@ -39,6 +39,10 @@ public class Config {
     public static String token;
     public static String prefix;
     public static String adminId;
+    public static String database;
+    public static String db_url;
+    public static String db_user;
+    public static String db_pass;
 
     public Config() {
         new Config(".env.local");
@@ -51,6 +55,10 @@ public class Config {
         String botToken = null;
         String botPrefix = null;
         String botAdminId = null;
+        String botDatabase = null;
+        String botDb_url = null;
+        String botDb_user = null;
+        String botDb_pass = null;
 
         if (env.exists()) {
             try {
@@ -70,6 +78,18 @@ public class Config {
                     } else if (line.startsWith("BOT_ADMINID")) {
                         line = line.replace("BOT_ADMINID=", "");
                         botAdminId = line;
+                    } else if (line.startsWith("DATABASE")) {
+                        line = line.replace("DATABASE=", "");
+                        botDatabase = line;
+                    } else if (line.startsWith("DB_URL")) {
+                        line = line.replace("DB_URL=", "");
+                        botDb_url = line;
+                    } else if (line.startsWith("DB_USER")) {
+                        line = line.replace("DB_USER=", "");
+                        botDb_user = line;
+                    } else if (line.startsWith("DB_PASS")) {
+                        line = line.replace("DB_PASS=", "");
+                        botDb_pass = line;
                     }
                 }
 
@@ -84,6 +104,10 @@ public class Config {
             botToken = System.getenv("BOT_TOKEN");
             botPrefix = System.getenv("BOT_PREFIX");
             botAdminId = System.getenv("BOT_ADMINID");
+            botDatabase = System.getenv("DATABASE");
+            botDb_url = System.getenv("DB_URL");
+            botDb_user = System.getenv("DB_USER");
+            botDb_pass = System.getenv("DB_PASS");
         }
 
         // Check if token exists and if it matches the proper pattern. Exit if error occurs
@@ -102,6 +126,10 @@ public class Config {
         token = botToken;
         prefix = botPrefix;
         adminId = botAdminId;
+        database = botDatabase;
+        db_url = botDb_url;
+        db_user = botDb_user;
+        db_pass = botDb_pass;
 
         LOGGER.info("Loaded config file");
     }
