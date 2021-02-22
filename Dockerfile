@@ -1,6 +1,10 @@
-FROM openjdk:8
+FROM gradle:6.8-jdk8 as builder
 
-WORKDIR /barista
-COPY /build/libs/BaristaBot-1.4.0-all.jar /barista/barista.jar
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle shadowJar
 
-CMD ["java", "-jar","/barista/barista.jar"]
+FROM openjdk:10-jre-slim
+COPY --from=builder /home/gradle/src/build/libs/*.jar /app/barista.jar
+WORKDIR /app
+CMD ["java", "-jar","barista.jar"]
