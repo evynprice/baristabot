@@ -23,12 +23,17 @@ Barista Bot is a simple yet effective, multi-purpose Discord bot written with [J
 All of the code is open-source under the MIT license and included right here on GitHub. Contributions are encouraged and anyone is welcome to self host their own versions of Barista Bot as long as proper credit is given as described by the [license](LICENSE).
 
 ## Links
-Add me to your Discord server [here](https://discord.com/api/oauth2/authorize?client_id=619532814093910016&permissions=1576266966&scope=bot)!
+Add the bot to your Discord server [here](https://discord.com/api/oauth2/authorize?client_id=619532814093910016&permissions=1576266966&scope=bot)!
 
 Have questions or want to hang out and talk about the world of Discord bots? Join our community server [here](https://discord.gg/u8hAu6sEtw).
 
 ## Wiki
 Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/evynprice/baristabot/wiki/Commands).
+
+## Self Hosting
+Anyone is welcome to run their own instance of Barista Bot. Individuals can clone this repository and build their own artifacts and images or download the successful builds from [Jenkins](https://ci.evyn.me/job/baristabot/) or [DockerHub](https://hub.docker.com/r/evynprice/baristabot).
+
+Additional information on self-hosting can be found on the wiki page [here](https://github.com/evynprice/baristabot/wiki/Self-Hosting).
 
 <!--
 ## Contribution
