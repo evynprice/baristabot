@@ -35,7 +35,6 @@ Anyone is welcome to run their own instance of Barista Bot. Individuals can clon
 
 Additional information on self-hosting can be found on the wiki page [here](https://github.com/evynprice/baristabot/wiki/Self-Hosting).
 
-<!--
+
 ## Contribution
 Are you a fellow developer and looking to add your own features or improvements? Please check out the contribution page [here](https://github.com/evynprice/baristabot/wiki/Contribution).
--->
