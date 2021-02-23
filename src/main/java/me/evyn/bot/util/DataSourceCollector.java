@@ -27,6 +27,7 @@ package me.evyn.bot.util;
 import me.evyn.bot.resources.Config;
 import me.evyn.bot.resources.DataSource;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,8 +42,8 @@ public class DataSourceCollector {
      * @return String bot prefix
      */
     public static String getGuildPrefix(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT prefix FROM guild_settings WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -53,8 +54,7 @@ public class DataSourceCollector {
                 }
             }
 
-            try (final PreparedStatement insertStatement = DataSource
-                    .getConnection()
+            try (final PreparedStatement insertStatement = conn
                     .prepareStatement("INSERT INTO guild_settings(guild_id) VALUES(?)")) {
 
                 insertStatement.setString(1, String.valueOf(guildId));
@@ -76,8 +76,8 @@ public class DataSourceCollector {
      * @return boolean update status
      */
     public static boolean setGuildPrefix(long guildId, String newPrefix) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE guild_settings SET prefix = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setString(1, newPrefix);
@@ -96,8 +96,8 @@ public class DataSourceCollector {
      * @return Boolean True or False if exists, Null if setting does not exist
      */
     public static Boolean getGuildEmbed(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT embed FROM guild_settings WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -126,8 +126,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setGuildEmbed(long guildId, boolean value) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE guild_settings SET embed = ? WHERE guild_id = ? ")) {
 
             if (value) {
@@ -151,8 +151,8 @@ public class DataSourceCollector {
      * @return String channelId
      */
     public static String getGuildModLogId(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT modlog_id FROM guild_settings WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -181,8 +181,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setGuildModLogId(long guildId, long channelId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE guild_settings SET modlog_id = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setString(1, String.valueOf(channelId));
@@ -201,8 +201,8 @@ public class DataSourceCollector {
      * @return channelId
      */
     public static String getGuildActivityLogId(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT activitylog_id FROM guild_settings WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -231,8 +231,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setGuildActivityLogId(long guildId, long channelId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE guild_settings SET activitylog_id = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setString(1, String.valueOf(channelId));
@@ -251,8 +251,8 @@ public class DataSourceCollector {
      * @return String Channel Id
      */
     public static String getCountingChannel(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT channel FROM counting_guilds WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -267,8 +267,7 @@ public class DataSourceCollector {
                 }
             }
 
-            try (final PreparedStatement insertStatement = DataSource
-                    .getConnection()
+            try (final PreparedStatement insertStatement = conn
                     .prepareStatement("INSERT INTO counting_guilds(guild_id) VALUES(?)")) {
 
                 insertStatement.setString(1, String.valueOf(guildId));
@@ -288,8 +287,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setCountingChannel(long guildId, long channelId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE counting_guilds SET channel = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setString(1, String.valueOf(channelId));
@@ -308,8 +307,8 @@ public class DataSourceCollector {
      * @return String score
      */
     public static Integer getCountingCurrentGuildScore(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT current_score FROM counting_guilds WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -333,8 +332,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setCountingCurrentGuildScore(long guildId, int num) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE counting_guilds SET current_score = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setInt(1, num);
@@ -353,8 +352,8 @@ public class DataSourceCollector {
      * @return String userId
      */
     public static String getCountingGuildLastUserId(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT last_userid FROM counting_guilds WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -378,8 +377,8 @@ public class DataSourceCollector {
      * @return boolean status
      */
     public static boolean setCountingGuildLastUserId(long guildId, String userId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE counting_guilds SET last_userid = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setString(1, userId);
@@ -398,8 +397,8 @@ public class DataSourceCollector {
      * @return String high score
      */
     public static Integer getCountingGuildTopScore(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT top_score FROM counting_guilds WHERE guild_id = ?")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
@@ -423,8 +422,8 @@ public class DataSourceCollector {
      * @return
      */
     public static boolean setCountingGuildTopScore(long guildId, int newTop) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE counting_guilds SET top_score = ? WHERE guild_id = ? ")) {
 
             preparedStatement.setInt(1, newTop);
@@ -447,8 +446,8 @@ public class DataSourceCollector {
 
         String memberId = String.valueOf(guildId) + userId;
 
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT total_count FROM counting_users WHERE member_id = ?")) {
 
             preparedStatement.setString(1, memberId);
@@ -459,8 +458,7 @@ public class DataSourceCollector {
                 }
             }
 
-            try (final PreparedStatement insertStatement = DataSource
-                    .getConnection()
+            try (final PreparedStatement insertStatement = conn
                     .prepareStatement("INSERT INTO counting_users(guild_id,user_id,member_id) VALUES(?, ?, ?)")) {
 
                 insertStatement.setString(1, String.valueOf(guildId));
@@ -486,8 +484,8 @@ public class DataSourceCollector {
 
         String memberId = String.valueOf(guildId) + userId;
 
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("UPDATE counting_users SET total_count = ? WHERE member_id = ?")) {
 
             preparedStatement.setInt(1, newScore);
@@ -506,8 +504,8 @@ public class DataSourceCollector {
      * @return Map<String, Integer> userId, count
      */
     public static Map<String, Integer> getCountingGuildTopUsers(long guildId) {
-        try (final PreparedStatement preparedStatement = DataSource
-                .getConnection()
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_count DESC LIMIT 10")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));

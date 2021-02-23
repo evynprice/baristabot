@@ -48,8 +48,6 @@ public class DataSource {
             config.setUsername(Config.db_user);
             config.setPassword(Config.db_pass);
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-            config.setMinimumIdle(100);
-            config.setMaximumPoolSize(1000);
         } else {
             try {
                 final File db = new File("database.db");
@@ -66,8 +64,6 @@ public class DataSource {
             }
 
             config.setJdbcUrl("jdbc:sqlite:database.db");
-            config.setMinimumIdle(100);
-            config.setMaximumPoolSize(1000);
 
         }
             ds = new HikariDataSource(config);
@@ -81,7 +77,8 @@ public class DataSource {
         }
 
         // create settings table
-        try (final Statement statement = getConnection().createStatement()) {
+        try (final Connection conn = getConnection();
+             final Statement statement = conn.createStatement()) {
             final String defaultPrefix = Config.prefix;
 
             String input = "CREATE TABLE IF NOT EXISTS guild_settings (" +
@@ -106,7 +103,8 @@ public class DataSource {
         }
 
         // create counting_guilds
-        try (final Statement statement = getConnection().createStatement()) {
+        try (final Connection conn = getConnection();
+             final Statement statement = conn.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS counting_guilds (" +
                     "guild_id VARCHAR(20) NOT NULL PRIMARY KEY," + "channel VARCHAR(18) NOT NULL DEFAULT " +
                     "'0'" + ", current_score INTEGER," +
@@ -117,7 +115,8 @@ public class DataSource {
         }
 
         // create counting_users
-       try (final Statement statement = getConnection().createStatement()) {
+       try (final Connection conn = getConnection();
+            final Statement statement = conn.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS counting_users (" +
                     "guild_id VARCHAR(20) NOT NULL," + "user_id VARCHAR(18) NOT NULL," +
                     "total_count INTEGER," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
