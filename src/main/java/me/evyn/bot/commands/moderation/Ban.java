@@ -51,7 +51,6 @@ public class Ban implements Command {
     public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User botUser = event.getJDA().getSelfUser();
-        Member botMember = event.getGuild().getSelfMember();
         EmbedBuilder eb = null;
         String message = null;
 
@@ -63,6 +62,7 @@ public class Ban implements Command {
         } else {
 
             // get guildId, if mod-logs are enabled, and the bot account
+            Member botMember = event.getGuild().getSelfMember();
             long guildId = event.getGuild().getIdLong();
             TextChannel modLogChannel = ModLogs.getModLogChannel(event, guildId);
             Member bot = event.getGuild().getSelfMember();

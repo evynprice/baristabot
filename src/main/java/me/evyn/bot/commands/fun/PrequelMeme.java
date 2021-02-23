@@ -55,7 +55,7 @@ public class PrequelMeme implements Command {
         Random r = new Random();
         int num = r.nextInt(this.memes.size());
 
-        event.getTextChannel()
+        event.getChannel()
                 .sendMessage(this.memes.get(num))
                 .queue();
     }

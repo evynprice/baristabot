@@ -30,6 +30,7 @@ import me.evyn.bot.util.DataSourceCollector;
 import me.evyn.bot.util.EmbedCreator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -53,9 +54,18 @@ public class Counting implements Command {
     public void run(MessageReceivedEvent event, String prefix, boolean embed, String[] args) {
 
         User bot = event.getJDA().getSelfUser();
+        EmbedBuilder eb = null;
+
+        if (!event.isFromType(ChannelType.TEXT)) {
+            eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
+            event.getChannel()
+                    .sendMessage(eb.build())
+                    .queue();
+            return;
+        }
+
         long guildId = event.getGuild().getIdLong();
         List<String> negative = Arrays.asList("false", "disabled", "reset", "disable");
-        EmbedBuilder eb = null;
         String message = null;
 
         // help command

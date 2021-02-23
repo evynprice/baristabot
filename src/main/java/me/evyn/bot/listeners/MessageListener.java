@@ -64,8 +64,6 @@ public class MessageListener extends ListenerAdapter {
             prefix = Config.prefix;
         }
 
-        long guildId = event.getGuild().getIdLong();
-
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
             event.getChannel()
@@ -77,24 +75,24 @@ public class MessageListener extends ListenerAdapter {
 
         // if content starts with number and counting game is enabled
         if (counting != null) {
+            long guildId = event.getGuild().getIdLong();
             // find counting channel
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             // counting channel exits and message contains number
             if (countingChannel != null && content.matches(".*[0-9]+.*")) {
-
-                // replace all non-numbers and fetch integer value
-                String msg = content.replaceAll("[^0-9]", "");
-
-                int msgCount;
-                try {
-                    msgCount = Integer.valueOf(msg);
-                } catch (NumberFormatException e) {
-                    return;
-                }
-
                 // if current channel is counting channel
                 if (event.getChannel().getIdLong() == countingChannel.getIdLong()) {
+
+                    // replace all non-numbers and fetch integer value
+                    String msg = content.replaceAll("[^0-9]", "");
+
+                    int msgCount;
+                    try {
+                        msgCount = Integer.valueOf(msg);
+                    } catch (NumberFormatException e) {
+                        return;
+                    }
 
                     // get current count and the last user ID
                     int currentCount = DataSourceCollector.getCountingCurrentGuildScore(guildId);
@@ -124,8 +122,8 @@ public class MessageListener extends ListenerAdapter {
                                 .sendMessage("\u274C Score lost! Top score was: " + currentCount)
                                 .queue();
                     }
+                    return;
                 }
-                return;
             }
 
         }

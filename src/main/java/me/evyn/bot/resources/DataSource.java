@@ -48,6 +48,7 @@ public class DataSource {
             config.setUsername(Config.db_user);
             config.setPassword(Config.db_pass);
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.setMaximumPoolSize(20);
         } else {
             try {
                 final File db = new File("database.db");
@@ -64,6 +65,8 @@ public class DataSource {
             }
 
             config.setJdbcUrl("jdbc:sqlite:database.db");
+            config.setMaximumPoolSize(20);
+            config.setLeakDetectionThreshold(2000);
 
         }
             ds = new HikariDataSource(config);
