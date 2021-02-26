@@ -1,0 +1,6 @@
+.gradle
+database.db
+.env.local
+build
+.idea
+**/.DS_Store

@@ -1,0 +1,36 @@
+# main links
+main:
+   - title: "About"
+     url: /about
+   - title: "Invite"
+     url: https://discord.com/oauth2/authorize?scope=bot&client_id=619532814093910016&permissions=1572072662
+   - title: "Support"
+     url: https://discord.gg/u8hAu6sEtw
+   - title: "Docs"
+     url: /docs
+
+docs:
+  - title: Getting Started
+    children:
+      - title: "Quick-Start Guide"
+        url: /docs/quick-start-guide/
+      - title: "Self Hosting"
+        url: /docs/self-hosting/
+      - title: "Contributing"
+        url: /docs/contributing/
+      - title: "FAQ"
+        url: /docs/faq/
+
+  - title: Command Documentation
+    children:
+      - title: "Docs"
+        url: /docs/
+
+  - title: Extras
+    children:
+      - title: "About"
+        url: /about/
+      - title: "Invite"
+        url: https://discord.com/oauth2/authorize?scope=bot&client_id=619532814093910016&permissions=1572072662
+      - title: "Support"
+        url: https://discord.gg/u8hAu6sEtw
