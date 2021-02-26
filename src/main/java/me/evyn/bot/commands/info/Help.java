@@ -56,6 +56,7 @@ public class Help implements Command {
                     "It makes a perfect addition to your community, study group, or hang out server, and it " +
                     "adds a bit of fun and utility to any environment")
                     .setThumbnail(bot.getAvatarUrl())
+                    .setTitle(bot.getName(), "https://baristabot.evyn.me/")
                     .addField("Github", "[link](https://github.com/evynprice/baristabot)", true)
                     .addField("Logo", "[attribution]" +
                             "(https://github.com/evynprice/baristabot/blob/main/branding/attribution.txt)", true)
