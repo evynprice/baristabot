@@ -1,6 +1,6 @@
 ---
 layout: single
-permalink: /docs/contributing
+permalink: /docs/contributing/
 excerpt: "Contributing"
 header:
   overlay_color: "#808080"

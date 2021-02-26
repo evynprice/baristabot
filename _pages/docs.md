@@ -1,6 +1,6 @@
 ---
 layout: single
-permalink: /docs
+permalink: /docs/
 excerpt: "Command Documentation"
 header:
   overlay_color: "#e64d42"

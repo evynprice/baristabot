@@ -1,6 +1,6 @@
 ---
 layout: single
-permalink: /about
+permalink: /about/
 excerpt: "About the project"
 header:
   overlay_color: "#e3b27d"

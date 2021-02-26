@@ -4,3 +4,4 @@ database.db
 build
 .idea
 **/.DS_Store
+Gemfile.lock

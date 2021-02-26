@@ -1,13 +1,13 @@
 # main links
 main:
    - title: "About"
-     url: /about
+     url: /about/
    - title: "Invite"
      url: https://discord.com/oauth2/authorize?scope=bot&client_id=619532814093910016&permissions=1572072662
    - title: "Support"
      url: https://discord.gg/u8hAu6sEtw
    - title: "Docs"
-     url: /docs
+     url: /docs/
 
 docs:
   - title: Getting Started
