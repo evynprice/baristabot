@@ -1,6 +1,7 @@
 ---
 layout: splash
 permalink: /
+featured-image: /images/site-logo.png
 header:
   overlay_color: "#5e616c"
   overlay_image: images/homepage-splash.png

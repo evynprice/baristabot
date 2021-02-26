@@ -19,8 +19,8 @@ description              : "Barista Bot is a simple yet effective, multi-purpose
 It makes a perfect addition to your community, study group, or hangout server, and it adds a bit of fun and utility to any environment."
 url                      : "https://evynprice.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "/baristabot" # the subpath of your site, e.g. "/blog"
-repository               : evynprice/baristabot
-teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
+repository               : "evynprice/baristabot"
+teaser                   : "/images/site-logo.png" # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo                     : "/images/88x88.png" # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 breadcrumbs              : false # true, false (default)
@@ -32,7 +32,7 @@ facebook:
   username               :
   app_id                 :
   publisher              :
-og_image                 : /images/site-logo.png # Open Graph/Twitter default site image
+og_image                 : "/images/site-logo.png" # Open Graph/Twitter default site image
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
