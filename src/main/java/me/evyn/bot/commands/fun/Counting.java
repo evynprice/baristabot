@@ -97,7 +97,9 @@ public class Counting implements Command {
                 top.keySet().stream()
                         .forEach(memberId -> {
                             Member member = event.getGuild().getMemberById(memberId);
-                            sb.append(member.getEffectiveName()).append(":** ").append(top.get(memberId)).append("**\n");
+                            if (member != null) {
+                                sb.append(member.getEffectiveName()).append(":** ").append(top.get(memberId)).append("**\n");
+                            }
                         });
 
                 if (embed) {
