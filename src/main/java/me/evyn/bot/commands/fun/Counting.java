@@ -38,6 +38,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +101,7 @@ public class Counting implements Command {
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             if (countingChannel != null) {
-                Map<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().getIdLong());
+                LinkedHashMap<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().getIdLong());
 
                 StringBuilder sb = new StringBuilder();
 

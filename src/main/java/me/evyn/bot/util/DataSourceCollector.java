@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DataSourceCollector {
@@ -503,7 +504,7 @@ public class DataSourceCollector {
      * @param guildId
      * @return Map<String, Integer> userId, count
      */
-    public static Map<String, Integer> getCountingGuildTopUsers(long guildId) {
+    public static LinkedHashMap<String, Integer> getCountingGuildTopUsers(long guildId) {
         try (final Connection conn = DataSource.getConnection();
              final PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_count DESC LIMIT 10")) {
@@ -511,7 +512,7 @@ public class DataSourceCollector {
             preparedStatement.setString(1, String.valueOf(guildId));
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-                Map<String, Integer> members = new HashMap<>();
+                LinkedHashMap<String, Integer> members = new LinkedHashMap<>();
                 while(resultSet.next()) {
                     String id = resultSet.getString("user_id");
                     int count = resultSet.getInt("total_count");
