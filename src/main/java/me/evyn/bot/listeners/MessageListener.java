@@ -120,9 +120,11 @@ public class MessageListener extends ListenerAdapter {
                         // get and possibly set top score
                         int topScore = DataSourceCollector.getCountingGuildTopScore(guildId);
 
+                        boolean newTopScore = false;
+
                         if (msgCount > topScore) {
                             DataSourceCollector.setCountingGuildTopScore(guildId, msgCount);
-                            //TODO send extra reaction for new high score
+                            newTopScore = true;
                         }
 
                         // fetch the user's total count
@@ -135,6 +137,11 @@ public class MessageListener extends ListenerAdapter {
 
                         // count update was successful so react with checkmark
                         event.getMessage().addReaction("\u2705").queue();
+
+                        // send extra reaction if new guild top score
+                        if (newTopScore) {
+                            event.getMessage().addReaction("\uD83C\uDF89").queue();
+                        }
                     } else {
                         // count was invalid so send error reaction
                         DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), 0);
