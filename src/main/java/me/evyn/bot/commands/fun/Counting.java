@@ -57,6 +57,7 @@ public class Counting implements Command {
         User bot = event.getJDA().getSelfUser();
         EmbedBuilder eb = null;
 
+        // send error message and return if the command is not ran in a guild
         if (!event.isFromType(ChannelType.TEXT)) {
             eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
             event.getChannel()
@@ -255,7 +256,7 @@ public class Counting implements Command {
                     message = "ERROR: " + msg;
                 }
             }
-        }
+        } //TODO add guild and user statistics
 
         if (eb != null) {
             event.getChannel()

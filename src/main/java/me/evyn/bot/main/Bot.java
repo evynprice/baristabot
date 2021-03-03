@@ -37,15 +37,7 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 public class Bot {
 
     public static void main(String[] args) throws Exception {
-        Bot.startBot();
-    }
-
-    /**
-     * Starts the bot instance
-     * @throws Exception
-     */
-    private static void startBot() throws Exception {
-
+        // load Configuration data
         Config config = new Config();
 
         // start and test DataSource connection

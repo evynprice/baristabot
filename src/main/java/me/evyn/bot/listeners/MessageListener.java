@@ -51,15 +51,21 @@ public class MessageListener extends ListenerAdapter {
         // return if sender is bot
         if (event.getAuthor().isBot()) return;
 
+        // gather message content
         Message message = event.getMessage();
         String content = message.getContentRaw();
 
+        // initialize prefix and counting variables
         String prefix;
         String counting = null;
 
+        /* set local prefix variable to default prefix if message is not sent in a guild channel, otherwise set local
+        prefix variable to be database prefix
+         */
         if (event.isFromType(ChannelType.TEXT)) {
-            prefix = DataSourceCollector.getGuildPrefix(event.getGuild().getIdLong());
-            counting = DataSourceCollector.getCountingChannel(event.getGuild().getIdLong());
+            long guildId = event.getGuild().getIdLong();
+            prefix = DataSourceCollector.getGuildPrefix(guildId);
+            counting = DataSourceCollector.getCountingChannel(guildId);
         } else {
             prefix = Config.prefix;
         }
@@ -67,7 +73,7 @@ public class MessageListener extends ListenerAdapter {
         // If message starts with bot mention, direct user to send using prefix and return
         if (content.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
             event.getChannel()
-                    .sendMessage(String.format("My prefix is currently `%s`" + "%n" + "" +
+                    .sendMessage(String.format("My prefix is currently `%s`%n" +
                             "Try running `%shelp` for more information",prefix, prefix))
                     .queue();
             return;
@@ -76,7 +82,7 @@ public class MessageListener extends ListenerAdapter {
         // if content starts with number and counting game is enabled
         if (counting != null) {
             long guildId = event.getGuild().getIdLong();
-            // find counting channel
+            // fetch counting channel
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             // counting channel exits and message contains number
@@ -91,6 +97,9 @@ public class MessageListener extends ListenerAdapter {
                     try {
                         msgCount = Integer.valueOf(msg);
                     } catch (NumberFormatException e) {
+                        /* number was most likely a channel mention or other large number so instead of sending
+                        error message we will just return
+                         */
                         return;
                     }
 
@@ -98,10 +107,14 @@ public class MessageListener extends ListenerAdapter {
                     int currentCount = DataSourceCollector.getCountingCurrentGuildScore(guildId);
                     String lastUserId = DataSourceCollector.getCountingGuildLastUserId(guildId);
 
-                    // if provided count is the next value
+                    // if provided count is the next value and member ID was not the most recent counter
                     if ((currentCount == 0) && msgCount == (currentCount + 1) ||
                             msgCount == currentCount + 1 && !event.getMember().getId().equals(lastUserId)) {
+
+                        // set guild score to the new count
                         DataSourceCollector.setCountingCurrentGuildScore(guildId, msgCount);
+
+                        // update the last user to be the most recent counter
                         DataSourceCollector.setCountingGuildLastUserId(guildId, event.getAuthor().getId());
 
                         // get and possibly set top score
@@ -109,17 +122,25 @@ public class MessageListener extends ListenerAdapter {
 
                         if (msgCount > topScore) {
                             DataSourceCollector.setCountingGuildTopScore(guildId, msgCount);
+                            //TODO send extra reaction for new high score
                         }
 
-                        int usrTotalCount = DataSourceCollector.getCountingUserTotalCount(guildId, event.getMember().getIdLong());
-                        DataSourceCollector.setCountingUserTotalCount(guildId, event.getMember().getIdLong(), (usrTotalCount+1));
+                        // fetch the user's total count
+                        int usrTotalCount = DataSourceCollector.getCountingUserTotalCount(guildId,
+                                event.getMember().getIdLong());
 
+                        // update the user's total count
+                        DataSourceCollector.setCountingUserTotalCount(guildId, event.getMember().getIdLong(),
+                                (usrTotalCount+1));
+
+                        // count update was successful so react with checkmark
                         event.getMessage().addReaction("\u2705").queue();
                     } else {
+                        // count was invalid so send error reaction
                         DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), 0);
                         event.getMessage().addReaction("\u274C").queue();
                         event.getChannel()
-                                .sendMessage("\u274C Score lost! Top score was: " + currentCount)
+                                .sendMessage("\u274C Score lost! The highest number was: " + currentCount)
                                 .queue();
                     }
                     return;
@@ -146,6 +167,7 @@ public class MessageListener extends ListenerAdapter {
         if (msg.length > 1) {
             args = Arrays.copyOfRange(msg, 1, msg.length);
         } else {
+            // args is empty array
             args = new String[]{};
         }
 
