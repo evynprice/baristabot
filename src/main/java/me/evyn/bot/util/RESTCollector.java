@@ -46,7 +46,7 @@ public class RESTCollector {
     public static List<String> getPrequelMemes() {
         try {
             // attempt to connect to webpage
-            URL url = new URL("https://www.reddit.com/r/prequelmemes.json?sort=top&t=week&limit=50");
+            URL url = new URL("https://www.reddit.com/r/prequelmemes.json?sort=top&t=week&limit=100");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -88,7 +88,7 @@ public class RESTCollector {
                     JSONObject childData = (JSONObject) c.get("data");
                     String imageUrl = (String) childData.getOrDefault("url_overridden_by_dest", null);
 
-                    if (imageUrl != null) {
+                    if (imageUrl != null && !imageUrl.startsWith("https://v.")) {
                         images.add(imageUrl);
                     }
                 }
