@@ -35,6 +35,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -57,6 +59,7 @@ public class Counting implements Command {
         User bot = event.getJDA().getSelfUser();
         EmbedBuilder eb = null;
 
+        // send error message and return if the command is not ran in a guild
         if (!event.isFromType(ChannelType.TEXT)) {
             eb = EmbedCreator.newErrorEmbedMessage(bot, "This command can only be ran in servers.");
             event.getChannel()
@@ -81,7 +84,8 @@ public class Counting implements Command {
                                 "next number entered is not the next number in line, the count resets." + "\n" +
                                 "- One person cannot enter two numbers in a row (At least two people are required " +
                                 "to play.", false)
-                        .addField("Getting Started", "`" + prefix + "counting channel <channel-mention>`", false)
+                        .addField("Getting Started", "`" + prefix + "counting channel <channel-mention>`",
+                                false)
                         .addField("View Top Players", "`" + prefix + "counting top`", false)
                         .setFooter("Barista Bot")
                         .setTimestamp(Instant.now());
@@ -101,7 +105,8 @@ public class Counting implements Command {
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             if (countingChannel != null) {
-                LinkedHashMap<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().getIdLong());
+                LinkedHashMap<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().
+                        getIdLong());
 
                 StringBuilder sb = new StringBuilder();
 
@@ -109,7 +114,10 @@ public class Counting implements Command {
                         .forEach(memberId -> {
                             Member member = event.getGuild().getMemberById(memberId);
                             if (member != null) {
-                                sb.append(member.getEffectiveName()).append(":** ").append(top.get(memberId)).append("**\n");
+                                sb.append(member.getEffectiveName())
+                                        .append(":** ")
+                                        .append(top.get(memberId))
+                                        .append("**\n");
                             }
                         });
 
@@ -249,6 +257,74 @@ public class Counting implements Command {
                 // invalid arguments
                 String msg = "Invalid arguments were provided. Try running `" + prefix + "counting help` for more " +
                         "information.";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                } else {
+                    message = "ERROR: " + msg;
+                }
+            }
+            // user statistics
+        } else if (args[0].equals("user")) {
+            TextChannel channel = Counting.getCountingChannel(event, guildId);
+
+            if (channel != null) {
+
+                User user = null;
+
+                if (args.length == 1) {
+                    user = event.getAuthor();
+                } else if (args.length == 2) {
+                    String Id = args[1].replaceAll("[^0-9.]", "");
+
+                    // attempt to find user with Id
+                    try {
+                        RestAction<Member> tempMember = event.getGuild().retrieveMemberById(Id);
+                        user = tempMember.complete().getUser();
+                    } catch (IllegalArgumentException | ErrorResponseException e) {
+                        // user could not be found
+                        String msg = "That ID is either invalid or the user provided is not in the server.";
+                        if (embed) {
+                            eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                        } else {
+                            message = "ERROR: " + msg;
+                        }
+                    }
+                }
+
+                if (user != null) {
+                    List<String> stats = null;
+
+                    try {
+                        stats = DataSourceCollector.getCountingUserStats(event.getGuild().getIdLong(),
+                                user.getIdLong());
+
+                        String countingRate = String.format("%.3f", Double.valueOf(stats.get(2)));
+
+                        if (embed) {
+                            eb = EmbedCreator.newCommandEmbedMessage(bot)
+                                    .setTitle(user.getAsTag() + " statistics")
+                                    .setColor(0x008080)
+                                    .addField("Total Correct", stats.get(0), false)
+                                    .addField("Total Incorrect", stats.get(1), false)
+                                    .addField("Correct Rate", countingRate + "%", false)
+                                    .setFooter("Barista Bot")
+                                    .setTimestamp(Instant.now());
+                        } else {
+                            message = "**" + user.getAsTag() + " statistics**" + "\n\n" + "**Total " +
+                                    "Correct:** " + stats.get(0) + "\n" + "**Total Incorrect:** " + stats.get(1) +
+                                    "\n" + "**Correct Rate:** " + countingRate + "%";
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        String msg = "There are no statistics for the provided user";
+                        if (embed) {
+                            eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
+                        } else {
+                            message = "ERROR: " + msg;
+                        }
+                    }
+                }
+            } else {
+                String msg = "The current counting channel is either invalid or not set up.";
                 if (embed) {
                     eb = EmbedCreator.newErrorEmbedMessage(bot, msg);
                 } else {
