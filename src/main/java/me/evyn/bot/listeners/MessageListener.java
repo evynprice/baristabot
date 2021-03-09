@@ -128,11 +128,11 @@ public class MessageListener extends ListenerAdapter {
                         }
 
                         // fetch the user's total count
-                        int usrTotalCount = DataSourceCollector.getCountingUserTotalCount(guildId,
+                        int usrTotalCount = DataSourceCollector.getCountingUserTotalCorrect(guildId,
                                 event.getMember().getIdLong());
 
                         // update the user's total count
-                        DataSourceCollector.setCountingUserTotalCount(guildId, event.getMember().getIdLong(),
+                        DataSourceCollector.setCountingUserTotalCorrect(guildId, event.getMember().getIdLong(),
                                 (usrTotalCount+1));
 
                         // count update was successful so react with checkmark
@@ -145,6 +145,10 @@ public class MessageListener extends ListenerAdapter {
                     } else {
                         // count was invalid so send error reaction
                         DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), 0);
+                        int totalIncorrect = DataSourceCollector.getCountingUserTotalIncorrect(guildId,
+                                event.getMember().getIdLong());
+                        DataSourceCollector.setCountingUserTotalIncorrect(guildId, event.getMember().getIdLong(),
+                                (totalIncorrect+1));
                         event.getMessage().addReaction("\u274C").queue();
                         event.getChannel()
                                 .sendMessage("\u274C Score lost! The highest number was: " + currentCount)

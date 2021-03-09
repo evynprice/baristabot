@@ -122,7 +122,7 @@ public class DataSource {
             final Statement statement = conn.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS counting_users (" +
                     "guild_id VARCHAR(20) NOT NULL," + "user_id VARCHAR(18) NOT NULL," +
-                    "total_count INTEGER," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
+                    "total_correct INTEGER," + "total_incorrect INTEGER DEFAULT '0'," + "member_id VARCHAR(38) PRIMARY KEY NOT NULL" +
                     ");");
         } catch (SQLException e) {
             e.printStackTrace();

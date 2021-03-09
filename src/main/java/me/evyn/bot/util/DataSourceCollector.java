@@ -31,9 +31,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DataSourceCollector {
 
@@ -443,19 +441,19 @@ public class DataSourceCollector {
      * @param userId
      * @return String count
      */
-    public static Integer getCountingUserTotalCount(long guildId, long userId) {
+    public static Integer getCountingUserTotalCorrect(long guildId, long userId) {
 
         String memberId = String.valueOf(guildId) + userId;
 
         try (final Connection conn = DataSource.getConnection();
              final PreparedStatement preparedStatement = conn
-                .prepareStatement("SELECT total_count FROM counting_users WHERE member_id = ?")) {
+                .prepareStatement("SELECT total_correct FROM counting_users WHERE member_id = ?")) {
 
             preparedStatement.setString(1, memberId);
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("total_count");
+                    return resultSet.getInt("total_correct");
                 }
             }
 
@@ -475,19 +473,80 @@ public class DataSourceCollector {
     }
 
     /**
-     * Sets the total count for user in guild.
+     * Gets the total incorrect for user in guild.
      * @param guildId
      * @param userId
-     * @param newScore
-     * @return boolean status
+     * @return String count
      */
-    public static boolean setCountingUserTotalCount(long guildId, long userId, int newScore) {
+    public static Integer getCountingUserTotalIncorrect(long guildId, long userId) {
 
         String memberId = String.valueOf(guildId) + userId;
 
         try (final Connection conn = DataSource.getConnection();
              final PreparedStatement preparedStatement = conn
-                .prepareStatement("UPDATE counting_users SET total_count = ? WHERE member_id = ?")) {
+                     .prepareStatement("SELECT total_incorrect FROM counting_users WHERE member_id = ?")) {
+
+            preparedStatement.setString(1, memberId);
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("total_incorrect");
+                }
+            }
+
+            try (final PreparedStatement insertStatement = conn
+                    .prepareStatement("INSERT INTO counting_users(guild_id,user_id,member_id) VALUES(?, ?, ?)")) {
+
+                insertStatement.setString(1, String.valueOf(guildId));
+                insertStatement.setString(2, String.valueOf(userId));
+                insertStatement.setString(3, memberId);
+
+                insertStatement.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * Sets the total correct for user in guild.
+     * @param guildId
+     * @param userId
+     * @param newScore
+     * @return boolean status
+     */
+    public static boolean setCountingUserTotalCorrect(long guildId, long userId, int newScore) {
+
+        String memberId = String.valueOf(guildId) + userId;
+
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
+                .prepareStatement("UPDATE counting_users SET total_correct = ? WHERE member_id = ?")) {
+
+            preparedStatement.setInt(1, newScore);
+            preparedStatement.setString(2, memberId);
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Sets the total incorrect for user in guild.
+     * @param guildId
+     * @param userId
+     * @param newScore
+     * @return boolean status
+     */
+    public static boolean setCountingUserTotalIncorrect(long guildId, long userId, int newScore) {
+        String memberId = String.valueOf(guildId) + userId;
+
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
+                     .prepareStatement("UPDATE counting_users SET total_incorrect = ? WHERE member_id = ?")) {
 
             preparedStatement.setInt(1, newScore);
             preparedStatement.setString(2, memberId);
@@ -507,7 +566,7 @@ public class DataSourceCollector {
     public static LinkedHashMap<String, Integer> getCountingGuildTopUsers(long guildId) {
         try (final Connection conn = DataSource.getConnection();
              final PreparedStatement preparedStatement = conn
-                .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_count DESC LIMIT 10")) {
+                .prepareStatement("SELECT * FROM counting_users WHERE guild_id = ? ORDER BY total_correct DESC LIMIT 10")) {
 
             preparedStatement.setString(1, String.valueOf(guildId));
 
@@ -515,7 +574,7 @@ public class DataSourceCollector {
                 LinkedHashMap<String, Integer> members = new LinkedHashMap<>();
                 while(resultSet.next()) {
                     String id = resultSet.getString("user_id");
-                    int count = resultSet.getInt("total_count");
+                    int count = resultSet.getInt("total_correct");
                     members.put(id, count);
                 }
                 return members;
@@ -524,6 +583,40 @@ public class DataSourceCollector {
             throwables.printStackTrace();
         }
 
+        return null;
+    }
+
+    /**
+     * Gets the statistics for user in guild.
+     * @param guildId
+     * @param userId
+     * @return String count
+     */
+    public static List<String> getCountingUserStats(long guildId, long userId) {
+
+        String memberId = String.valueOf(guildId) + userId;
+
+        try (final Connection conn = DataSource.getConnection();
+             final PreparedStatement preparedStatement = conn
+                     .prepareStatement("SELECT * FROM counting_users WHERE member_id = ?")) {
+
+            preparedStatement.setString(1, memberId);
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<String> list = new ArrayList<>();
+                while (resultSet.next()) {
+                    list.add(resultSet.getString("total_correct"));
+                    list.add(resultSet.getString("total_incorrect"));
+                }
+
+                double correctRate = Double.valueOf(list.get(0)) / ((Double.valueOf(list.get(1)) +
+                            Double.valueOf(list.get(0)))) * 100;
+                list.add(String.valueOf(correctRate));
+                return list;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }
