@@ -107,6 +107,9 @@ public class MessageListener extends ListenerAdapter {
                     int currentCount = DataSourceCollector.getCountingCurrentGuildScore(guildId);
                     String lastUserId = DataSourceCollector.getCountingGuildLastUserId(guildId);
 
+                    // get topScore
+                    int topScore = DataSourceCollector.getCountingGuildTopScore(guildId);
+
                     // if provided count is the next value and member ID was not the most recent counter
                     if ((currentCount == 0) && msgCount == (currentCount + 1) ||
                             msgCount == currentCount + 1 && !event.getMember().getId().equals(lastUserId)) {
@@ -117,13 +120,9 @@ public class MessageListener extends ListenerAdapter {
                         // update the last user to be the most recent counter
                         DataSourceCollector.setCountingGuildLastUserId(guildId, event.getAuthor().getId());
 
-                        // get and possibly set top score
-                        int topScore = DataSourceCollector.getCountingGuildTopScore(guildId);
-
                         boolean newTopScore = false;
 
-                        if (msgCount > topScore) {
-                            DataSourceCollector.setCountingGuildTopScore(guildId, msgCount);
+                        if (msgCount == topScore + 1) {
                             newTopScore = true;
                         }
 
@@ -143,7 +142,11 @@ public class MessageListener extends ListenerAdapter {
                             event.getMessage().addReaction("\uD83C\uDF89").queue();
                         }
                     } else {
-                        // count was invalid so send error reaction
+                        // count was invalid so set top score and send error reaction
+                        if (currentCount > topScore) {
+                            DataSourceCollector.setCountingGuildTopScore(guildId, currentCount);
+                        }
+
                         DataSourceCollector.setCountingCurrentGuildScore(event.getGuild().getIdLong(), 0);
                         int totalIncorrect = DataSourceCollector.getCountingUserTotalIncorrect(guildId,
                                 event.getMember().getIdLong());
