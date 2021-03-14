@@ -1,0 +1,20 @@
+# This is the default configuration for Barista and is required to run artifacts and local instances.
+# This file is NOT required in Docker environments, please use environment variables instead
+# For usage and examples refer to the wiki page at https://barista.evyn.me/configuration
+
+[API]
+token =
+
+[Defaults]
+prefix = "b."
+embeds = true
+maintainer_ids =
+
+[Datasource]
+enabled = true
+type = "sqlite"
+ip = 
+port = 
+database = 
+user = 
+password = 
