@@ -3,10 +3,10 @@ plugins {
     id'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-mainClassName = 'me.evyn.bot.main.Bot'
+mainClassName = 'me.evyn.barista.core.Barista'
 
-version '1.4.3'
-def jdaVersion = '4.2.0_168'
+version '2.0'
+def jdaVersion = '4.2.0_240'
 
 sourceCompatibility = targetCompatibility = 1.8
 
@@ -15,12 +15,29 @@ repositories {
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:$jdaVersion"
-    compile('com.googlecode.json-simple:json-simple:1.1.1')
-    compile("ch.qos.logback:logback-classic:1.2.3")
-    compile("com.zaxxer:HikariCP:4.0.2")
-    compile 'org.xerial:sqlite-jdbc:3.34.0'
-    compile 'mysql:mysql-connector-java:8.0.23'
+    implementation "net.dv8tion:JDA:$jdaVersion"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "com.moandjiezana.toml:toml4j:0.7.2"
+    implementation "com.zaxxer:HikariCP:4.0.3"
+    implementation "org.xerial:sqlite-jdbc:3.34.0"
+    implementation "mysql:mysql-connector-java:8.0.23"
+}
+
+task createProperties() {
+    doLast {
+        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+        copy {
+            from "$buildDir/resources/main/version.properties"
+            into "bin/main/"
+        }
+    }
+}
+classes {
+    dependsOn createProperties
 }
 
 compileJava.options.encoding = 'UTF-8'
