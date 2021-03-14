@@ -24,6 +24,7 @@
 
 package me.evyn.barista.core.commands.core;
 
+import me.evyn.barista.core.BaristaInfo;
 import me.evyn.barista.core.Config;
 import me.evyn.barista.core.commands.Command;
 import me.evyn.barista.core.commands.CommandType;
@@ -44,8 +45,8 @@ public class Help implements Command {
                     .setDescription("Barista is a simple yet effective, multi-purpose Discord bot written with JDA." +
                             "It makes a perfect addition to your community, study group, or hangout server, and it " +
                             "adds a bit of fun and utility to any environment.")
-                    .addField("GitHub", "[link](https://github.com/evynprice/baristabot)", true)
-                    .addField("Version", Config.BOT_VERSION, true)
+                    .addField("GitHub", "[Link](https://github.com/evynprice/baristabot)", true)
+                    .addField("Version", BaristaInfo.VERSION, true)
                     .addField("Support", "[Support Discord Server](https://discord.gg/u8hAu6sEtw)", true)
                     .addField("Commands", prefix + "commands", false)
                     .setFooter("Barista");
@@ -53,6 +54,14 @@ public class Help implements Command {
             event.getChannel()
                     .sendMessage(eb.build())
                     .queue();
+        } else {
+            event.getChannel().sendMessage(
+                    "Barista is a simple yet effective, multi-purpose Discord bot written with JDA. It makes a " +
+                            "perfect addition to your community, study group, or hangout server, and it adds a bit of" +
+                            " fun and utility to any environment." + "\n\n" + "**GitHub:** <https://github.com/" +
+                            "evynprice/baristabot>" + "\n" + "**Version:** " + BaristaInfo.VERSION + "\n" + "**Support" +
+                            ":** <https://discord.gg/u8hAu6sEtw> " + "\n" + "**Commands:** " + prefix + "commands"
+            ).queue();
         }
     }
 

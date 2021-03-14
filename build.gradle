@@ -23,21 +23,4 @@ dependencies {
     implementation "mysql:mysql-connector-java:8.0.23"
 }
 
-task createProperties() {
-    doLast {
-        new File("$buildDir/resources/main/version.properties").withWriter { w ->
-            Properties p = new Properties()
-            p['version'] = project.version.toString()
-            p.store w, null
-        }
-        copy {
-            from "$buildDir/resources/main/version.properties"
-            into "bin/main/"
-        }
-    }
-}
-classes {
-    dependsOn createProperties
-}
-
 compileJava.options.encoding = 'UTF-8'
