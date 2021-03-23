@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.evyn.barista.core;
+package me.evyn.barista.core.utils;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

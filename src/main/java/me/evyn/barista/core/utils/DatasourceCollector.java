@@ -24,9 +24,6 @@
 
 package me.evyn.barista.core.utils;
 
-import me.evyn.barista.core.Config;
-import me.evyn.barista.core.Datasource;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

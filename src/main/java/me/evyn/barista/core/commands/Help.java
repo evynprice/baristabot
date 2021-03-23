@@ -24,7 +24,7 @@
 
 package me.evyn.barista.core.commands;
 
-import me.evyn.barista.core.BaristaInfo;
+import me.evyn.barista.core.utils.BaristaInfo;
 import me.evyn.barista.core.utils.Command;
 import me.evyn.barista.core.utils.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;

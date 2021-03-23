@@ -25,7 +25,7 @@
 
 package me.evyn.barista.core.listeners;
 
-import me.evyn.barista.core.Config;
+import me.evyn.barista.core.utils.Config;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

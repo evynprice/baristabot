@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.evyn.barista.core;
+package me.evyn.barista.core.utils;
 
 import com.moandjiezana.toml.Toml;
 import org.slf4j.Logger;

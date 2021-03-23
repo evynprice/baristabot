@@ -26,6 +26,8 @@ package me.evyn.barista.core;
 
 import me.evyn.barista.core.listeners.MessageListener;
 import me.evyn.barista.core.listeners.ReadyListener;
+import me.evyn.barista.core.utils.Config;
+import me.evyn.barista.core.utils.Datasource;
 import net.dv8tion.jda.api.JDABuilder;
 import javax.security.auth.login.LoginException;
 import java.sql.SQLException;
