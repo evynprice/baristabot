@@ -36,7 +36,6 @@ import java.util.List;
 public class Config {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
-    public static final String BOT_VERSION;
     public static final String API_TOKEN;
     public static final String DEFAULT_PREFIX;
     public static final Boolean DEFAULT_EMBEDS;
@@ -89,7 +88,6 @@ public class Config {
             defaultMaintainers = Arrays.asList(maintainersRaw.split(","));
         } finally {
 
-            BOT_VERSION =
             API_TOKEN = apiToken;
             DEFAULT_PREFIX = defaultPrefix;
             DEFAULT_EMBEDS = defaultEmbeds;

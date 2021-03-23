@@ -26,6 +26,7 @@ package me.evyn.barista.core.utils;
 
 import me.evyn.barista.core.commands.Help;
 import me.evyn.barista.core.commands.Ping;
+import me.evyn.barista.core.commands.Stats;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class CommandHandler {
     static {
         CommandHandler.addCommand(new Ping());
         CommandHandler.addCommand(new Help());
+        CommandHandler.addCommand(new Stats());
     }
 
     private static void addCommand(Command cmd) {
