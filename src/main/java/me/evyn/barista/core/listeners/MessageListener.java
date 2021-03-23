@@ -25,7 +25,7 @@
 package me.evyn.barista.core.listeners;
 
 import me.evyn.barista.core.Config;
-import me.evyn.barista.core.commands.CommandHandler;
+import me.evyn.barista.core.utils.CommandHandler;
 import me.evyn.barista.core.utils.DatasourceCollector;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;

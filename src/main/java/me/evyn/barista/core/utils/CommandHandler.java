@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.evyn.barista.core.commands;
+package me.evyn.barista.core.utils;
 
 import me.evyn.barista.core.commands.core.Help;
 import me.evyn.barista.core.commands.core.Ping;

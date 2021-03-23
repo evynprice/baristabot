@@ -37,9 +37,6 @@ public class Barista {
 
         JDABuilder builder = JDABuilder.createDefault(Config.API_TOKEN);
 
-        // Consider guilds with more than 50 members as "large".
-        builder.setLargeThreshold(50);
-
         // add listeners
         builder.addEventListeners(new ReadyListener());
         builder.addEventListeners(new MessageListener());

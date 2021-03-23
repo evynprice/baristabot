@@ -24,8 +24,8 @@
 
 package me.evyn.barista.core.commands.core;
 
-import me.evyn.barista.core.commands.Command;
-import me.evyn.barista.core.commands.CommandType;
+import me.evyn.barista.core.utils.Command;
+import me.evyn.barista.core.utils.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Ping implements Command {

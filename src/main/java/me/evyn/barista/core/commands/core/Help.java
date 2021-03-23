@@ -25,9 +25,8 @@
 package me.evyn.barista.core.commands.core;
 
 import me.evyn.barista.core.BaristaInfo;
-import me.evyn.barista.core.Config;
-import me.evyn.barista.core.commands.Command;
-import me.evyn.barista.core.commands.CommandType;
+import me.evyn.barista.core.utils.Command;
+import me.evyn.barista.core.utils.CommandType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

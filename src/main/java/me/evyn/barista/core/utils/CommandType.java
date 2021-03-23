@@ -22,15 +22,8 @@
  * SOFTWARE.
  */
 
-package me.evyn.barista.core.commands;
+package me.evyn.barista.core.utils;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-
-public interface Command {
-
-    void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args);
-
-    String getName();
-
-    CommandType getType();
+public enum CommandType {
+    CORE
 }
