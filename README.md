@@ -2,18 +2,12 @@
 
 # Barista Bot
 
-[build-status]: https://ci.evyn.me/job/baristabot
 [discord-invite]: https://discord.gg/u8hAu6sEtw
-[jenkins]: https://ci.evyn.me/job/baristabot
 [license]: https://github.com/evynprice/baristabot/tree/master/LICENSE
 [docker]: https://hub.docker.com/repository/docker/evynprice/baristabot
-[build-shield]: https://ci.evyn.me/buildStatus/icon?job=baristabot
 [discord-shield]: https://discord.com/api/guilds/809619459475898388/widget.png
-[jenkins-shield]: https://img.shields.io/badge/Download-Jenkins-blue.svg
 [license-shield]: https://img.shields.io/badge/License-MIT-red.svg
 [docker-shield]: https://img.shields.io/docker/pulls/evynprice/baristabot.svg
-[ ![build-shield][] ][build-status]
-[ ![jenkins-shield][] ][jenkins]
 [ ![license-shield][] ][license]
 [ ![docker-shield][] ][docker]
 [ ![discord-shield][] ][discord-invite]
@@ -31,7 +25,7 @@ Have questions or want to hang out and talk about the world of Discord bots? Joi
 Interested in what all Barista Bot can do? Check out the commands wiki page [here](https://github.com/evynprice/baristabot/wiki/Commands).
 
 ## Self Hosting
-Anyone is welcome to run their own instance of Barista Bot. Individuals can clone this repository and build their own artifacts and images or download the successful builds from [Jenkins](https://ci.evyn.me/job/baristabot/) or [DockerHub](https://hub.docker.com/r/evynprice/baristabot).
+Anyone is welcome to run their own instance of Barista Bot. Individuals can clone this repository and build their own artifacts and images or pull the successful build images from [DockerHub](https://hub.docker.com/r/evynprice/baristabot).
 
 Additional information on self-hosting can be found on the wiki page [here](https://github.com/evynprice/baristabot/wiki/Self-Hosting).
 
