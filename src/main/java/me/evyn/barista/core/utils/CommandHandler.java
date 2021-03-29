@@ -36,21 +36,32 @@ import java.util.Optional;
 
 public class CommandHandler {
 
+    // list of all bot commands
     public static final List<Command> COMMANDS = new ArrayList<>();
 
     static {
+        // add all commands to the COMMANDS object
         CommandHandler.addCommand(new Ping());
         CommandHandler.addCommand(new Help());
         CommandHandler.addCommand(new Stats());
         CommandHandler.addCommand(new Invite());
     }
 
+    /**
+     * Adds command to COMMANDS list if it does not already exist
+     * @param cmd Command object
+     */
     private static void addCommand(Command cmd) {
         if (!COMMANDS.contains(cmd)) {
             COMMANDS.add(cmd);
         }
     }
 
+    /**
+     * Attempts to find the provided command name in the COMMANDS list. If not found returns null
+     * @param cmdName Command Name
+     * @return Command object or null
+     */
     public static Command findCommand(String cmdName) {
         Optional<Command> matching = COMMANDS.stream()
                 .filter(cmd -> cmd.getName().equals(cmdName))
@@ -59,14 +70,26 @@ public class CommandHandler {
         return matching.orElse(null);
     }
 
+    /**
+     * Attempts to find provided command in list. If found, runs that command. Else sends error message
+     * @param event Message event
+     * @param prefix Bot prefix
+     * @param embedsEnabled embeds Enabled
+     * @param cmd command name
+     * @param args command arguments
+     */
     public static void run(MessageReceivedEvent event, String prefix, boolean embedsEnabled, String cmd, String[] args) {
+
+        // attempt to find command in list
         Command command = CommandHandler.findCommand(cmd);
 
+        // if command is not found, send error message
         if (command == null) {
             event.getChannel()
                     .sendMessage("**Error:** That command does not exist.")
                     .queue();
         } else {
+            // run command
             command.run(event, prefix, embedsEnabled, args);
         }
     }
