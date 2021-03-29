@@ -28,9 +28,24 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public interface Command {
 
+    /**
+     *
+     * @param event Message Event
+     * @param prefix Bot prefix
+     * @param embeds embedsEnabled
+     * @param args command arguments
+     */
     void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args);
 
+    /**
+     * Provides name of command
+     * @return command name
+     */
     String getName();
 
+    /**
+     * Provides type of command
+     * @return command type
+     */
     CommandType getType();
 }
