@@ -35,12 +35,18 @@ import org.slf4j.LoggerFactory;
 public class ReadyListener extends ListenerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadyListener.class);
 
+    /**
+     * Triggers when bot starts and connects to Discord API
+     * @param event ready event
+     */
     @Override
     public void onReady(ReadyEvent event) {
+        // set activity presence
         event.getJDA()
                 .getPresence()
                 .setActivity(Activity.watching(Config.DEFAULT_PREFIX + "help"));
 
+        // log that the bot successfully connected to Discord and is ready
         LOGGER.info("Bot is ready");
     }
 }
