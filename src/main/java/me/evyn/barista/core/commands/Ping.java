@@ -29,20 +29,38 @@ import me.evyn.barista.core.utils.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Ping implements Command {
+
+    /**
+     * Generates and sends bot ping in event's channel
+     * @param event Message Event
+     * @param prefix Bot prefix
+     * @param embeds embedsEnabled
+     * @param args command arguments
+     */
     @Override
     public void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args) {
+        // fetch bot ping
         long gatewayPing = event.getJDA().getGatewayPing();
 
+        // send bot ping
         event.getChannel()
                 .sendMessage(String.format("Current gateway ping: %sms", gatewayPing))
                 .queue();
     }
 
+    /**
+     * Provides name of command
+     * @return command name
+     */
     @Override
     public String getName() {
         return "ping";
     }
 
+    /**
+     * Provides type of command
+     * @return command type
+     */
     @Override
     public CommandType getType() {
         return CommandType.CORE;
