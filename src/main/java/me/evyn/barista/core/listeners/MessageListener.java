@@ -52,23 +52,23 @@ public class MessageListener extends ListenerAdapter {
 
         // declare prefix and embeds variables that will be provided from DatasourceCollector
         String prefix;
-        boolean embeds;
+        boolean embedsEnabled;
 
         // fetch guild / channel prefix and if embeds are enabled
         if (event.isFromGuild()) {
             prefix = DatasourceCollector.getGuildPrefix(event.getGuild().getId());
 
             // if embeds setting is enabled and bot has permission to send embed messages
-            if (DatasourceCollector.getGuildEmbeds(event.getGuild().getId()) &&
+            if (DatasourceCollector.getGuildEmbedsEnabled(event.getGuild().getId()) &&
                     event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
-                embeds = true;
+                embedsEnabled = true;
             } else {
-                embeds = false;
+                embedsEnabled = false;
             }
         } else {
             // event was not from guild, set prefix and embeds to default values
             prefix = Config.DEFAULT_PREFIX;
-            embeds = Config.DEFAULT_EMBEDS;
+            embedsEnabled = Config.DEFAULT_EMBEDS_ENABLED;
         }
 
         // if message starts with bot mention send current bot prefix
@@ -100,6 +100,6 @@ public class MessageListener extends ListenerAdapter {
         }
 
         // pass information to command handler
-        CommandHandler.run(event, prefix, embeds, cmd, args);
+        CommandHandler.run(event, prefix, embedsEnabled, cmd, args);
     }
 }

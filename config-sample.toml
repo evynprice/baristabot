@@ -3,18 +3,18 @@
 # For usage and examples refer to the wiki page at https://barista.evyn.me/configuration
 
 [API]
-token =
+token = ""
 
 [Defaults]
 prefix = "b."
-embeds = true
-maintainer_ids =
+embeds_enabled = true
+maintainer_ids = [""]
 
 [Datasource]
 enabled = true
 type = "sqlite"
-ip = 
-port = 
-database = 
-user = 
-password = 
+ip = ""
+port = ""
+database = ""
+user = ""
+password = ""

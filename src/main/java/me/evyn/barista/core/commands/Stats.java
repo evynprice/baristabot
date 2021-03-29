@@ -40,11 +40,11 @@ public class Stats implements Command {
      * Generates and sends bot statistics in event's channel
      * @param event Message Event
      * @param prefix Bot prefix
-     * @param embeds embedsEnabled
+     * @param embedsEnabled embedsEnabled
      * @param args command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embedsEnabled, String[] args) {
         // fetch JDA and bot user objects
         JDA api = event.getJDA();
         User bot = api.getSelfUser();
@@ -60,7 +60,7 @@ public class Stats implements Command {
         int channels = api.getTextChannels().size();
         int users = api.getUsers().size();
 
-        if (embeds) {
+        if (embedsEnabled) {
             // generate statistics embed
             EmbedBuilder eb = new EmbedBuilder()
                     .setTitle(bot.getName() + " statistics")

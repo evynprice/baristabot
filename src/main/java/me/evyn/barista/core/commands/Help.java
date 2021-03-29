@@ -37,15 +37,15 @@ public class Help implements Command {
      * Sends bot information in the event's channel
      * @param event Message Event
      * @param prefix Bot prefix
-     * @param embeds embedsEnabled
+     * @param embedsEnabled embedsEnabled
      * @param args command arguments
      */
     @Override
-    public void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args) {
+    public void run(MessageReceivedEvent event, String prefix, boolean embedsEnabled, String[] args) {
         // fetch bot user
         User bot = event.getJDA().getSelfUser();
 
-        if (embeds) {
+        if (embedsEnabled) {
             // generate help embed
             EmbedBuilder eb = new EmbedBuilder()
                     .setTitle(bot.getName(), "https://barista.evyn.me")

@@ -32,10 +32,10 @@ public interface Command {
      *
      * @param event Message Event
      * @param prefix Bot prefix
-     * @param embeds embedsEnabled
+     * @param embedsEnabled embedsEnabled
      * @param args command arguments
      */
-    void run(MessageReceivedEvent event, String prefix, boolean embeds, String[] args);
+    void run(MessageReceivedEvent event, String prefix, boolean embedsEnabled, String[] args);
 
     /**
      * Provides name of command

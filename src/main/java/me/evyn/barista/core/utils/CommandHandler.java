@@ -59,7 +59,7 @@ public class CommandHandler {
         return matching.orElse(null);
     }
 
-    public static void run(MessageReceivedEvent event, String prefix, boolean embeds, String cmd, String[] args) {
+    public static void run(MessageReceivedEvent event, String prefix, boolean embedsEnabled, String cmd, String[] args) {
         Command command = CommandHandler.findCommand(cmd);
 
         if (command == null) {
@@ -67,7 +67,7 @@ public class CommandHandler {
                     .sendMessage("**Error:** That command does not exist.")
                     .queue();
         } else {
-            command.run(event, prefix, embeds, args);
+            command.run(event, prefix, embedsEnabled, args);
         }
     }
 }

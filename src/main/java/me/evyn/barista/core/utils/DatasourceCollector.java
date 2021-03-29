@@ -63,7 +63,7 @@ public class DatasourceCollector {
         return Config.DEFAULT_PREFIX;
     }
 
-    public static boolean getGuildEmbeds(String guildId) {
+    public static boolean getGuildEmbedsEnabled(String guildId) {
         try (final Connection conn = Datasource.getConnection();
              final PreparedStatement statement = conn
                     .prepareStatement("SELECT embeds FROM guild_settings WHERE guild_id = ?")) {
@@ -86,7 +86,7 @@ public class DatasourceCollector {
             throwables.printStackTrace();
         }
 
-        return Config.DEFAULT_EMBEDS;
+        return Config.DEFAULT_EMBEDS_ENABLED;
     }
 
 }

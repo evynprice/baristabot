@@ -38,7 +38,7 @@ public class Config {
 
     public static final String API_TOKEN;
     public static final String DEFAULT_PREFIX;
-    public static final Boolean DEFAULT_EMBEDS;
+    public static final Boolean DEFAULT_EMBEDS_ENABLED;
     public static final String[] DEFAULT_MAINTAINERS;
     public static final Boolean DATASOURCE_ENABLED;
     public static final String DATASOURCE_TYPE;
@@ -51,7 +51,7 @@ public class Config {
     static {
         String apiToken = null;
         String defaultPrefix = null;
-        Boolean defaultEmbeds = null;
+        Boolean defaultEmbedsEnabled = null;
         List<String> defaultMaintainers = null;
         Boolean datasourceEnabled = null;
         String datasourceType = null;
@@ -64,7 +64,7 @@ public class Config {
             Toml toml = new Toml().read(stream);
             apiToken = toml.getString("API.token");
             defaultPrefix = toml.getString("Defaults.prefix");
-            defaultEmbeds = toml.getBoolean("Defaults.embeds");
+            defaultEmbedsEnabled = toml.getBoolean("Defaults.embeds_enabled");
             defaultMaintainers = toml.getList("Defaults.maintainer_ids");
             datasourceEnabled = toml.getBoolean("Datasource.enabled");
             datasourceType = toml.getString("Datasource.type");
@@ -78,10 +78,10 @@ public class Config {
             apiToken = System.getenv("API_TOKEN");
             defaultPrefix = System.getenv("DEFAULT_PREFIX");
 
-            if (System.getenv("DEFAULT_EMBEDS").equals("true")) {
-                defaultEmbeds = true;
-            } else if (System.getenv("DEFAULT_EMBEDS").equals("false")) {
-                defaultEmbeds = false;
+            if (System.getenv("DEFAULT_EMBEDS_ENABLED").equals("true")) {
+                defaultEmbedsEnabled = true;
+            } else if (System.getenv("DEFAULT_EMBEDS_ENABLED").equals("false")) {
+                defaultEmbedsEnabled = false;
             }
 
             String maintainersRaw = System.getenv("DEFAULT_MAINTAINERS");
@@ -90,7 +90,7 @@ public class Config {
 
             API_TOKEN = apiToken;
             DEFAULT_PREFIX = defaultPrefix;
-            DEFAULT_EMBEDS = defaultEmbeds;
+            DEFAULT_EMBEDS_ENABLED = defaultEmbedsEnabled;
             DEFAULT_MAINTAINERS = defaultMaintainers.toArray(new String[0]);
             DATASOURCE_ENABLED = datasourceEnabled;
             DATASOURCE_TYPE = datasourceType;
@@ -112,7 +112,7 @@ public class Config {
                 System.exit(0);
             }
 
-            if (DEFAULT_EMBEDS == null) {
+            if (DEFAULT_EMBEDS_ENABLED == null) {
                 LOGGER.error("The default embeds should be true or false");
                 System.exit(0);
             }
