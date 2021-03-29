@@ -35,17 +35,30 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.util.Arrays;
 
 public class MessageListener extends ListenerAdapter {
+
+    /**
+     * Event triggers when bot receives a message, parses data and hands off to CommandHandler
+     * @param event Message Event
+     */
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+
+        // return if author is a bot
         if (event.getAuthor().isBot()) return;
 
+        // fetch message object and message content
         Message message = event.getMessage();
         String messageContent = message.getContentRaw();
+
+        // declare prefix and embeds variables that will be provided from DatasourceCollector
         String prefix;
         boolean embeds;
 
+        // fetch guild / channel prefix and if embeds are enabled
         if (event.isFromGuild()) {
             prefix = DatasourceCollector.getGuildPrefix(event.getGuild().getId());
+
+            // if embeds setting is enabled and bot has permission to send embed messages
             if (DatasourceCollector.getGuildEmbeds(event.getGuild().getId()) &&
                     event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
                 embeds = true;
@@ -53,32 +66,40 @@ public class MessageListener extends ListenerAdapter {
                 embeds = false;
             }
         } else {
+            // event was not from guild, set prefix and embeds to default values
             prefix = Config.DEFAULT_PREFIX;
             embeds = Config.DEFAULT_EMBEDS;
         }
 
+        // if message starts with bot mention send current bot prefix
         if(messageContent.startsWith("<@!" + event.getJDA().getSelfUser().getId())) {
             event.getChannel()
                     .sendMessage("The current prefix is `" + prefix + "`").queue();
             return;
         }
 
+        // return if message does not start with prefix
         if (!messageContent.startsWith(prefix)) return;
 
+        // remove prefix from message content and split into array by space
         String[] msg = messageContent.replaceFirst(prefix, "")
                 .trim()
                 .split(" ");
 
+        // set the command to be the first element in the msg array
         String cmd = msg[0];
 
+        // declare the arguments array
         String[] args;
 
+        // if message contains arguments, include them in the args array. Otherwise set the args array to null
         if (msg.length > 1) {
             args = Arrays.copyOfRange(msg, 1, msg.length);
         } else {
             args = null;
         }
 
+        // pass information to command handler
         CommandHandler.run(event, prefix, embeds, cmd, args);
     }
 }
