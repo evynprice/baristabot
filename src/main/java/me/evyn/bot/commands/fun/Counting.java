@@ -142,8 +142,37 @@ public class Counting implements Command {
                 }
             }
 
-        // change channel
-        } else if (args[0].equals("channel")) {
+        // show current count
+        } else if (args[0].equals("score")) {
+
+            TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
+
+            if (countingChannel != null) {
+                int currentScore = DataSourceCollector.getCountingCurrentGuildScore(guildId);
+
+                if (embed) {
+                    eb = EmbedCreator.newCommandEmbedMessage(bot);
+                    eb.setTitle("Counting Score")
+                            .setColor(0x008080)
+                            .setDescription("The current score is " + currentScore)
+                            .setFooter("Barista Bot")
+                            .setTimestamp(Instant.now());
+                } else {
+                    message = "**The Current Score is: **" + currentScore;
+                }
+
+            } else {
+                String msg = "The counting game is currently disabled";
+                if (embed) {
+                    eb = EmbedCreator.newErrorEmbedMessage(bot, "The counting game is currently disabled.");
+
+                } else {
+                    message = "ERROR" + msg;
+                }
+            }
+
+            // change channel
+        }else if (args[0].equals("channel")) {
             if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 String msg = "This command requires the `Manage Server` permission.";
                 if (embed) {
