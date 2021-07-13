@@ -105,8 +105,8 @@ public class Counting implements Command {
             TextChannel countingChannel = Counting.getCountingChannel(event, guildId);
 
             if (countingChannel != null) {
-                LinkedHashMap<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(event.getGuild().
-                        getIdLong());
+                LinkedHashMap<String, Integer> top = DataSourceCollector.getCountingGuildTopUsers(guildId);
+                Integer topScore = DataSourceCollector.getCountingGuildTopScore(guildId);
 
                 StringBuilder sb = new StringBuilder();
 
@@ -122,14 +122,14 @@ public class Counting implements Command {
                         });
 
                 if (embed) {
-                    eb = EmbedCreator.newCommandEmbedMessage(bot);
-                    eb.setTitle("Top 10 Counters")
+                    eb = EmbedCreator.newCommandEmbedMessage(bot)
                             .setColor(0x008080)
-                            .setDescription(sb.toString())
+                            .addField("Guild Top Score", "" + topScore, false)
+                            .addField("Top Counters", sb.toString(), false)
                             .setFooter("Barista Bot")
                             .setTimestamp(Instant.now());
                 } else {
-                    message = "**Top 10 Counters**" + "\n" + sb.toString();
+                    message = "**Guild Top Score**" + "\n" + topScore + "\n" + "**Top 10 Counters**" + "\n" + sb.toString();
                 }
 
             } else {
