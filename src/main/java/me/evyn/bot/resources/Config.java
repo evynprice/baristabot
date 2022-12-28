@@ -111,7 +111,7 @@ public class Config {
         }
 
         // Check if token exists and if it matches the proper pattern. Exit if error occurs
-        if (botToken == null || !botToken.matches(".{59}")) {
+        if (botToken == null) {
             LOGGER.error("Bot token was not in proper format. Please check env variables or .env.local file");
             System.exit(0);
         }
